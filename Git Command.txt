@@ -1,0 +1,9 @@
+1. 添加到本地仓库
+	git add <文件夹/项目>
+
+2. 提交
+	git commit -sm'描述信息'
+	
+3. 推送到远程仓库
+	git push origin 分支:节点
+	git push -u origin master

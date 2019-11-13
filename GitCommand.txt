@@ -1,257 +1,257 @@
-1. Ìí¼Óµ½±¾µØ²Ö¿â
-	git add <ÎÄ¼ş¼Ğ/ÏîÄ¿>
+1. æ·»åŠ åˆ°æœ¬åœ°ä»“åº“
+	git add <æ–‡ä»¶å¤¹/é¡¹ç›®>
 
-2. Ìá½»
-	git commit -sm'ÃèÊöĞÅÏ¢'
+2. æäº¤
+	git commit -sm'æè¿°ä¿¡æ¯'
 	
-3. ÍÆËÍµ½Ô¶³Ì²Ö¿â
-	git push origin ·ÖÖ§:½Úµã
+3. æ¨é€åˆ°è¿œç¨‹ä»“åº“
+	git push origin åˆ†æ”¯:èŠ‚ç‚¹
 	git push -u origin master
 	
-4. ¹ØÁªµ½£¨Ò»¸öĞÂµÄ£©Ô¶³Ì²Ö¿â(Ö»ÓĞ¹ØÁªµ½Ô¶³Ì²Ö¿â²ÅÄÜ¸üĞÂ¼°Ìá½»)
+4. å…³è”åˆ°ï¼ˆä¸€ä¸ªæ–°çš„ï¼‰è¿œç¨‹ä»“åº“(åªæœ‰å…³è”åˆ°è¿œç¨‹ä»“åº“æ‰èƒ½æ›´æ–°åŠæäº¤)
 	git remote add origin https://github.com/Ackmicra/zhaopengchap.git
 
-4.1 ÇĞ»»µ½ÒÑ¾­¹ØÁªµÄÒ»¸öÔ¶³Ì²Ö¿â
-	git remote set-url origin Url ¸ü»»Ô¶³Ì²Ö¿âµØÖ·£¬UrlÎªĞÂµØÖ·¡£
-		Àı£ºgit remote set-url origin https://github.com/Ackmicra/zhaopengchao.git
+4.1 åˆ‡æ¢åˆ°å·²ç»å…³è”çš„ä¸€ä¸ªè¿œç¨‹ä»“åº“
+	git remote set-url origin Url æ›´æ¢è¿œç¨‹ä»“åº“åœ°å€ï¼ŒUrlä¸ºæ–°åœ°å€ã€‚
+		ä¾‹ï¼šgit remote set-url origin https://github.com/Ackmicra/zhaopengchao.git
 
-4.2 É¾³ıÔ¶³Ì²Ö¿â
-	git remote rm origin   É¾³ıÏÖÓĞÔ¶³Ì²Ö¿â
+4.2 åˆ é™¤è¿œç¨‹ä»“åº“
+	git remote rm origin   åˆ é™¤ç°æœ‰è¿œç¨‹ä»“åº“
 	
-4.3 ²é¿´Ô¶³Ì²Ö¿â
-	git remote -v    ²é¿´Ô¶³Ì²Ö¿âµÄµØÖ·
-	»ò git remote -v
+4.3 æŸ¥çœ‹è¿œç¨‹ä»“åº“
+	git remote -v    æŸ¥çœ‹è¿œç¨‹ä»“åº“çš„åœ°å€
+	æˆ– git remote -v
 	
-5. ¿ËÂ¡Ô¶³Ì²Ö¿â
+5. å…‹éš†è¿œç¨‹ä»“åº“
 	git clone https://github.com/Snailclimb/JavaGuide.git
 	
-6. ²é¿´ËùÓĞ·ÖÖ§°üÀ¨±¾µØ·ÖÖ§ºÍÔ¶³Ì·ÖÖ§)
+6. æŸ¥çœ‹æ‰€æœ‰åˆ†æ”¯åŒ…æ‹¬æœ¬åœ°åˆ†æ”¯å’Œè¿œç¨‹åˆ†æ”¯)
 	git branch -a
 	
-7. ²é¿´Ô¶³Ì·ÖÖ§
+7. æŸ¥çœ‹è¿œç¨‹åˆ†æ”¯
 	git branch -r
 	
-8. Ö±½ÓĞÂ½¨Ò»¸ö·ÖÖ§È»ºóÇĞ»»ÖÁĞÂ´´½¨µÄ·ÖÖ§  ¾ÍÊÇ´´½¨¼ÓÇĞ»»·ÖÖ§
+8. ç›´æ¥æ–°å»ºä¸€ä¸ªåˆ†æ”¯ç„¶ååˆ‡æ¢è‡³æ–°åˆ›å»ºçš„åˆ†æ”¯  å°±æ˜¯åˆ›å»ºåŠ åˆ‡æ¢åˆ†æ”¯
 	git checkout -b branchname
-	µÈ¼ÛÓÚÃüÁî£ºgit branch branchname + git checkout branchname.
+	ç­‰ä»·äºå‘½ä»¤ï¼šgit branch branchname + git checkout branchname.
 	
-9. ÇĞ»»·ÖÖ§Ãû
+9. åˆ‡æ¢åˆ†æ”¯å
 	git checkout branchname
 	
-10. ½«ĞÂ·ÖÖ§ÍÆËÍÖÁGitHub
+10. å°†æ–°åˆ†æ”¯æ¨é€è‡³GitHub
 	git push origin branchname
 	
-11. É¾³ı±¾µØ·ÖÖ§
+11. åˆ é™¤æœ¬åœ°åˆ†æ”¯
 	git branch -d branchname
-	git push origin: branchname    É¾³ıGitHubÉÏÃæµÄÔ¶³Ì·ÖÖ§
+	git push origin: branchname    åˆ é™¤GitHubä¸Šé¢çš„è¿œç¨‹åˆ†æ”¯
 	
 	
 git init
-     ÔÚ±¾µØĞÂ½¨Ò»¸örepo,½øÈëÒ»¸öÏîÄ¿Ä¿Â¼,Ö´ĞĞgit init,»á³õÊ¼»¯Ò»¸örepo,²¢ÔÚµ±Ç°ÎÄ¼ş¼ĞÏÂ´´½¨Ò»¸ö.gitÎÄ¼ş¼Ğ.
+     åœ¨æœ¬åœ°æ–°å»ºä¸€ä¸ªrepo,è¿›å…¥ä¸€ä¸ªé¡¹ç›®ç›®å½•,æ‰§è¡Œgit init,ä¼šåˆå§‹åŒ–ä¸€ä¸ªrepo,å¹¶åœ¨å½“å‰æ–‡ä»¶å¤¹ä¸‹åˆ›å»ºä¸€ä¸ª.gitæ–‡ä»¶å¤¹.
  
 git clone
-     »ñÈ¡Ò»¸öurl¶ÔÓ¦µÄÔ¶³ÌGit repo, ´´½¨Ò»¸ölocal copy.
-     Ò»°ãµÄ¸ñÊ½ÊÇgit clone [url].
-     cloneÏÂÀ´µÄrepo»áÒÔurl×îºóÒ»¸öĞ±ÏßºóÃæµÄÃû³ÆÃüÃû,´´½¨Ò»¸öÎÄ¼ş¼Ğ,Èç¹ûÏëÒªÖ¸¶¨ÌØ¶¨µÄÃû³Æ,¿ÉÒÔgit clone [url] newnameÖ¸¶¨.
+     è·å–ä¸€ä¸ªurlå¯¹åº”çš„è¿œç¨‹Git repo, åˆ›å»ºä¸€ä¸ªlocal copy.
+     ä¸€èˆ¬çš„æ ¼å¼æ˜¯git clone [url].
+     cloneä¸‹æ¥çš„repoä¼šä»¥urlæœ€åä¸€ä¸ªæ–œçº¿åé¢çš„åç§°å‘½å,åˆ›å»ºä¸€ä¸ªæ–‡ä»¶å¤¹,å¦‚æœæƒ³è¦æŒ‡å®šç‰¹å®šçš„åç§°,å¯ä»¥git clone [url] newnameæŒ‡å®š.
  
 git status
-     ²éÑ¯repoµÄ×´Ì¬.
-     git status -s: -s±íÊ¾short, -sµÄÊä³ö±ê¼Ç»áÓĞÁ½ÁĞ,µÚÒ»ÁĞÊÇ¶ÔstagingÇøÓò¶øÑÔ,µÚ¶şÁĞÊÇ¶ÔworkingÄ¿Â¼¶øÑÔ.
+     æŸ¥è¯¢repoçš„çŠ¶æ€.
+     git status -s: -sè¡¨ç¤ºshort, -sçš„è¾“å‡ºæ ‡è®°ä¼šæœ‰ä¸¤åˆ—,ç¬¬ä¸€åˆ—æ˜¯å¯¹stagingåŒºåŸŸè€Œè¨€,ç¬¬äºŒåˆ—æ˜¯å¯¹workingç›®å½•è€Œè¨€.
  
 git log
      show commit history of a branch.
-     git log --oneline --number: Ã¿ÌõlogÖ»ÏÔÊ¾Ò»ĞĞ,ÏÔÊ¾numberÌõ.
-     git log --oneline --graph:¿ÉÒÔÍ¼ĞÎ»¯µØ±íÊ¾³ö·ÖÖ§ºÏ²¢ÀúÊ·.
-     git log branchname¿ÉÒÔÏÔÊ¾ÌØ¶¨·ÖÖ§µÄlog.
-     git log --oneline branch1 ^branch2,¿ÉÒÔ²é¿´ÔÚ·ÖÖ§1,È´²»ÔÚ·ÖÖ§2ÖĞµÄÌá½».^±íÊ¾ÅÅ³ıÕâ¸ö·ÖÖ§(WindowÏÂ¿ÉÄÜÒª¸ø^branch2¼ÓÉÏÒıºÅ).
-     git log --decorate»áÏÔÊ¾³ötagĞÅÏ¢.
-     git log --author=[author name] ¿ÉÒÔÖ¸¶¨×÷ÕßµÄÌá½»ÀúÊ·.
-     git log --since --before --until --after ¸ù¾İÌá½»Ê±¼äÉ¸Ñ¡log.
-     --no-merges¿ÉÒÔ½«mergeµÄcommitsÅÅ³ıÔÚÍâ.
-     git log --grep ¸ù¾İcommitĞÅÏ¢¹ıÂËlog: git log --grep=keywords
-     Ä¬ÈÏÇé¿öÏÂ, git log --grep --authorÊÇORµÄ¹ØÏµ,¼´Âú×ãÒ»Ìõ¼´±»·µ»Ø,Èç¹ûÄãÏëÈÃËüÃÇÊÇANDµÄ¹ØÏµ,¿ÉÒÔ¼ÓÉÏ--all-matchµÄoption.
+     git log --oneline --number: æ¯æ¡logåªæ˜¾ç¤ºä¸€è¡Œ,æ˜¾ç¤ºnumberæ¡.
+     git log --oneline --graph:å¯ä»¥å›¾å½¢åŒ–åœ°è¡¨ç¤ºå‡ºåˆ†æ”¯åˆå¹¶å†å².
+     git log branchnameå¯ä»¥æ˜¾ç¤ºç‰¹å®šåˆ†æ”¯çš„log.
+     git log --oneline branch1 ^branch2,å¯ä»¥æŸ¥çœ‹åœ¨åˆ†æ”¯1,å´ä¸åœ¨åˆ†æ”¯2ä¸­çš„æäº¤.^è¡¨ç¤ºæ’é™¤è¿™ä¸ªåˆ†æ”¯(Windowä¸‹å¯èƒ½è¦ç»™^branch2åŠ ä¸Šå¼•å·).
+     git log --decorateä¼šæ˜¾ç¤ºå‡ºtagä¿¡æ¯.
+     git log --author=[author name] å¯ä»¥æŒ‡å®šä½œè€…çš„æäº¤å†å².
+     git log --since --before --until --after æ ¹æ®æäº¤æ—¶é—´ç­›é€‰log.
+     --no-mergeså¯ä»¥å°†mergeçš„commitsæ’é™¤åœ¨å¤–.
+     git log --grep æ ¹æ®commitä¿¡æ¯è¿‡æ»¤log: git log --grep=keywords
+     é»˜è®¤æƒ…å†µä¸‹, git log --grep --authoræ˜¯ORçš„å…³ç³»,å³æ»¡è¶³ä¸€æ¡å³è¢«è¿”å›,å¦‚æœä½ æƒ³è®©å®ƒä»¬æ˜¯ANDçš„å…³ç³»,å¯ä»¥åŠ ä¸Š--all-matchçš„option.
      git log -S: filter by introduced diff.
-     ±ÈÈç: git log -SmethodName (×¢ÒâSºÍºóÃæµÄ´ÊÖ®¼äÃ»ÓĞµÈºÅ·Ö¸ô).
+     æ¯”å¦‚: git log -SmethodName (æ³¨æ„Så’Œåé¢çš„è¯ä¹‹é—´æ²¡æœ‰ç­‰å·åˆ†éš”).
      git log -p: show patch introduced at each commit.
-     Ã¿Ò»¸öÌá½»¶¼ÊÇÒ»¸ö¿ìÕÕ(snapshot),Git»á°ÑÃ¿´ÎÌá½»µÄdiff¼ÆËã³öÀ´,×÷ÎªÒ»¸öpatchÏÔÊ¾¸øÄã¿´.
-     ÁíÒ»ÖÖ·½·¨ÊÇgit show [SHA].
+     æ¯ä¸€ä¸ªæäº¤éƒ½æ˜¯ä¸€ä¸ªå¿«ç…§(snapshot),Gitä¼šæŠŠæ¯æ¬¡æäº¤çš„diffè®¡ç®—å‡ºæ¥,ä½œä¸ºä¸€ä¸ªpatchæ˜¾ç¤ºç»™ä½ çœ‹.
+     å¦ä¸€ç§æ–¹æ³•æ˜¯git show [SHA].
      git log --stat: show diffstat of changes introduced at each commit.
-     Í¬ÑùÊÇÓÃÀ´¿´¸Ä¶¯µÄÏà¶ÔĞÅÏ¢µÄ,--stat±È-pµÄÊä³ö¸ü¼òµ¥Ò»Ğ©.
+     åŒæ ·æ˜¯ç”¨æ¥çœ‹æ”¹åŠ¨çš„ç›¸å¯¹ä¿¡æ¯çš„,--statæ¯”-pçš„è¾“å‡ºæ›´ç®€å•ä¸€äº›.
     
 git add
-     ÔÚÌá½»Ö®Ç°,GitÓĞÒ»¸öÔİ´æÇø(staging area),¿ÉÒÔ·ÅÈëĞÂÌí¼ÓµÄÎÄ¼ş»òÕß¼ÓÈëĞÂµÄ¸Ä¶¯. commitÊ±Ìá½»µÄ¸Ä¶¯ÊÇÉÏÒ»´Î¼ÓÈëµ½staging areaÖĞµÄ¸Ä¶¯,¶ø²»ÊÇÎÒÃÇdiskÉÏµÄ¸Ä¶¯.
+     åœ¨æäº¤ä¹‹å‰,Gitæœ‰ä¸€ä¸ªæš‚å­˜åŒº(staging area),å¯ä»¥æ”¾å…¥æ–°æ·»åŠ çš„æ–‡ä»¶æˆ–è€…åŠ å…¥æ–°çš„æ”¹åŠ¨. commitæ—¶æäº¤çš„æ”¹åŠ¨æ˜¯ä¸Šä¸€æ¬¡åŠ å…¥åˆ°staging areaä¸­çš„æ”¹åŠ¨,è€Œä¸æ˜¯æˆ‘ä»¬diskä¸Šçš„æ”¹åŠ¨.
      git add .
-     »áµİ¹éµØÌí¼Óµ±Ç°¹¤×÷Ä¿Â¼ÖĞµÄËùÓĞÎÄ¼ş.
+     ä¼šé€’å½’åœ°æ·»åŠ å½“å‰å·¥ä½œç›®å½•ä¸­çš„æ‰€æœ‰æ–‡ä»¶.
  
 git diff
-     ²»¼Ó²ÎÊıµÄgit diff:
+     ä¸åŠ å‚æ•°çš„git diff:
      show diff of unstaged changes.
-     ´ËÃüÁî±È½ÏµÄÊÇ¹¤×÷Ä¿Â¼ÖĞµ±Ç°ÎÄ¼şºÍÔİ´æÇøÓò¿ìÕÕÖ®¼äµÄ²îÒì,Ò²¾ÍÊÇĞŞ¸ÄÖ®ºó»¹Ã»ÓĞÔİ´æÆğÀ´µÄ±ä»¯ÄÚÈİ.
+     æ­¤å‘½ä»¤æ¯”è¾ƒçš„æ˜¯å·¥ä½œç›®å½•ä¸­å½“å‰æ–‡ä»¶å’Œæš‚å­˜åŒºåŸŸå¿«ç…§ä¹‹é—´çš„å·®å¼‚,ä¹Ÿå°±æ˜¯ä¿®æ”¹ä¹‹åè¿˜æ²¡æœ‰æš‚å­˜èµ·æ¥çš„å˜åŒ–å†…å®¹.
  
-     ÈôÒª¿´ÒÑ¾­Ôİ´æÆğÀ´µÄÎÄ¼şºÍÉÏ´ÎÌá½»Ê±µÄ¿ìÕÕÖ®¼äµÄ²îÒì,¿ÉÒÔÓÃ:
-     git diff --cached ÃüÁî.
+     è‹¥è¦çœ‹å·²ç»æš‚å­˜èµ·æ¥çš„æ–‡ä»¶å’Œä¸Šæ¬¡æäº¤æ—¶çš„å¿«ç…§ä¹‹é—´çš„å·®å¼‚,å¯ä»¥ç”¨:
+     git diff --cached å‘½ä»¤.
      show diff of staged changes.
-     (Git 1.6.1 ¼°¸ü¸ß°æ±¾»¹ÔÊĞíÊ¹ÓÃ git diff --staged£¬Ğ§¹ûÊÇÏàÍ¬µÄ).
+     (Git 1.6.1 åŠæ›´é«˜ç‰ˆæœ¬è¿˜å…è®¸ä½¿ç”¨ git diff --stagedï¼Œæ•ˆæœæ˜¯ç›¸åŒçš„).
  
      git diff HEAD
      show diff of all staged or unstated changes.
-     Ò²¼´±È½Ïwoking directoryºÍÉÏ´ÎÌá½»Ö®¼äËùÓĞµÄ¸Ä¶¯.
+     ä¹Ÿå³æ¯”è¾ƒwoking directoryå’Œä¸Šæ¬¡æäº¤ä¹‹é—´æ‰€æœ‰çš„æ”¹åŠ¨.
  
-     Èç¹ûÏë¿´×Ô´ÓÄ³¸ö°æ±¾Ö®ºó¶¼¸Ä¶¯ÁËÊ²Ã´,¿ÉÒÔÓÃ:
+     å¦‚æœæƒ³çœ‹è‡ªä»æŸä¸ªç‰ˆæœ¬ä¹‹åéƒ½æ”¹åŠ¨äº†ä»€ä¹ˆ,å¯ä»¥ç”¨:
      git diff [version tag]
-     ¸úlogÃüÁîÒ»Ñù,diffÒ²¿ÉÒÔ¼ÓÉÏ--stat²ÎÊıÀ´¼ò»¯Êä³ö.
+     è·Ÿlogå‘½ä»¤ä¸€æ ·,diffä¹Ÿå¯ä»¥åŠ ä¸Š--statå‚æ•°æ¥ç®€åŒ–è¾“å‡º.
  
-     git diff [branchA] [branchB]¿ÉÒÔÓÃÀ´±È½ÏÁ½¸ö·ÖÖ§.
-     ËüÊµ¼ÊÉÏ»á·µ»ØÒ»¸öÓÉAµ½BµÄpatch,²»ÊÇÎÒÃÇÏëÒªµÄ½á¹û.
-     Ò»°ãÎÒÃÇÏëÒªµÄ½á¹ûÊÇÁ½¸ö·ÖÖ§·Ö¿ªÒÔºó¸÷×ÔµÄ¸Ä¶¯¶¼ÊÇÊ²Ã´,ÊÇÓÉÃüÁî:
-     git diff [branchA]¡­[branchB]¸ø³öµÄ.
-     Êµ¼ÊÉÏËüÊÇ:git diff $(git merge-base [branchA] [branchB]) [branchB]µÄ½á¹û.
+     git diff [branchA] [branchB]å¯ä»¥ç”¨æ¥æ¯”è¾ƒä¸¤ä¸ªåˆ†æ”¯.
+     å®ƒå®é™…ä¸Šä¼šè¿”å›ä¸€ä¸ªç”±Aåˆ°Bçš„patch,ä¸æ˜¯æˆ‘ä»¬æƒ³è¦çš„ç»“æœ.
+     ä¸€èˆ¬æˆ‘ä»¬æƒ³è¦çš„ç»“æœæ˜¯ä¸¤ä¸ªåˆ†æ”¯åˆ†å¼€ä»¥åå„è‡ªçš„æ”¹åŠ¨éƒ½æ˜¯ä»€ä¹ˆ,æ˜¯ç”±å‘½ä»¤:
+     git diff [branchA]â€¦[branchB]ç»™å‡ºçš„.
+     å®é™…ä¸Šå®ƒæ˜¯:git diff $(git merge-base [branchA] [branchB]) [branchB]çš„ç»“æœ.
  
  
 git commit
-     Ìá½»ÒÑ¾­±»add½øÀ´µÄ¸Ä¶¯.
-     git commit -m ¡°the commit message"
-     git commit -a »áÏÈ°ÑËùÓĞÒÑ¾­trackµÄÎÄ¼şµÄ¸Ä¶¯add½øÀ´,È»ºóÌá½»(ÓĞµãÏñsvnµÄÒ»´ÎÌá½»,²»ÓÃÏÈÔİ´æ). ¶ÔÓÚÃ»ÓĞtrackµÄÎÄ¼ş,»¹ÊÇĞèÒªgit addÒ»ÏÂ.
-     git commit --amend Ôö²¹Ìá½». »áÊ¹ÓÃÓëµ±Ç°Ìá½»½ÚµãÏàÍ¬µÄ¸¸½Úµã½øĞĞÒ»´ÎĞÂµÄÌá½»,¾ÉµÄÌá½»½«»á±»È¡Ïû.
+     æäº¤å·²ç»è¢«addè¿›æ¥çš„æ”¹åŠ¨.
+     git commit -m â€œthe commit message"
+     git commit -a ä¼šå…ˆæŠŠæ‰€æœ‰å·²ç»trackçš„æ–‡ä»¶çš„æ”¹åŠ¨addè¿›æ¥,ç„¶åæäº¤(æœ‰ç‚¹åƒsvnçš„ä¸€æ¬¡æäº¤,ä¸ç”¨å…ˆæš‚å­˜). å¯¹äºæ²¡æœ‰trackçš„æ–‡ä»¶,è¿˜æ˜¯éœ€è¦git addä¸€ä¸‹.
+     git commit --amend å¢è¡¥æäº¤. ä¼šä½¿ç”¨ä¸å½“å‰æäº¤èŠ‚ç‚¹ç›¸åŒçš„çˆ¶èŠ‚ç‚¹è¿›è¡Œä¸€æ¬¡æ–°çš„æäº¤,æ—§çš„æäº¤å°†ä¼šè¢«å–æ¶ˆ.
  
 git reset
      undo changes and commits.
-     ÕâÀïµÄHEAD¹Ø¼ü×ÖÖ¸µÄÊÇµ±Ç°·ÖÖ§×îÄ©ÉÒ×îĞÂµÄÒ»¸öÌá½».Ò²¾ÍÊÇ°æ±¾¿âÖĞ¸Ã·ÖÖ§ÉÏµÄ×îĞÂ°æ±¾.
+     è¿™é‡Œçš„HEADå…³é”®å­—æŒ‡çš„æ˜¯å½“å‰åˆ†æ”¯æœ€æœ«æ¢¢æœ€æ–°çš„ä¸€ä¸ªæäº¤.ä¹Ÿå°±æ˜¯ç‰ˆæœ¬åº“ä¸­è¯¥åˆ†æ”¯ä¸Šçš„æœ€æ–°ç‰ˆæœ¬.
      git reset HEAD: unstage files from index and reset pointer to HEAD
-     Õâ¸öÃüÁîÓÃÀ´°Ñ²»Ğ¡ĞÄadd½øÈ¥µÄÎÄ¼ş´Óstaged×´Ì¬È¡³öÀ´,¿ÉÒÔµ¥¶ÀÕë¶ÔÄ³Ò»¸öÎÄ¼ş²Ù×÷: git reset HEAD - - filename, Õâ¸ö- - Ò²¿ÉÒÔ²»¼Ó.
+     è¿™ä¸ªå‘½ä»¤ç”¨æ¥æŠŠä¸å°å¿ƒaddè¿›å»çš„æ–‡ä»¶ä»stagedçŠ¶æ€å–å‡ºæ¥,å¯ä»¥å•ç‹¬é’ˆå¯¹æŸä¸€ä¸ªæ–‡ä»¶æ“ä½œ: git reset HEAD - - filename, è¿™ä¸ª- - ä¹Ÿå¯ä»¥ä¸åŠ .
      git reset --soft
      move HEAD to specific commit reference, index and staging are untouched.
      git reset --hard
      unstage files AND undo any changes in the working directory since last commit.
-     Ê¹ÓÃgit reset ¡ªhard HEAD½øĞĞreset,¼´ÉÏ´ÎÌá½»Ö®ºó,ËùÓĞstagedµÄ¸Ä¶¯ºÍ¹¤×÷Ä¿Â¼µÄ¸Ä¶¯¶¼»áÏûÊ§,»¹Ô­µ½ÉÏ´ÎÌá½»µÄ×´Ì¬.
-     ÕâÀïµÄHEAD¿ÉÒÔ±»Ğ´³ÉÈÎºÎÒ»´ÎÌá½»µÄSHA-1.
-     ²»´øsoftºÍhard²ÎÊıµÄgit reset,Êµ¼ÊÉÏ´øµÄÊÇÄ¬ÈÏ²ÎÊımixed.
+     ä½¿ç”¨git reset â€”hard HEADè¿›è¡Œreset,å³ä¸Šæ¬¡æäº¤ä¹‹å,æ‰€æœ‰stagedçš„æ”¹åŠ¨å’Œå·¥ä½œç›®å½•çš„æ”¹åŠ¨éƒ½ä¼šæ¶ˆå¤±,è¿˜åŸåˆ°ä¸Šæ¬¡æäº¤çš„çŠ¶æ€.
+     è¿™é‡Œçš„HEADå¯ä»¥è¢«å†™æˆä»»ä½•ä¸€æ¬¡æäº¤çš„SHA-1.
+     ä¸å¸¦softå’Œhardå‚æ•°çš„git reset,å®é™…ä¸Šå¸¦çš„æ˜¯é»˜è®¤å‚æ•°mixed.
  
-     ×Ü½á:
-     git reset --mixed id,ÊÇ½«gitµÄHEAD±äÁË(Ò²¾ÍÊÇÌá½»¼ÇÂ¼±äÁË),µ«ÎÄ¼ş²¢Ã»ÓĞ¸Ä±ä£¬(Ò²¾ÍÊÇworking tree²¢Ã»ÓĞ¸Ä±ä). È¡ÏûÁËcommitºÍaddµÄÄÚÈİ.
-     git reset --soft id. Êµ¼ÊÉÏ£¬ÊÇgit reset ¨Cmixed id ºó,ÓÖ×öÁËÒ»´Îgit add.¼´È¡ÏûÁËcommitµÄÄÚÈİ.
-     git reset --hard id.ÊÇ½«gitµÄHEAD±äÁË,ÎÄ¼şÒ²±äÁË.
-     °´¸Ä¶¯·¶Î§ÅÅĞòÈçÏÂ:
+     æ€»ç»“:
+     git reset --mixed id,æ˜¯å°†gitçš„HEADå˜äº†(ä¹Ÿå°±æ˜¯æäº¤è®°å½•å˜äº†),ä½†æ–‡ä»¶å¹¶æ²¡æœ‰æ”¹å˜ï¼Œ(ä¹Ÿå°±æ˜¯working treeå¹¶æ²¡æœ‰æ”¹å˜). å–æ¶ˆäº†commitå’Œaddçš„å†…å®¹.
+     git reset --soft id. å®é™…ä¸Šï¼Œæ˜¯git reset â€“mixed id å,åˆåšäº†ä¸€æ¬¡git add.å³å–æ¶ˆäº†commitçš„å†…å®¹.
+     git reset --hard id.æ˜¯å°†gitçš„HEADå˜äº†,æ–‡ä»¶ä¹Ÿå˜äº†.
+     æŒ‰æ”¹åŠ¨èŒƒå›´æ’åºå¦‚ä¸‹:
      soft (commit) < mixed (commit + add) < hard (commit + add + local working)
  
 git revert
-     ·´×ª³·ÏúÌá½».Ö»Òª°Ñ³ö´íµÄÌá½»(commit)µÄÃû×Ö(reference)×÷Îª²ÎÊı´«¸øÃüÁî¾Í¿ÉÒÔÁË.
-     git revert HEAD: ³·Ïú×î½üµÄÒ»¸öÌá½».
-     git revert»á´´½¨Ò»¸ö·´ÏòµÄĞÂÌá½»,¿ÉÒÔÍ¨¹ı²ÎÊı-nÀ´¸æËßGitÏÈ²»ÒªÌá½».
+     åè½¬æ’¤é”€æäº¤.åªè¦æŠŠå‡ºé”™çš„æäº¤(commit)çš„åå­—(reference)ä½œä¸ºå‚æ•°ä¼ ç»™å‘½ä»¤å°±å¯ä»¥äº†.
+     git revert HEAD: æ’¤é”€æœ€è¿‘çš„ä¸€ä¸ªæäº¤.
+     git revertä¼šåˆ›å»ºä¸€ä¸ªåå‘çš„æ–°æäº¤,å¯ä»¥é€šè¿‡å‚æ•°-næ¥å‘Šè¯‰Gitå…ˆä¸è¦æäº¤.
     
 git rm
-     git rm file: ´ÓstagingÇøÒÆ³ıÎÄ¼ş,Í¬Ê±Ò²ÒÆ³ı³ö¹¤×÷Ä¿Â¼.
-     git rm --cached: ´ÓstagingÇøÒÆ³ıÎÄ¼ş,µ«ÁôÔÚ¹¤×÷Ä¿Â¼ÖĞ.
-     git rm --cached´Ó¹¦ÄÜÉÏµÈÍ¬ÓÚgit reset HEAD,Çå³ıÁË»º´æÇø,µ«²»¶¯¹¤×÷Ä¿Â¼Ê÷.
+     git rm file: ä»stagingåŒºç§»é™¤æ–‡ä»¶,åŒæ—¶ä¹Ÿç§»é™¤å‡ºå·¥ä½œç›®å½•.
+     git rm --cached: ä»stagingåŒºç§»é™¤æ–‡ä»¶,ä½†ç•™åœ¨å·¥ä½œç›®å½•ä¸­.
+     git rm --cachedä»åŠŸèƒ½ä¸Šç­‰åŒäºgit reset HEAD,æ¸…é™¤äº†ç¼“å­˜åŒº,ä½†ä¸åŠ¨å·¥ä½œç›®å½•æ ‘.
  
 git clean
-     git cleanÊÇ´Ó¹¤×÷Ä¿Â¼ÖĞÒÆ³ıÃ»ÓĞtrackµÄÎÄ¼ş.
-     Í¨³£µÄ²ÎÊıÊÇgit clean -df:
-     -d±íÊ¾Í¬Ê±ÒÆ³ıÄ¿Â¼,-f±íÊ¾force,ÒòÎªÔÚgitµÄÅäÖÃÎÄ¼şÖĞ, clean.requireForce=true,Èç¹û²»¼Ó-f,clean½«»á¾Ü¾øÖ´ĞĞ.
+     git cleanæ˜¯ä»å·¥ä½œç›®å½•ä¸­ç§»é™¤æ²¡æœ‰trackçš„æ–‡ä»¶.
+     é€šå¸¸çš„å‚æ•°æ˜¯git clean -df:
+     -dè¡¨ç¤ºåŒæ—¶ç§»é™¤ç›®å½•,-fè¡¨ç¤ºforce,å› ä¸ºåœ¨gitçš„é…ç½®æ–‡ä»¶ä¸­, clean.requireForce=true,å¦‚æœä¸åŠ -f,cleanå°†ä¼šæ‹’ç»æ‰§è¡Œ.
  
 git mv
      git rm - - cached orig; mv orig new; git add new
  
 git stash
-     °Ñµ±Ç°µÄ¸Ä¶¯Ñ¹ÈëÒ»¸öÕ».
-     git stash½«»á°Ñµ±Ç°Ä¿Â¼ºÍindexÖĞµÄËùÓĞ¸Ä¶¯(µ«²»°üÀ¨Î´trackµÄÎÄ¼ş)Ñ¹ÈëÒ»¸öÕ»,È»ºóÁô¸øÄãÒ»¸öcleanµÄ¹¤×÷×´Ì¬,¼´´¦ÓÚÉÏÒ»´Î×îĞÂÌá½»´¦.
-     git stash list»áÏÔÊ¾Õâ¸öÕ»µÄlist.
-     git stash apply:È¡³östashÖĞµÄÉÏÒ»¸öÏîÄ¿(stash@{0}),²¢ÇÒÓ¦ÓÃÓÚµ±Ç°µÄ¹¤×÷Ä¿Â¼.
-     Ò²¿ÉÒÔÖ¸¶¨±ğµÄÏîÄ¿,±ÈÈçgit stash apply stash@{1}.
-     Èç¹ûÄãÔÚÓ¦ÓÃstashÖĞÏîÄ¿µÄÍ¬Ê±ÏëÒªÉ¾³ıËü,¿ÉÒÔÓÃgit stash pop
+     æŠŠå½“å‰çš„æ”¹åŠ¨å‹å…¥ä¸€ä¸ªæ ˆ.
+     git stashå°†ä¼šæŠŠå½“å‰ç›®å½•å’Œindexä¸­çš„æ‰€æœ‰æ”¹åŠ¨(ä½†ä¸åŒ…æ‹¬æœªtrackçš„æ–‡ä»¶)å‹å…¥ä¸€ä¸ªæ ˆ,ç„¶åç•™ç»™ä½ ä¸€ä¸ªcleançš„å·¥ä½œçŠ¶æ€,å³å¤„äºä¸Šä¸€æ¬¡æœ€æ–°æäº¤å¤„.
+     git stash listä¼šæ˜¾ç¤ºè¿™ä¸ªæ ˆçš„list.
+     git stash apply:å–å‡ºstashä¸­çš„ä¸Šä¸€ä¸ªé¡¹ç›®(stash@{0}),å¹¶ä¸”åº”ç”¨äºå½“å‰çš„å·¥ä½œç›®å½•.
+     ä¹Ÿå¯ä»¥æŒ‡å®šåˆ«çš„é¡¹ç›®,æ¯”å¦‚git stash apply stash@{1}.
+     å¦‚æœä½ åœ¨åº”ç”¨stashä¸­é¡¹ç›®çš„åŒæ—¶æƒ³è¦åˆ é™¤å®ƒ,å¯ä»¥ç”¨git stash pop
  
-     É¾³ıstashÖĞµÄÏîÄ¿:
-     git stash drop: É¾³ıÉÏÒ»¸ö,Ò²¿ÉÖ¸¶¨²ÎÊıÉ¾³ıÖ¸¶¨µÄÒ»¸öÏîÄ¿.
-     git stash clear: É¾³ıËùÓĞÏîÄ¿.
+     åˆ é™¤stashä¸­çš„é¡¹ç›®:
+     git stash drop: åˆ é™¤ä¸Šä¸€ä¸ª,ä¹Ÿå¯æŒ‡å®šå‚æ•°åˆ é™¤æŒ‡å®šçš„ä¸€ä¸ªé¡¹ç›®.
+     git stash clear: åˆ é™¤æ‰€æœ‰é¡¹ç›®.
  
 git branch
-     git branch¿ÉÒÔÓÃÀ´ÁĞ³ö·ÖÖ§,´´½¨·ÖÖ§ºÍÉ¾³ı·ÖÖ§.
-     git branch -v¿ÉÒÔ¿´¼ûÃ¿Ò»¸ö·ÖÖ§µÄ×îºóÒ»´ÎÌá½».
-     git branch: ÁĞ³ö±¾µØËùÓĞ·ÖÖ§,µ±Ç°·ÖÖ§»á±»ĞÇºÅ±êÊ¾³ö.
-     git branch (branchname): ´´½¨Ò»¸öĞÂµÄ·ÖÖ§(µ±ÄãÓÃÕâÖÖ·½Ê½´´½¨·ÖÖ§µÄÊ±ºò,·ÖÖ§ÊÇ»ùÓÚÄãµÄÉÏÒ»´ÎÌá½»½¨Á¢µÄ). 
-     git branch -d (branchname): É¾³ıÒ»¸ö·ÖÖ§.
-     É¾³ıremoteµÄ·ÖÖ§:
+     git branchå¯ä»¥ç”¨æ¥åˆ—å‡ºåˆ†æ”¯,åˆ›å»ºåˆ†æ”¯å’Œåˆ é™¤åˆ†æ”¯.
+     git branch -vå¯ä»¥çœ‹è§æ¯ä¸€ä¸ªåˆ†æ”¯çš„æœ€åä¸€æ¬¡æäº¤.
+     git branch: åˆ—å‡ºæœ¬åœ°æ‰€æœ‰åˆ†æ”¯,å½“å‰åˆ†æ”¯ä¼šè¢«æ˜Ÿå·æ ‡ç¤ºå‡º.
+     git branch (branchname): åˆ›å»ºä¸€ä¸ªæ–°çš„åˆ†æ”¯(å½“ä½ ç”¨è¿™ç§æ–¹å¼åˆ›å»ºåˆ†æ”¯çš„æ—¶å€™,åˆ†æ”¯æ˜¯åŸºäºä½ çš„ä¸Šä¸€æ¬¡æäº¤å»ºç«‹çš„). 
+     git branch -d (branchname): åˆ é™¤ä¸€ä¸ªåˆ†æ”¯.
+     åˆ é™¤remoteçš„åˆ†æ”¯:
      git push (remote-name) :(branch-name): delete a remote branch.
-     Õâ¸öÊÇÒòÎªÍêÕûµÄÃüÁîĞÎÊ½ÊÇ:
+     è¿™ä¸ªæ˜¯å› ä¸ºå®Œæ•´çš„å‘½ä»¤å½¢å¼æ˜¯:
      git push remote-name local-branch:remote-branch
-     ¶øÕâÀïlocal-branchµÄ²¿·ÖÎª¿Õ,¾ÍÒâÎ¶×ÅÉ¾³ıÁËremote-branch
+     è€Œè¿™é‡Œlocal-branchçš„éƒ¨åˆ†ä¸ºç©º,å°±æ„å‘³ç€åˆ é™¤äº†remote-branch
  
 git checkout
-¡¡¡¡git checkout (branchname)
+ã€€ã€€git checkout (branchname)
  
  
 
- ÇĞ»»µ½Ò»¸ö·ÖÖ§.
-     git checkout -b (branchname): ´´½¨²¢ÇĞ»»µ½ĞÂµÄ·ÖÖ§.
-     Õâ¸öÃüÁîÊÇ½«git branch newbranchºÍgit checkout newbranchºÏÔÚÒ»ÆğµÄ½á¹û.
-     checkout»¹ÓĞÁíÒ»¸ö×÷ÓÃ:Ìæ»»±¾µØ¸Ä¶¯:
+ åˆ‡æ¢åˆ°ä¸€ä¸ªåˆ†æ”¯.
+     git checkout -b (branchname): åˆ›å»ºå¹¶åˆ‡æ¢åˆ°æ–°çš„åˆ†æ”¯.
+     è¿™ä¸ªå‘½ä»¤æ˜¯å°†git branch newbranchå’Œgit checkout newbranchåˆåœ¨ä¸€èµ·çš„ç»“æœ.
+     checkoutè¿˜æœ‰å¦ä¸€ä¸ªä½œç”¨:æ›¿æ¢æœ¬åœ°æ”¹åŠ¨:
      git checkout --<filename>
-     ´ËÃüÁî»áÊ¹ÓÃHEADÖĞµÄ×îĞÂÄÚÈİÌæ»»µôÄãµÄ¹¤×÷Ä¿Â¼ÖĞµÄÎÄ¼ş.ÒÑÌí¼Óµ½Ôİ´æÇøµÄ¸Ä¶¯ÒÔ¼°ĞÂÎÄ¼ş¶¼²»»áÊÜµ½Ó°Ïì.
-     ×¢Òâ:git checkout filename»áÉ¾³ı¸ÃÎÄ¼şÖĞËùÓĞÃ»ÓĞÔİ´æºÍÌá½»µÄ¸Ä¶¯,Õâ¸ö²Ù×÷ÊÇ²»¿ÉÄæµÄ.
+     æ­¤å‘½ä»¤ä¼šä½¿ç”¨HEADä¸­çš„æœ€æ–°å†…å®¹æ›¿æ¢æ‰ä½ çš„å·¥ä½œç›®å½•ä¸­çš„æ–‡ä»¶.å·²æ·»åŠ åˆ°æš‚å­˜åŒºçš„æ”¹åŠ¨ä»¥åŠæ–°æ–‡ä»¶éƒ½ä¸ä¼šå—åˆ°å½±å“.
+     æ³¨æ„:git checkout filenameä¼šåˆ é™¤è¯¥æ–‡ä»¶ä¸­æ‰€æœ‰æ²¡æœ‰æš‚å­˜å’Œæäº¤çš„æ”¹åŠ¨,è¿™ä¸ªæ“ä½œæ˜¯ä¸å¯é€†çš„.
  
 git merge
-     °ÑÒ»¸ö·ÖÖ§merge½øµ±Ç°µÄ·ÖÖ§.
+     æŠŠä¸€ä¸ªåˆ†æ”¯mergeè¿›å½“å‰çš„åˆ†æ”¯.
      git merge [alias]/[branch]
-     °ÑÔ¶³Ì·ÖÖ§mergeµ½µ±Ç°·ÖÖ§.
+     æŠŠè¿œç¨‹åˆ†æ”¯mergeåˆ°å½“å‰åˆ†æ”¯.
  
-     Èç¹û³öÏÖ³åÍ»,ĞèÒªÊÖ¶¯ĞŞ¸Ä,¿ÉÒÔÓÃgit mergetool.
-     ½â¾ö³åÍ»µÄÊ±ºò¿ÉÒÔÓÃµ½git diff,½â¾öÍêÖ®ºóÓÃgit addÌí¼Ó,¼´±íÊ¾³åÍ»ÒÑ¾­±»resolved.
+     å¦‚æœå‡ºç°å†²çª,éœ€è¦æ‰‹åŠ¨ä¿®æ”¹,å¯ä»¥ç”¨git mergetool.
+     è§£å†³å†²çªçš„æ—¶å€™å¯ä»¥ç”¨åˆ°git diff,è§£å†³å®Œä¹‹åç”¨git addæ·»åŠ ,å³è¡¨ç¤ºå†²çªå·²ç»è¢«resolved.
  
 git tag
      tag a point in history as import.
-     »áÔÚÒ»¸öÌá½»ÉÏ½¨Á¢ÓÀ¾ÃĞÔµÄÊéÇ©,Í¨³£ÊÇ·¢²¼Ò»¸örelease°æ±¾»òÕßshipÁËÊ²Ã´¶«Î÷Ö®ºó¼Ótag.
-     ±ÈÈç: git tag v1.0
-     git tag -a v1.0, -a²ÎÊı»áÔÊĞíÄãÌí¼ÓÒ»Ğ©ĞÅÏ¢,¼´make an annotated tag.
-     µ±ÄãÔËĞĞgit tag -aÃüÁîµÄÊ±ºò,Git»á´ò¿ªÒ»¸ö±à¼­Æ÷ÈÃÄãÊäÈëtagĞÅÏ¢.
+     ä¼šåœ¨ä¸€ä¸ªæäº¤ä¸Šå»ºç«‹æ°¸ä¹…æ€§çš„ä¹¦ç­¾,é€šå¸¸æ˜¯å‘å¸ƒä¸€ä¸ªreleaseç‰ˆæœ¬æˆ–è€…shipäº†ä»€ä¹ˆä¸œè¥¿ä¹‹ååŠ tag.
+     æ¯”å¦‚: git tag v1.0
+     git tag -a v1.0, -aå‚æ•°ä¼šå…è®¸ä½ æ·»åŠ ä¸€äº›ä¿¡æ¯,å³make an annotated tag.
+     å½“ä½ è¿è¡Œgit tag -aå‘½ä»¤çš„æ—¶å€™,Gitä¼šæ‰“å¼€ä¸€ä¸ªç¼–è¾‘å™¨è®©ä½ è¾“å…¥tagä¿¡æ¯.
      
-     ÎÒÃÇ¿ÉÒÔÀûÓÃcommit SHAÀ´¸øÒ»¸ö¹ıÈ¥µÄÌá½»´òtag:
+     æˆ‘ä»¬å¯ä»¥åˆ©ç”¨commit SHAæ¥ç»™ä¸€ä¸ªè¿‡å»çš„æäº¤æ‰“tag:
      git tag -a v0.9 XXXX
  
-     pushµÄÊ±ºòÊÇ²»°üº¬tagµÄ,Èç¹ûÏë°üº¬,¿ÉÒÔÔÚpushÊ±¼ÓÉÏ--tags²ÎÊı.
-     fetchµÄÊ±ºò,branch HEAD¿ÉÒÔreachµÄtagsÊÇ×Ô¶¯±»fetchÏÂÀ´µÄ, tags that aren¡¯t reachable from branch heads will be skipped.Èç¹ûÏëÈ·±£ËùÓĞµÄtags¶¼±»°üº¬½øÀ´,ĞèÒª¼ÓÉÏ--tagsÑ¡Ïî.
+     pushçš„æ—¶å€™æ˜¯ä¸åŒ…å«tagçš„,å¦‚æœæƒ³åŒ…å«,å¯ä»¥åœ¨pushæ—¶åŠ ä¸Š--tagså‚æ•°.
+     fetchçš„æ—¶å€™,branch HEADå¯ä»¥reachçš„tagsæ˜¯è‡ªåŠ¨è¢«fetchä¸‹æ¥çš„, tags that arenâ€™t reachable from branch heads will be skipped.å¦‚æœæƒ³ç¡®ä¿æ‰€æœ‰çš„tagséƒ½è¢«åŒ…å«è¿›æ¥,éœ€è¦åŠ ä¸Š--tagsé€‰é¡¹.
  
 git remote
      list, add and delete remote repository aliases.
-     ÒòÎª²»ĞèÒªÃ¿´Î¶¼ÓÃÍêÕûµÄurl,ËùÒÔGitÎªÃ¿Ò»¸öremote repoµÄurl¶¼½¨Á¢Ò»¸ö±ğÃû,È»ºóÓÃgit remoteÀ´¹ÜÀíÕâ¸ölist.
-     git remote: ÁĞ³öremote aliases.
-     Èç¹ûÄãcloneÒ»¸öproject,Git»á×Ô¶¯½«Ô­À´µÄurlÌí¼Ó½øÀ´,±ğÃû¾Í½Ğ×ö:origin.
-     git remote -v:¿ÉÒÔ¿´¼ûÃ¿Ò»¸ö±ğÃû¶ÔÓ¦µÄÊµ¼Êurl.
-     git remote add [alias] [url]: Ìí¼ÓÒ»¸öĞÂµÄremote repo.
-     git remote rm [alias]: É¾³ıÒ»¸ö´æÔÚµÄremote alias.
-     git remote rename [old-alias] [new-alias]: ÖØÃüÃû.
-     git remote set-url [alias] [url]:¸üĞÂurl. ¿ÉÒÔ¼ÓÉÏ¡ªpushºÍfetch²ÎÊı,ÎªÍ¬Ò»¸ö±ğÃûset²»Í¬µÄ´æÈ¡µØÖ·.
+     å› ä¸ºä¸éœ€è¦æ¯æ¬¡éƒ½ç”¨å®Œæ•´çš„url,æ‰€ä»¥Gitä¸ºæ¯ä¸€ä¸ªremote repoçš„urléƒ½å»ºç«‹ä¸€ä¸ªåˆ«å,ç„¶åç”¨git remoteæ¥ç®¡ç†è¿™ä¸ªlist.
+     git remote: åˆ—å‡ºremote aliases.
+     å¦‚æœä½ cloneä¸€ä¸ªproject,Gitä¼šè‡ªåŠ¨å°†åŸæ¥çš„urlæ·»åŠ è¿›æ¥,åˆ«åå°±å«åš:origin.
+     git remote -v:å¯ä»¥çœ‹è§æ¯ä¸€ä¸ªåˆ«åå¯¹åº”çš„å®é™…url.
+     git remote add [alias] [url]: æ·»åŠ ä¸€ä¸ªæ–°çš„remote repo.
+     git remote rm [alias]: åˆ é™¤ä¸€ä¸ªå­˜åœ¨çš„remote alias.
+     git remote rename [old-alias] [new-alias]: é‡å‘½å.
+     git remote set-url [alias] [url]:æ›´æ–°url. å¯ä»¥åŠ ä¸Šâ€”pushå’Œfetchå‚æ•°,ä¸ºåŒä¸€ä¸ªåˆ«åsetä¸åŒçš„å­˜å–åœ°å€.
  
 git fetch
      download new branches and data from a remote repository.
-     ¿ÉÒÔgit fetch [alias]È¡Ä³Ò»¸öÔ¶³Ìrepo,Ò²¿ÉÒÔgit fetch --allÈ¡µ½È«²¿repo
-     fetch½«»áÈ¡µ½ËùÓĞÄã±¾µØÃ»ÓĞµÄÊı¾İ,ËùÓĞÈ¡ÏÂÀ´µÄ·ÖÖ§¿ÉÒÔ±»½Ğ×öremote branches,ËüÃÇºÍ±¾µØ·ÖÖ§Ò»Ñù(¿ÉÒÔ¿´diff,logµÈ,Ò²¿ÉÒÔmergeµ½ÆäËû·ÖÖ§),µ«ÊÇGit²»ÔÊĞíÄãcheckoutµ½ËüÃÇ. 
+     å¯ä»¥git fetch [alias]å–æŸä¸€ä¸ªè¿œç¨‹repo,ä¹Ÿå¯ä»¥git fetch --allå–åˆ°å…¨éƒ¨repo
+     fetchå°†ä¼šå–åˆ°æ‰€æœ‰ä½ æœ¬åœ°æ²¡æœ‰çš„æ•°æ®,æ‰€æœ‰å–ä¸‹æ¥çš„åˆ†æ”¯å¯ä»¥è¢«å«åšremote branches,å®ƒä»¬å’Œæœ¬åœ°åˆ†æ”¯ä¸€æ ·(å¯ä»¥çœ‹diff,logç­‰,ä¹Ÿå¯ä»¥mergeåˆ°å…¶ä»–åˆ†æ”¯),ä½†æ˜¯Gitä¸å…è®¸ä½ checkoutåˆ°å®ƒä»¬. 
  
 git pull
      fetch from a remote repo and try to merge into the current branch.
      pull == fetch + merge FETCH_HEAD
-     git pull»áÊ×ÏÈÖ´ĞĞgit fetch,È»ºóÖ´ĞĞgit merge,°ÑÈ¡À´µÄ·ÖÖ§µÄhead mergeµ½µ±Ç°·ÖÖ§.Õâ¸ömerge²Ù×÷»á²úÉúÒ»¸öĞÂµÄcommit.    
-     Èç¹ûÊ¹ÓÃ--rebase²ÎÊı,Ëü»áÖ´ĞĞgit rebaseÀ´È¡´úÔ­À´µÄgit merge.
+     git pullä¼šé¦–å…ˆæ‰§è¡Œgit fetch,ç„¶åæ‰§è¡Œgit merge,æŠŠå–æ¥çš„åˆ†æ”¯çš„head mergeåˆ°å½“å‰åˆ†æ”¯.è¿™ä¸ªmergeæ“ä½œä¼šäº§ç”Ÿä¸€ä¸ªæ–°çš„commit.    
+     å¦‚æœä½¿ç”¨--rebaseå‚æ•°,å®ƒä¼šæ‰§è¡Œgit rebaseæ¥å–ä»£åŸæ¥çš„git merge.
   
  
 git rebase
-     --rebase²»»á²úÉúºÏ²¢µÄÌá½»,Ëü»á½«±¾µØµÄËùÓĞÌá½»ÁÙÊ±±£´æÎª²¹¶¡(patch),·ÅÔÚ¡±.git/rebase¡±Ä¿Â¼ÖĞ,È»ºó½«µ±Ç°·ÖÖ§¸üĞÂµ½×îĞÂµÄ·ÖÖ§¼â¶Ë,×îºó°Ñ±£´æµÄ²¹¶¡Ó¦ÓÃµ½·ÖÖ§ÉÏ.
-     rebaseµÄ¹ı³ÌÖĞ,Ò²Ğí»á³öÏÖ³åÍ»,Git»áÍ£Ö¹rebase²¢ÈÃÄã½â¾ö³åÍ»,ÔÚ½â¾öÍê³åÍ»Ö®ºó,ÓÃgit addÈ¥¸üĞÂÕâĞ©ÄÚÈİ,È»ºóÎŞĞèÖ´ĞĞcommit,Ö»ĞèÒª:
-     git rebase --continue¾Í»á¼ÌĞø´òÓàÏÂµÄ²¹¶¡.
-     git rebase --abort½«»áÖÕÖ¹rebase,µ±Ç°·ÖÖ§½«»á»Øµ½rebaseÖ®Ç°µÄ×´Ì¬.
+     --rebaseä¸ä¼šäº§ç”Ÿåˆå¹¶çš„æäº¤,å®ƒä¼šå°†æœ¬åœ°çš„æ‰€æœ‰æäº¤ä¸´æ—¶ä¿å­˜ä¸ºè¡¥ä¸(patch),æ”¾åœ¨â€.git/rebaseâ€ç›®å½•ä¸­,ç„¶åå°†å½“å‰åˆ†æ”¯æ›´æ–°åˆ°æœ€æ–°çš„åˆ†æ”¯å°–ç«¯,æœ€åæŠŠä¿å­˜çš„è¡¥ä¸åº”ç”¨åˆ°åˆ†æ”¯ä¸Š.
+     rebaseçš„è¿‡ç¨‹ä¸­,ä¹Ÿè®¸ä¼šå‡ºç°å†²çª,Gitä¼šåœæ­¢rebaseå¹¶è®©ä½ è§£å†³å†²çª,åœ¨è§£å†³å®Œå†²çªä¹‹å,ç”¨git addå»æ›´æ–°è¿™äº›å†…å®¹,ç„¶åæ— éœ€æ‰§è¡Œcommit,åªéœ€è¦:
+     git rebase --continueå°±ä¼šç»§ç»­æ‰“ä½™ä¸‹çš„è¡¥ä¸.
+     git rebase --abortå°†ä¼šç»ˆæ­¢rebase,å½“å‰åˆ†æ”¯å°†ä¼šå›åˆ°rebaseä¹‹å‰çš„çŠ¶æ€.
  
 git push
      push your new branches and data to a remote repository.
      git push [alias] [branch]
-     ½«»á°Ñµ±Ç°·ÖÖ§mergeµ½aliasÉÏµÄ[branch]·ÖÖ§.Èç¹û·ÖÖ§ÒÑ¾­´æÔÚ,½«»á¸üĞÂ,Èç¹û²»´æÔÚ,½«»áÌí¼ÓÕâ¸ö·ÖÖ§.
-     Èç¹ûÓĞ¶à¸öÈËÏòÍ¬Ò»¸öremote repo push´úÂë, Git»áÊ×ÏÈÔÚÄãÊÔÍ¼pushµÄ·ÖÖ§ÉÏÔËĞĞgit log,¼ì²éËüµÄÀúÊ·ÖĞÊÇ·ñÄÜ¿´µ½serverÉÏµÄbranchÏÖÔÚµÄtip,Èç¹û±¾µØÀúÊ·ÖĞ²»ÄÜ¿´µ½serverµÄtip,ËµÃ÷±¾µØµÄ´úÂë²»ÊÇ×îĞÂµÄ,Git»á¾Ü¾øÄãµÄpush,ÈÃÄãÏÈfetch,merge,Ö®ºóÔÙpush,ÕâÑù¾Í±£Ö¤ÁËËùÓĞÈËµÄ¸Ä¶¯¶¼»á±»¿¼ÂÇ½øÀ´.
+     å°†ä¼šæŠŠå½“å‰åˆ†æ”¯mergeåˆ°aliasä¸Šçš„[branch]åˆ†æ”¯.å¦‚æœåˆ†æ”¯å·²ç»å­˜åœ¨,å°†ä¼šæ›´æ–°,å¦‚æœä¸å­˜åœ¨,å°†ä¼šæ·»åŠ è¿™ä¸ªåˆ†æ”¯.
+     å¦‚æœæœ‰å¤šä¸ªäººå‘åŒä¸€ä¸ªremote repo pushä»£ç , Gitä¼šé¦–å…ˆåœ¨ä½ è¯•å›¾pushçš„åˆ†æ”¯ä¸Šè¿è¡Œgit log,æ£€æŸ¥å®ƒçš„å†å²ä¸­æ˜¯å¦èƒ½çœ‹åˆ°serverä¸Šçš„branchç°åœ¨çš„tip,å¦‚æœæœ¬åœ°å†å²ä¸­ä¸èƒ½çœ‹åˆ°serverçš„tip,è¯´æ˜æœ¬åœ°çš„ä»£ç ä¸æ˜¯æœ€æ–°çš„,Gitä¼šæ‹’ç»ä½ çš„push,è®©ä½ å…ˆfetch,merge,ä¹‹åå†push,è¿™æ ·å°±ä¿è¯äº†æ‰€æœ‰äººçš„æ”¹åŠ¨éƒ½ä¼šè¢«è€ƒè™‘è¿›æ¥.
  
 git reflog
-     git reflogÊÇ¶Ôreflog½øĞĞ¹ÜÀíµÄÃüÁî,reflogÊÇgitÓÃÀ´¼ÇÂ¼ÒıÓÃ±ä»¯µÄÒ»ÖÖ»úÖÆ,±ÈÈç¼ÇÂ¼·ÖÖ§µÄ±ä»¯»òÕßÊÇHEADÒıÓÃµÄ±ä»¯.
-     µ±git reflog²»Ö¸¶¨ÒıÓÃµÄÊ±ºò,Ä¬ÈÏÁĞ³öHEADµÄreflog.
-     HEAD@{0}´ú±íHEADµ±Ç°µÄÖµ,HEAD@{3}´ú±íHEADÔÚ3´Î±ä»¯Ö®Ç°µÄÖµ.
-     git»á½«±ä»¯¼ÇÂ¼µ½HEAD¶ÔÓ¦µÄreflogÎÄ¼şÖĞ,ÆäÂ·¾¶Îª.git/logs/HEAD, ·ÖÖ§µÄreflogÎÄ¼ş¶¼·ÅÔÚ.git/logs/refsÄ¿Â¼ÏÂµÄ×ÓÄ¿Â¼ÖĞ.
+     git reflogæ˜¯å¯¹reflogè¿›è¡Œç®¡ç†çš„å‘½ä»¤,reflogæ˜¯gitç”¨æ¥è®°å½•å¼•ç”¨å˜åŒ–çš„ä¸€ç§æœºåˆ¶,æ¯”å¦‚è®°å½•åˆ†æ”¯çš„å˜åŒ–æˆ–è€…æ˜¯HEADå¼•ç”¨çš„å˜åŒ–.
+     å½“git reflogä¸æŒ‡å®šå¼•ç”¨çš„æ—¶å€™,é»˜è®¤åˆ—å‡ºHEADçš„reflog.
+     HEAD@{0}ä»£è¡¨HEADå½“å‰çš„å€¼,HEAD@{3}ä»£è¡¨HEADåœ¨3æ¬¡å˜åŒ–ä¹‹å‰çš„å€¼.
+     gitä¼šå°†å˜åŒ–è®°å½•åˆ°HEADå¯¹åº”çš„reflogæ–‡ä»¶ä¸­,å…¶è·¯å¾„ä¸º.git/logs/HEAD, åˆ†æ”¯çš„reflogæ–‡ä»¶éƒ½æ”¾åœ¨.git/logs/refsç›®å½•ä¸‹çš„å­ç›®å½•ä¸­.
  
  
-ÌØÊâ·ûºÅ:
-     ^´ú±í¸¸Ìá½»,µ±Ò»¸öÌá½»ÓĞ¶à¸ö¸¸Ìá½»Ê±,¿ÉÒÔÍ¨¹ıÔÚ^ºóÃæ¸úÉÏÒ»¸öÊı×Ö,±íÊ¾µÚ¼¸¸ö¸¸Ìá½»: ^Ïàµ±ÓÚ^1.
-     ~<n>Ïàµ±ÓÚÁ¬ĞøµÄ<n>¸ö^.
+ç‰¹æ®Šç¬¦å·:
+     ^ä»£è¡¨çˆ¶æäº¤,å½“ä¸€ä¸ªæäº¤æœ‰å¤šä¸ªçˆ¶æäº¤æ—¶,å¯ä»¥é€šè¿‡åœ¨^åé¢è·Ÿä¸Šä¸€ä¸ªæ•°å­—,è¡¨ç¤ºç¬¬å‡ ä¸ªçˆ¶æäº¤: ^ç›¸å½“äº^1.
+     ~<n>ç›¸å½“äºè¿ç»­çš„<n>ä¸ª^.

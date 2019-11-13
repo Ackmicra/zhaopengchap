@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uranus.platform.business.jd.dao.JdTransferPlansDataMapper">
+  <resultMap id="BaseResultMap" type="com.uranus.platform.business.jd.entity.po.JdTransferPlansData">
+    <id column="JD_ID" jdbcType="VARCHAR" property="jdId" />
+    <result column="APPLICATION_NO" jdbcType="VARCHAR" property="applicationNo" />
+    <result column="BATCH_NUMBER" jdbcType="VARCHAR" property="batchNumber" />
+    <result column="TRANSFER_PLAN_NO" jdbcType="VARCHAR" property="transferPlanNo" />
+    <result column="CURRENT_ISSUE" jdbcType="DECIMAL" property="currentIssue" />
+    <result column="REFUND_DATE" jdbcType="VARCHAR" property="refundDate" />
+    <result column="CHARGE_DATE" jdbcType="VARCHAR" property="chargeDate" />
+    <result column="CHARGE_AMOUNT" jdbcType="DECIMAL" property="chargeAmount" />
+    <result column="CHARGE_PRINCIPAL" jdbcType="DECIMAL" property="chargePrincipal" />
+    <result column="CHARGE_RATE" jdbcType="DECIMAL" property="chargeRate" />
+    <result column="PENALTY_RATE" jdbcType="DECIMAL" property="penaltyRate" />
+    <result column="PENALTY_AMOUNT" jdbcType="DECIMAL" property="penaltyAmount" />
+    <result column="CHARGE_MONEY" jdbcType="DECIMAL" property="chargeMoney" />
+    <result column="REFUND_SECURE_CHARGE" jdbcType="DECIMAL" property="refundSecureCharge" />
+    <result column="REFUND_SERVICE_CHARGE" jdbcType="DECIMAL" property="refundServiceCharge" />
+    <result column="IS_PAY_OFF" jdbcType="VARCHAR" property="isPayOff" />
+    <result column="SETTLED_EARLY" jdbcType="VARCHAR" property="settledEarly" />
+    <result column="CHECK_STS" jdbcType="VARCHAR" property="checkSts" />
+    <result column="CREATE_DATE" jdbcType="VARCHAR" property="createDate" />
+    <result column="CREATE_TIME" jdbcType="VARCHAR" property="createTime" />
+    <result column="UP_DATE" jdbcType="VARCHAR" property="upDate" />
+    <result column="UP_TIME" jdbcType="VARCHAR" property="upTime" />
+    <result column="LOAN_STS" jdbcType="VARCHAR" property="loanSts" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from JD_TRANSFER_PLANS
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.uranus.platform.business.jd.entity.po.JdTransferPlansData">
+    <selectKey keyProperty="jdId" order="BEFORE" resultType="java.lang.String">
+      SELECT JD_TRANSFER_PLANS_SEQ.NEXTVAL FROM DUAL
+    </selectKey>
+    insert into JD_TRANSFER_PLANS (JD_ID, APPLICATION_NO, BATCH_NUMBER, 
+      TRANSFER_PLAN_NO, CURRENT_ISSUE, 
+      REFUND_DATE, CHARGE_DATE, CHARGE_AMOUNT, 
+      CHARGE_PRINCIPAL, CHARGE_RATE, PENALTY_RATE, 
+      PENALTY_AMOUNT, CHARGE_MONEY, REFUND_SECURE_CHARGE, 
+      REFUND_SERVICE_CHARGE, IS_PAY_OFF, SETTLED_EARLY, 
+      CHECK_STS, CREATE_DATE, CREATE_TIME, 
+      UP_DATE, UP_TIME,LOAN_STS)
+      SELECT JD_TRANSFER_PLANS_SEQ.NEXTVAL jdId,T.* FROM (
+      <foreach collection="list" item="item" index="index" separator="UNION ALL">
+      SELECT 
+      #{item.applicationNo,jdbcType=VARCHAR}, #{item.batchNumber,jdbcType=VARCHAR}, 
+      #{item.transferPlanNo,jdbcType=VARCHAR}, #{item.currentIssue,jdbcType=DECIMAL}, 
+      #{item.refundDate,jdbcType=VARCHAR}, #{item.chargeDate,jdbcType=VARCHAR}, #{item.chargeAmount,jdbcType=DECIMAL}, 
+      #{item.chargePrincipal,jdbcType=DECIMAL}, #{item.chargeRate,jdbcType=DECIMAL}, #{item.penaltyRate,jdbcType=DECIMAL}, 
+      #{item.penaltyAmount,jdbcType=DECIMAL}, #{item.chargeMoney,jdbcType=DECIMAL}, #{item.refundSecureCharge,jdbcType=DECIMAL}, 
+      #{item.refundServiceCharge,jdbcType=DECIMAL}, #{item.isPayOff,jdbcType=VARCHAR}, #{item.settledEarly,jdbcType=VARCHAR}, 
+      #{item.checkSts,jdbcType=VARCHAR}, #{item.createDate,jdbcType=VARCHAR}, #{item.createTime,jdbcType=VARCHAR}, 
+      #{item.upDate,jdbcType=VARCHAR}, #{item.upTime,jdbcType=VARCHAR},#{item.loanSts,jdbcType=VARCHAR}
+       FROM DUAL
+     </foreach>
+      ) T
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.uranus.platform.business.jd.entity.po.JdTransferPlansData">
+    update JD_TRANSFER_PLANS
+    set APPLICATION_NO = #{applicationNo,jdbcType=VARCHAR},
+      BATCH_NUMBER = #{batchNumber,jdbcType=VARCHAR},
+      TRANSFER_PLAN_NO = #{transferPlanNo,jdbcType=VARCHAR},
+      CURRENT_ISSUE = #{currentIssue,jdbcType=DECIMAL},
+      REFUND_DATE = #{refundDate,jdbcType=VARCHAR},
+      CHARGE_DATE = #{chargeDate,jdbcType=VARCHAR},
+      CHARGE_AMOUNT = #{chargeAmount,jdbcType=DECIMAL},
+      CHARGE_PRINCIPAL = #{chargePrincipal,jdbcType=DECIMAL},
+      CHARGE_RATE = #{chargeRate,jdbcType=DECIMAL},
+      PENALTY_RATE = #{penaltyRate,jdbcType=DECIMAL},
+      PENALTY_AMOUNT = #{penaltyAmount,jdbcType=DECIMAL},
+      CHARGE_MONEY = #{chargeMoney,jdbcType=DECIMAL},
+      REFUND_SECURE_CHARGE = #{refundSecureCharge,jdbcType=DECIMAL},
+      REFUND_SERVICE_CHARGE = #{refundServiceCharge,jdbcType=DECIMAL},
+      IS_PAY_OFF = #{isPayOff,jdbcType=VARCHAR},
+      SETTLED_EARLY = #{settledEarly,jdbcType=VARCHAR},
+      CHECK_STS = #{checkSts,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=VARCHAR},
+      UP_DATE = #{upDate,jdbcType=VARCHAR},
+      UP_TIME = #{upTime,jdbcType=VARCHAR},
+      LOAN_STS = #{loanSts,jdbcType=VARCHAR}
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, BATCH_NUMBER, TRANSFER_PLAN_NO, 
+    CURRENT_ISSUE, REFUND_DATE, CHARGE_DATE, CHARGE_AMOUNT, CHARGE_PRINCIPAL, CHARGE_RATE, 
+    PENALTY_RATE, PENALTY_AMOUNT, CHARGE_MONEY, REFUND_SECURE_CHARGE, REFUND_SERVICE_CHARGE, 
+    IS_PAY_OFF, SETTLED_EARLY, CHECK_STS, CREATE_DATE, CREATE_TIME, UP_DATE, UP_TIME,LOAN_STS
+    from JD_TRANSFER_PLANS
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, BATCH_NUMBER, TRANSFER_PLAN_NO, 
+    CURRENT_ISSUE, REFUND_DATE, CHARGE_DATE, CHARGE_AMOUNT, CHARGE_PRINCIPAL, CHARGE_RATE, 
+    PENALTY_RATE, PENALTY_AMOUNT, CHARGE_MONEY, REFUND_SECURE_CHARGE, REFUND_SERVICE_CHARGE, 
+    IS_PAY_OFF, SETTLED_EARLY, CHECK_STS, CREATE_DATE, CREATE_TIME, UP_DATE, UP_TIME,LOAN_STS
+    from JD_TRANSFER_PLANS
+  </select>
+  <select id="getByBatchNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, BATCH_NUMBER, TRANSFER_PLAN_NO, 
+    CURRENT_ISSUE, REFUND_DATE, CHARGE_DATE, CHARGE_AMOUNT, CHARGE_PRINCIPAL, CHARGE_RATE, 
+    PENALTY_RATE, PENALTY_AMOUNT, CHARGE_MONEY, REFUND_SECURE_CHARGE, REFUND_SERVICE_CHARGE, 
+    IS_PAY_OFF, SETTLED_EARLY, CHECK_STS, CREATE_DATE, CREATE_TIME, UP_DATE, UP_TIME,LOAN_STS
+    from JD_TRANSFER_PLANS
+    where BATCH_NUMBER = #{batchNumber,jdbcType=VARCHAR}
+  </select>
+  <update id="updateByApplicationNo" parameterType="com.uranus.platform.business.jd.entity.po.JdTransferPlansData">
+    update JD_TRANSFER_PLANS
+    set 
+      BATCH_NUMBER = #{batchNumber,jdbcType=VARCHAR},
+      TRANSFER_PLAN_NO = #{transferPlanNo,jdbcType=VARCHAR},
+      CURRENT_ISSUE = #{currentIssue,jdbcType=DECIMAL},
+      REFUND_DATE = #{refundDate,jdbcType=VARCHAR},
+      CHARGE_DATE = #{chargeDate,jdbcType=VARCHAR},
+      CHARGE_AMOUNT = #{chargeAmount,jdbcType=DECIMAL},
+      CHARGE_PRINCIPAL = #{chargePrincipal,jdbcType=DECIMAL},
+      CHARGE_RATE = #{chargeRate,jdbcType=DECIMAL},
+      PENALTY_RATE = #{penaltyRate,jdbcType=DECIMAL},
+      PENALTY_AMOUNT = #{penaltyAmount,jdbcType=DECIMAL},
+      CHARGE_MONEY = #{chargeMoney,jdbcType=DECIMAL},
+      REFUND_SECURE_CHARGE = #{refundSecureCharge,jdbcType=DECIMAL},
+      REFUND_SERVICE_CHARGE = #{refundServiceCharge,jdbcType=DECIMAL},
+      IS_PAY_OFF = #{isPayOff,jdbcType=VARCHAR},
+      SETTLED_EARLY = #{settledEarly,jdbcType=VARCHAR},
+      CHECK_STS = #{checkSts,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=VARCHAR},
+      UP_DATE = #{upDate,jdbcType=VARCHAR},
+      UP_TIME = #{upTime,jdbcType=VARCHAR},
+      LOAN_STS = #{loanSts,jdbcType=VARCHAR}
+    where APPLICATION_NO = #{applicationNo,jdbcType=VARCHAR}
+  </update>
+  <!-- 根据批次号，扣款状态02查询扣款数据 -->
+  <select id="getByBatchNoAndSts" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, BATCH_NUMBER, TRANSFER_PLAN_NO, 
+    CURRENT_ISSUE, REFUND_DATE, CHARGE_DATE, CHARGE_AMOUNT, CHARGE_PRINCIPAL, CHARGE_RATE, 
+    PENALTY_RATE, PENALTY_AMOUNT, CHARGE_MONEY, REFUND_SECURE_CHARGE, REFUND_SERVICE_CHARGE, 
+    IS_PAY_OFF, SETTLED_EARLY, CHECK_STS, CREATE_DATE, CREATE_TIME, UP_DATE, UP_TIME,LOAN_STS
+    from JD_TRANSFER_PLANS
+    where BATCH_NUMBER = #{batchNumber,jdbcType=VARCHAR} AND LOAN_STS = '02'
+  </select>
+  <!-- 更新扣款计划上送校验状态 -->
+  <update id="updateCheckResultByBatchNo" parameterType="com.uranus.platform.business.jd.entity.po.JdTransferPlansData">
+    update JD_TRANSFER_PLANS
+    set 
+      CHECK_STS = #{checkSts,jdbcType=VARCHAR},
+      UP_DATE = #{upDate,jdbcType=VARCHAR},
+      UP_TIME = #{upTime,jdbcType=VARCHAR}
+    where BATCH_NUMBER = #{batchNumber,jdbcType=VARCHAR}
+  </update>
+  <!-- 更新扣款计划上送校验状态 -->
+  <update id="updateLoanResultByBatchNo" parameterType="com.uranus.platform.business.jd.entity.po.JdTransferPlansData">
+    update JD_TRANSFER_PLANS
+    set 
+      LOAN_STS = #{loanSts,jdbcType=VARCHAR},
+      UP_DATE = #{upDate,jdbcType=VARCHAR},
+      UP_TIME = #{upTime,jdbcType=VARCHAR}
+    where BATCH_NUMBER = #{batchNumber,jdbcType=VARCHAR}
+  </update>
+</mapper>

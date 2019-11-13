@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uranus.platform.business.pub.dao.ProjBaseDataMapper">
+  <resultMap id="BaseResultMap" type="com.uranus.platform.business.pub.entity.po.ProjBaseData">
+    <id column="PROJ_ID" jdbcType="VARCHAR" property="projId" />
+    <result column="PROJ_NO" jdbcType="VARCHAR" property="projNo" />
+    <result column="PROJ_NAME" jdbcType="VARCHAR" property="projName" />
+    <result column="BR_NO" jdbcType="VARCHAR" property="brNo" />
+    <result column="BR_NAME" jdbcType="VARCHAR" property="brName" />
+    <result column="PRDT_NO" jdbcType="VARCHAR" property="prdtNo" />
+    <result column="PROJ_STS" jdbcType="VARCHAR" property="projSts" />
+    <result column="BEG_DATE" jdbcType="VARCHAR" property="begDate" />
+    <result column="END_DATE" jdbcType="VARCHAR" property="endDate" />
+    <result column="OP_NO" jdbcType="VARCHAR" property="opNo" />
+    <result column="TX_DATE" jdbcType="VARCHAR" property="txDate" />
+    <result column="UP_OPNO" jdbcType="VARCHAR" property="upOpno" />
+    <result column="UP_DATE" jdbcType="VARCHAR" property="upDate" />
+    <result column="JD_BR_NO" jdbcType="VARCHAR" property="jdBrNo" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from PROJ_BASE
+    where PROJ_ID = #{projId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.uranus.platform.business.pub.entity.po.ProjBaseData">
+    <selectKey keyProperty="projId" order="BEFORE" resultType="java.lang.String">
+      SELECT PROJ_BASE_SEQ.NEXTVAL FROM DUAL
+    </selectKey>
+    insert into PROJ_BASE (PROJ_ID,PROJ_NO, PROJ_NAME, BR_NO, 
+      BR_NAME, PRDT_NO, PROJ_STS, 
+      BEG_DATE, END_DATE, OP_NO, 
+      TX_DATE, UP_OPNO, UP_DATE, JD_BR_NO
+      )
+    values (#{projId,jdbcType=VARCHAR}, #{projNo,jdbcType=VARCHAR}, #{projName,jdbcType=VARCHAR}, #{brNo,jdbcType=VARCHAR}, 
+      #{brName,jdbcType=VARCHAR}, #{prdtNo,jdbcType=VARCHAR}, #{projSts,jdbcType=VARCHAR}, 
+      #{begDate,jdbcType=VARCHAR}, #{endDate,jdbcType=VARCHAR}, #{opNo,jdbcType=VARCHAR}, 
+      #{txDate,jdbcType=VARCHAR}, #{upOpno,jdbcType=VARCHAR}, #{upDate,jdbcType=VARCHAR}, #{jdBrNo,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.uranus.platform.business.pub.entity.po.ProjBaseData">
+    update PROJ_BASE
+    set PROJ_NO = #{projNo,jdbcType=VARCHAR},
+      PROJ_NAME = #{projName,jdbcType=VARCHAR},
+      BR_NO = #{brNo,jdbcType=VARCHAR},
+      BR_NAME = #{brName,jdbcType=VARCHAR},
+      PRDT_NO = #{prdtNo,jdbcType=VARCHAR},
+      PROJ_STS = #{projSts,jdbcType=VARCHAR},
+      BEG_DATE = #{begDate,jdbcType=VARCHAR},
+      END_DATE = #{endDate,jdbcType=VARCHAR},
+      OP_NO = #{opNo,jdbcType=VARCHAR},
+      TX_DATE = #{txDate,jdbcType=VARCHAR},
+      UP_OPNO = #{upOpno,jdbcType=VARCHAR},
+      UP_DATE = #{upDate,jdbcType=VARCHAR},
+      JD_BR_NO = #{jdBrNo,jdbcType=VARCHAR}
+    where PROJ_ID = #{projId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select PROJ_ID, PROJ_NO, PROJ_NAME, BR_NO, BR_NAME, PRDT_NO, PROJ_STS, BEG_DATE, 
+    END_DATE, OP_NO, TX_DATE, UP_OPNO, UP_DATE, JD_BR_NO
+    from PROJ_BASE
+    where PROJ_ID = #{projId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select PROJ_ID, PROJ_NO, PROJ_NAME, BR_NO, BR_NAME, PRDT_NO, PROJ_STS, BEG_DATE, 
+    END_DATE, OP_NO, TX_DATE, UP_OPNO, UP_DATE, JD_BR_NO
+    from PROJ_BASE
+  </select>
+  <select id="getByProjNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select PROJ_ID, PROJ_NO, PROJ_NAME, BR_NO, BR_NAME, PROJ_STS, BEG_DATE, END_DATE, 
+    OP_NO, TX_DATE, UP_OPNO, UP_DATE, PRDT_NO, JD_BR_NO
+    from PROJ_BASE
+    where PROJ_NO = #{projNo,jdbcType=VARCHAR}
+  </select>
+</mapper>

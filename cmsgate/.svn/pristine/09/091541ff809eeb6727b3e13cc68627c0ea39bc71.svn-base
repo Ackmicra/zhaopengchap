@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>uranus</groupId>
+        <artifactId>uranus-boot-platform</artifactId>
+        <version>1.1.0-SNAPSHOT</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.uranus</groupId>
+    <artifactId>single-system</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <properties>
+        <uranus.version>1.1.0-SNAPSHOT</uranus.version>
+
+        <targetJavaProject>${basedir}/src/main/java</targetJavaProject>
+        <targetMapperPackage>com.uranus.platform.business.admin.dao</targetMapperPackage>
+        <targetModelPackage>com.uranus.platform.business.admin.entity.model</targetModelPackage>
+        <targetResourcesProject>${basedir}/src/main/resources</targetResourcesProject>
+        <targetXMLPackage>mapping</targetXMLPackage>
+        <!--  依赖版本  -->
+        <mysql.version>5.1.46</mysql.version>
+    </properties>
+    <dependencies>
+
+        <dependency>
+            <groupId>uranus</groupId>
+            <artifactId>uranus-database-mybatis</artifactId>
+            <version>${uranus.version}</version>
+        </dependency>
+        <!--京东金融加解密工具 -->
+
+        <dependency>
+            <groupId>dhc.xwxt</groupId>
+            <artifactId>wyaks-security</artifactId>
+            <version>1.0.5</version>
+        </dependency>
+        <!--京东金融加解密工具 end-->
+    </dependencies>
+</project>

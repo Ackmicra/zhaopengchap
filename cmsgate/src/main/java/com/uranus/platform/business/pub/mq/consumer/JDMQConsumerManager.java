@@ -1,0 +1,83 @@
+package com.uranus.platform.business.pub.mq.consumer;
+
+import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
+import org.apache.rocketmq.spring.core.RocketMQListener;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.uranus.platform.business.pub.dao.MqLogDataMapper;
+import com.uranus.platform.business.pub.entity.po.MqLogData;
+import com.uranus.platform.business.pub.mq.domain.MQParmsDomain;
+import com.uranus.platform.business.pub.mq.service.MQTaskService;
+import com.uranus.platform.utils.status.CmsBusinessStatus;
+import com.uranus.tools.utils.DateUtils;
+
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * @Description: 京东回调MQ消费者管理类
+ * @author zhaopengchao@dhcc.com.cn
+ * @param <T>
+ * @Date 2019年8月23日下午2:26:00
+ */
+@Slf4j
+@Service
+@RocketMQMessageListener(topic = "${rocketmq.topic}",  consumerGroup = "${rocketmq.group}")
+public class JDMQConsumerManager implements RocketMQListener<MQParmsDomain>{
+	
+	@Autowired
+	private MQTaskService mQTaskService;
+	@Autowired
+	private MqLogDataMapper mqLogDataMapper;
+	@Autowired
+	private ObjectMapper objectMapper;
+	
+	@Override
+	public void onMessage(MQParmsDomain t) {
+		String sysdate = DateUtils.nowDateFormat();
+		String sysTime = DateUtils.nowTimeFormat();
+		log.info("MQ任务执行开始: [{}]，开始时间：" + sysTime);
+		//校验MQ获取数据是否为空
+		Assert.notNull(t,"MQParmsDomain is null");
+		Assert.notNull(t.getTaskType(),"MQParmsDomain TaskType is null");
+		Assert.notNull(t.getTaskData(),"MQParmsDomain TaskDate is null");
+		try {
+			/**
+			 * 插入MQ_LOG日志表
+			 */
+			MqLogData mqLogData = new MqLogData(CmsBusinessStatus.CALLBACK_AUDIT_RESULT.businessCode(), 
+						objectMapper.writeValueAsString(t), sysdate, sysTime);
+			
+			mqLogDataMapper.insert(mqLogData);
+			
+			log.info("贷款申请审核回调京东开始: [{}]，任务类型：" + t.getTaskType());
+			log.info("贷款申请审核回调京东开始: [{}]，任务数据：" + t.getTaskData());
+			if(CmsBusinessStatus.CALLBACK_AUDIT_RESULT.businessCode().equals(t.getTaskType())) {
+				
+				log.info("开始执行审核结果回调任务: {}，");
+				//执行审核结果回调任务
+				mQTaskService.queryAuditResult(t.getTaskData(), t.getDelayLevel());
+			} else if(CmsBusinessStatus.CALLBACK_LOAN_PAYMENTS_RESULT.businessCode().equals(t.getTaskType())) {
+				
+				log.info("开始执行放款结果回调任务: {}，");
+				//执行放款结果回调任务
+				mQTaskService.queryLoanPaymentsResult(t.getTaskData(), t.getDelayLevel());
+			} else if(CmsBusinessStatus.CALLBACK_TRANSFER_PLAN_RESULT.businessCode().equals(t.getTaskType()) 
+					|| CmsBusinessStatus.CALLBACK_PAYMENT_ORDER_RESULT.businessCode().equals(t.getTaskType())) {
+				
+				log.info("开始执行扣款计划校验任务: {}，");
+				//执行扣款计划校验任务
+				mQTaskService.querytransferPlanResult(t.getTaskData(), t.getDelayLevel(), t.getTaskType());
+			} else {
+				
+			}
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		log.info("MQ任务执行结束: {}，结束时间：" + DateUtils.nowTimeFormat());
+    }
+	
+}

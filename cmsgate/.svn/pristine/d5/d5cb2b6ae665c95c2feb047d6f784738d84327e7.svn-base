@@ -1,0 +1,132 @@
+package com.uranus.platform.business.jd.callback;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.uranus.platform.business.jd.entity.vo.JdCallbackRequestView;
+import com.uranus.platform.business.jd.entity.vo.JdCallbackResponseView;
+import com.uranus.platform.business.pub.entity.po.WsBaseData;
+import com.uranus.platform.business.pub.service.WsBaseService;
+import com.uranus.platform.utils.status.CmsBusinessStatus;
+import com.uranus.tools.utils.DateUtils;
+
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * @Description: 京东回调HTTPClient客户端
+ * @author zhaopengchao@dhcc.com.cn
+ * @Date 2019年8月20日下午3:35:49
+ */
+@Configuration
+@Slf4j
+public class JdCallbackHttpClient {
+	
+	@Autowired
+	private RestTemplate restTemplate;
+	@Autowired
+	private ObjectMapper objectMapper;
+	@Autowired
+	private WsBaseService wsBseService;
+	
+	/**  
+	* 京东回调地址
+	*/  
+	@Value("${jd.callBackURI}")
+	private String jdCallbackURI;
+	/**
+	 * 安全秘钥
+	 */
+	@Value("${jd.secretKey}")
+	private String secretKey;
+
+	/**
+	 * 加密算法
+	 */
+	@Value("${jd.encryptAlg}")
+	private String encryptAlg;
+
+	/**
+	 * 签名算法
+	 */
+	@Value("${jd.signAlg}")
+	private String signAlg;
+
+	/**
+	 * 时间戳格式
+	 */
+	@Value("${jd.timestamp}")
+	private String timestamp;
+
+	/**
+	 * 版本
+	 */
+	@Value("${jd.version}")
+	private String version;
+	
+	public JdCallbackResponseView callbackJD(JdCallbackRequestView jdCallbackRequestView) {
+		JdCallbackResponseView jdCallbackResponseView = new JdCallbackResponseView();
+		String requestDTO = "";//将静秋对象转换成String
+		String result = "";
+		String sysDate = DateUtils.nowDateFormat();
+		String begTime = DateUtils.nowTimeFormat();
+		try {
+			/**
+			 * 设置报文头
+			 */
+			HttpHeaders headers = new HttpHeaders();
+	        MediaType type = MediaType.parseMediaType("application/json; charset=UTF-8");
+	        headers.setContentType(type);
+	        headers.add("Accept", MediaType.APPLICATION_JSON.toString());
+	        headers.add("secret-key", secretKey);//安全秘钥
+	        headers.add("encrypt-alg", encryptAlg);//加密算法
+	        headers.add("sign-alg", signAlg);//签名算法
+	        headers.add("timestamp", new SimpleDateFormat(timestamp).format(new Date()));//时间戳
+	        /**
+	         * 设置报文体
+	         */
+	        requestDTO = objectMapper.writeValueAsString(jdCallbackRequestView);
+	        HttpEntity<String> formEntity = new HttpEntity<String>(requestDTO, headers);
+	        /**
+			 * 回调京东，并接收京东响应
+			 */
+	        log.info(">>>>>>>>>>>>>>>>回调JD开始>>>>>>>>>>>>>>>>");
+	        result = restTemplate.postForObject(jdCallbackURI, formEntity, String.class);
+	        log.info(">>>>>>>>>>>>>>>>回调JD结束,响应结果>>>>>>>>>>>>>>>>" + result);
+	        /**
+			 * 将京东响应转换成对象
+			 */
+	        jdCallbackResponseView = objectMapper.readValue(result, JdCallbackResponseView.class);
+		
+	        //插入日志表
+        	WsBaseData wsBase = new WsBaseData(sysDate, begTime, CmsBusinessStatus.CALLBACK_CODE.businessCode(), 
+        			CmsBusinessStatus.JD.businessCode(), jdCallbackRequestView.getOutTradeNo(), 
+        			DateUtils.nowTimeFormat(), jdCallbackResponseView.getCode(), 
+        			jdCallbackResponseView.getMsg(), CmsBusinessStatus.PROCESS.businessCode(), 
+        			jdCallbackRequestView.getChannelId(), requestDTO, 
+        			result);
+        	wsBseService.insert(wsBase);
+		} catch (IOException e) {
+			log.error(">>>>>>>>>>>>>>>>>>>回调JD异常，异常信息>>>>>>>>>>>>>>>>>>>" + e.getMessage());
+			//插入日志表
+			WsBaseData wsBase = new WsBaseData(sysDate, begTime, CmsBusinessStatus.CALLBACK_CODE.businessCode(), 
+					CmsBusinessStatus.JD.businessCode(), jdCallbackRequestView.getOutTradeNo(), 
+					DateUtils.nowTimeFormat(), jdCallbackResponseView.getCode(), 
+					jdCallbackResponseView.getMsg(), CmsBusinessStatus.PROCESS.businessCode(), 
+					jdCallbackRequestView.getChannelId(), requestDTO, 
+					result);
+			wsBseService.insert(wsBase);
+			e.printStackTrace();
+		}
+		return jdCallbackResponseView;
+	}
+}

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uranus.platform.business.jd.dao.JdAccountDataMapper">
+  <resultMap id="BaseResultMap" type="com.uranus.platform.business.jd.entity.po.JdAccountData">
+    <id column="JD_ID" jdbcType="VARCHAR" property="jdId" />
+    <result column="APPLICATION_NO" jdbcType="VARCHAR" property="applicationNo" />
+    <result column="ACCOUNT_NAME" jdbcType="VARCHAR" property="accountName" />
+    <result column="ACCOUNT_NO" jdbcType="VARCHAR" property="accountNo" />
+    <result column="ACCOUNT_TYPE" jdbcType="VARCHAR" property="accountType" />
+    <result column="ACCT_TYPE" jdbcType="VARCHAR" property="acctType" />
+    <result column="BANK_NAME" jdbcType="VARCHAR" property="bankName" />
+    <result column="BANK_CNAPS" jdbcType="VARCHAR" property="bankCnaps" />
+    <result column="BANK_CODE" jdbcType="VARCHAR" property="bankCode" />
+    <result column="BANK_BRANCH_NAME" jdbcType="VARCHAR" property="bankBranchName" />
+    <result column="BANK_BRANCH_PROVINCE" jdbcType="VARCHAR" property="bankBranchProvince" />
+    <result column="BANK_BRANCH_CITY" jdbcType="VARCHAR" property="bankBranchCity" />
+    <result column="HOLDER_MOBILE_NO" jdbcType="VARCHAR" property="holderMobileNo" />
+    <result column="HOLDER_ID_TYPE" jdbcType="VARCHAR" property="holderIdType" />
+    <result column="HOLDER_ID_NO" jdbcType="VARCHAR" property="holderIdNo" />
+    <result column="HOLDER_EMAIL" jdbcType="VARCHAR" property="holderEmail" />
+    <result column="CREATE_DATE" jdbcType="VARCHAR" property="createDate" />
+    <result column="CREATE_TIME" jdbcType="VARCHAR" property="createTime" />
+  	<result column="ACCT_STS" jdbcType="VARCHAR" property="acctSts" />
+    <result column="UP_DATE" jdbcType="VARCHAR" property="upDate" />
+    <result column="UP_TIME" jdbcType="VARCHAR" property="upTime" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from JD_ACCOUNT
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.uranus.platform.business.jd.entity.po.JdAccountData">
+    <selectKey keyProperty="jdId" order="BEFORE" resultType="java.lang.String">
+      SELECT JD_ACCOUNT_SEQ.NEXTVAL FROM DUAL
+    </selectKey>
+    insert into JD_ACCOUNT (JD_ID, APPLICATION_NO, ACCOUNT_NAME, ACCOUNT_NO, 
+      ACCOUNT_TYPE, ACCT_TYPE, BANK_NAME, 
+      BANK_CNAPS, BANK_CODE, BANK_BRANCH_NAME, 
+      BANK_BRANCH_PROVINCE, BANK_BRANCH_CITY, HOLDER_MOBILE_NO, 
+      HOLDER_ID_TYPE, HOLDER_ID_NO, HOLDER_EMAIL, 
+      CREATE_DATE, CREATE_TIME)
+    values (#{jdId,jdbcType=VARCHAR}, #{applicationNo,jdbcType=VARCHAR}, #{accountName,jdbcType=VARCHAR}, #{accountNo,jdbcType=VARCHAR}, 
+      #{accountType,jdbcType=VARCHAR}, #{acctType,jdbcType=VARCHAR}, #{bankName,jdbcType=VARCHAR}, 
+      #{bankCnaps,jdbcType=VARCHAR}, #{bankCode,jdbcType=VARCHAR}, #{bankBranchName,jdbcType=VARCHAR}, 
+      #{bankBranchProvince,jdbcType=VARCHAR}, #{bankBranchCity,jdbcType=VARCHAR}, #{holderMobileNo,jdbcType=VARCHAR}, 
+      #{holderIdType,jdbcType=VARCHAR}, #{holderIdNo,jdbcType=VARCHAR}, #{holderEmail,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.uranus.platform.business.jd.entity.po.JdAccountData">
+    update JD_ACCOUNT
+    set APPLICATION_NO = #{applicationNo,jdbcType=VARCHAR},
+      ACCOUNT_NAME = #{accountName,jdbcType=VARCHAR},
+      ACCOUNT_NO = #{accountNo,jdbcType=VARCHAR},
+      ACCOUNT_TYPE = #{accountType,jdbcType=VARCHAR},
+      ACCT_TYPE = #{acctType,jdbcType=VARCHAR},
+      BANK_NAME = #{bankName,jdbcType=VARCHAR},
+      BANK_CNAPS = #{bankCnaps,jdbcType=VARCHAR},
+      BANK_CODE = #{bankCode,jdbcType=VARCHAR},
+      BANK_BRANCH_NAME = #{bankBranchName,jdbcType=VARCHAR},
+      BANK_BRANCH_PROVINCE = #{bankBranchProvince,jdbcType=VARCHAR},
+      BANK_BRANCH_CITY = #{bankBranchCity,jdbcType=VARCHAR},
+      HOLDER_MOBILE_NO = #{holderMobileNo,jdbcType=VARCHAR},
+      HOLDER_ID_TYPE = #{holderIdType,jdbcType=VARCHAR},
+      HOLDER_ID_NO = #{holderIdNo,jdbcType=VARCHAR},
+      HOLDER_EMAIL = #{holderEmail,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=VARCHAR}
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, ACCOUNT_NAME, ACCOUNT_NO, ACCOUNT_TYPE, ACCT_TYPE, 
+    BANK_NAME, BANK_CNAPS, BANK_CODE, BANK_BRANCH_NAME, BANK_BRANCH_PROVINCE, BANK_BRANCH_CITY, 
+    HOLDER_MOBILE_NO, HOLDER_ID_TYPE, HOLDER_ID_NO, HOLDER_EMAIL, CREATE_DATE, CREATE_TIME
+    from JD_ACCOUNT
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, ACCOUNT_NAME, ACCOUNT_NO, ACCOUNT_TYPE, ACCT_TYPE, 
+    BANK_NAME, BANK_CNAPS, BANK_CODE, BANK_BRANCH_NAME, BANK_BRANCH_PROVINCE, BANK_BRANCH_CITY, 
+    HOLDER_MOBILE_NO, HOLDER_ID_TYPE, HOLDER_ID_NO, HOLDER_EMAIL, CREATE_DATE, CREATE_TIME
+    from JD_ACCOUNT
+  </select>
+  <select id="getByApplicationNoAndAcUse" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, ACCOUNT_NAME, ACCOUNT_NO, ACCOUNT_TYPE, ACCT_TYPE, 
+    BANK_NAME, BANK_CNAPS, BANK_CODE, BANK_BRANCH_NAME, BANK_BRANCH_PROVINCE, BANK_BRANCH_CITY, 
+    HOLDER_MOBILE_NO, HOLDER_ID_TYPE, HOLDER_ID_NO, HOLDER_EMAIL, CREATE_DATE, CREATE_TIME
+    from JD_ACCOUNT
+    where APPLICATION_NO = #{applicationNo,jdbcType=VARCHAR} and ACCT_TYPE = #{AcUse,jdbcType=VARCHAR}
+  </select>
+    <select id="selectByApplicationNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, ACCOUNT_NAME, ACCOUNT_NO, ACCOUNT_TYPE, ACCT_TYPE, 
+    BANK_NAME, BANK_CNAPS, BANK_CODE, BANK_BRANCH_NAME, BANK_BRANCH_PROVINCE, BANK_BRANCH_CITY, 
+    HOLDER_MOBILE_NO, HOLDER_ID_TYPE, HOLDER_ID_NO, HOLDER_EMAIL, CREATE_DATE, CREATE_TIME
+    from JD_ACCOUNT
+    where APPLICATION_NO = #{applicationNo,jdbcType=VARCHAR} AND ACCT_TYPE = '04'
+  </select>
+</mapper>

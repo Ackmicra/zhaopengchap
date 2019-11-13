@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uranus.platform.business.jd.dao.JdPaymentOrderDataMapper">
+  <resultMap id="BaseResultMap" type="com.uranus.platform.business.jd.entity.po.JdPaymentOrderData">
+    <id column="JD_ID" jdbcType="VARCHAR" property="jdId" />
+    <result column="APPLICATION_NO" jdbcType="VARCHAR" property="applicationNo" />
+    <result column="TRANSFER_TYPE" jdbcType="VARCHAR" property="transferType" />
+    <result column="BATCH_NUMBER" jdbcType="VARCHAR" property="batchNumber" />
+    <result column="PAYMENT_NO" jdbcType="VARCHAR" property="paymentNo" />
+    <result column="TRADE_NO" jdbcType="VARCHAR" property="tradeNo" />
+    <result column="TRADE_TIME" jdbcType="VARCHAR" property="tradeTime" />
+    <result column="PAYMENT_CHANNEL" jdbcType="VARCHAR" property="paymentChannel" />
+    <result column="AMOUNT" jdbcType="DECIMAL" property="amount" />
+    <result column="PAYER_ACCOUNT_NO" jdbcType="VARCHAR" property="payerAccountNo" />
+    <result column="PAYER_ACCOUNT_NAME" jdbcType="VARCHAR" property="payerAccountName" />
+    <result column="PAYER_BANK_CODE" jdbcType="VARCHAR" property="payerBankCode" />
+    <result column="PAYEE_ACCOUNT_NO" jdbcType="VARCHAR" property="payeeAccountNo" />
+    <result column="PAYEE_ACCOUNT_NAME" jdbcType="VARCHAR" property="payeeAccountName" />
+    <result column="PAYEE_BANK_CODE" jdbcType="VARCHAR" property="payeeBankCode" />
+    <result column="CREATE_DATE" jdbcType="VARCHAR" property="createDate" />
+    <result column="CREATE_TIME" jdbcType="VARCHAR" property="createTime" />
+    <result column="MFS_BATCH_NO" jdbcType="VARCHAR" property="mfsBatchNo" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from JD_PAYMENT_ORDER
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.uranus.platform.business.jd.entity.po.JdPaymentOrderData">
+    <selectKey keyProperty="jdId" order="BEFORE" resultType="java.lang.String">
+      SELECT JD_LOAN_USER_SEQ.NEXTVAL FROM DUAL
+    </selectKey>
+    insert into JD_PAYMENT_ORDER (JD_ID, APPLICATION_NO, TRANSFER_TYPE, BATCH_NUMBER, 
+      PAYMENT_NO, TRADE_NO, TRADE_TIME, 
+      PAYMENT_CHANNEL, AMOUNT, PAYER_ACCOUNT_NO, 
+      PAYER_ACCOUNT_NAME, PAYER_BANK_CODE, PAYEE_ACCOUNT_NO, 
+      PAYEE_ACCOUNT_NAME, PAYEE_BANK_CODE, CREATE_DATE, 
+      CREATE_TIME,MFS_BATCH_NO)
+      values(
+      #{jdId,jdbcType=VARCHAR},#{applicationNo,jdbcType=VARCHAR}, #{transferType,jdbcType=VARCHAR}, #{batchNumber,jdbcType=VARCHAR}, 
+      #{paymentNo,jdbcType=VARCHAR}, #{tradeNo,jdbcType=VARCHAR}, #{tradeTime,jdbcType=VARCHAR}, 
+      #{paymentChannel,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL}, #{payerAccountNo,jdbcType=VARCHAR}, 
+      #{payerAccountName,jdbcType=VARCHAR}, #{payerBankCode,jdbcType=VARCHAR}, #{payeeAccountNo,jdbcType=VARCHAR}, 
+      #{payeeAccountName,jdbcType=VARCHAR}, #{payeeBankCode,jdbcType=VARCHAR}, #{createDate,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=VARCHAR},#{mfsBatchNo,jdbcType=VARCHAR} )
+      
+      
+      
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.uranus.platform.business.jd.entity.po.JdPaymentOrderData">
+    update JD_PAYMENT_ORDER
+    set APPLICATION_NO = #{applicationNo,jdbcType=VARCHAR},
+      TRANSFER_TYPE = #{transferType,jdbcType=VARCHAR},
+      BATCH_NUMBER = #{batchNumber,jdbcType=VARCHAR},
+      PAYMENT_NO = #{paymentNo,jdbcType=VARCHAR},
+      TRADE_NO = #{tradeNo,jdbcType=VARCHAR},
+      TRADE_TIME = #{tradeTime,jdbcType=VARCHAR},
+      PAYMENT_CHANNEL = #{paymentChannel,jdbcType=VARCHAR},
+      AMOUNT = #{amount,jdbcType=DECIMAL},
+      PAYER_ACCOUNT_NO = #{payerAccountNo,jdbcType=VARCHAR},
+      PAYER_ACCOUNT_NAME = #{payerAccountName,jdbcType=VARCHAR},
+      PAYER_BANK_CODE = #{payerBankCode,jdbcType=VARCHAR},
+      PAYEE_ACCOUNT_NO = #{payeeAccountNo,jdbcType=VARCHAR},
+      PAYEE_ACCOUNT_NAME = #{payeeAccountName,jdbcType=VARCHAR},
+      PAYEE_BANK_CODE = #{payeeBankCode,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=VARCHAR}
+      MFS_BATCH_NO = #{mfsBatchNo,jdbcType=VARCHAR}
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, TRANSFER_TYPE, BATCH_NUMBER, PAYMENT_NO, TRADE_NO, 
+    TRADE_TIME, PAYMENT_CHANNEL, AMOUNT, PAYER_ACCOUNT_NO, PAYER_ACCOUNT_NAME, PAYER_BANK_CODE, 
+    PAYEE_ACCOUNT_NO, PAYEE_ACCOUNT_NAME, PAYEE_BANK_CODE, CREATE_DATE, CREATE_TIME,MFS_BATCH_NO
+    from JD_PAYMENT_ORDER
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, TRANSFER_TYPE, BATCH_NUMBER, PAYMENT_NO, TRADE_NO, 
+    TRADE_TIME, PAYMENT_CHANNEL, AMOUNT, PAYER_ACCOUNT_NO, PAYER_ACCOUNT_NAME, PAYER_BANK_CODE, 
+    PAYEE_ACCOUNT_NO, PAYEE_ACCOUNT_NAME, PAYEE_BANK_CODE, CREATE_DATE, CREATE_TIME,MFS_BATCH_NO
+    from JD_PAYMENT_ORDER
+  </select>
+</mapper>

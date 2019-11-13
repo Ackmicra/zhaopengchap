@@ -1,0 +1,43 @@
+package com.uranus.platform.business.mq.custom;
+
+import javax.annotation.Resource;
+
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.messaging.support.MessageBuilder;
+
+import com.uranus.platform.business.pub.mq.domain.MQParmsDomain;
+import com.uranus.tools.utils.DateUtils;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@SpringBootTest
+public class MQProducerTest{
+	@Resource
+    private RocketMQTemplate rocketMQTemplate;
+    
+	@Test
+    public void test() throws Exception {
+        
+        System.out.println("放到MQ的时间======" + DateUtils.nowTimeFormat());
+        MQParmsDomain mq1 = new MQParmsDomain();
+       
+        mq1.setTaskType("01");
+//        rocketMQTemplate.syncSend("JD_MFS_MESSAGE", MessageBuilder.withPayload(mq1).build(), 5000, 2);
+//        log.info("third messige setting to MQ success:{第一次放到MQ成功}");
+//        MQParmsDomain mq2 = new MQParmsDomain();
+//        mq2.setTaskDate("第二次执行");
+//        mq2.setTaskType("02");
+//        rocketMQTemplate.syncSend("JD_MFS_MESSAGE", MessageBuilder.withPayload(mq2).build(), 5000, 5);
+//        log.info("third messige setting to MQ success:{第二次放到MQ成功}");
+//        for (int i = 1; i < 10; i++) {
+        	mq1.setTaskDate("1168477083139416064");
+        	mq1.setDelayLevel(2);
+        	rocketMQTemplate.syncSend("JD_MFS_MESSAGE", MessageBuilder.withPayload(mq1).build(), 5000, mq1.getDelayLevel());
+//        }
+	}
+    
+	    
+}

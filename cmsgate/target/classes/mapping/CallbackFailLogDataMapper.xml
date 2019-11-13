@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uranus.platform.business.pub.dao.CallbackFailLogDataMapper">
+  <resultMap id="BaseResultMap" type="com.uranus.platform.business.pub.entity.po.CallbackFailLogData">
+    <id column="FAIL_ID" jdbcType="VARCHAR" property="failId" />
+    <result column="TRANS_NO" jdbcType="VARCHAR" property="transNo" />
+    <result column="BUS_SIDE" jdbcType="VARCHAR" property="busSide" />
+    <result column="TX_CODE" jdbcType="VARCHAR" property="txCode" />
+    <result column="REQ_DATE" jdbcType="VARCHAR" property="reqDate" />
+    <result column="REQ_TIME" jdbcType="VARCHAR" property="reqTime" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from CALLBACK_FAIL_LOG
+    where FAIL_ID = #{failId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.uranus.platform.business.pub.entity.po.CallbackFailLogData">
+    <selectKey keyProperty="failId" order="BEFORE" resultType="java.lang.String">
+      SELECT CALLBACK_FAIL_LOG_SEQ.NEXTVAL FROM DUAL
+    </selectKey>
+    insert into CALLBACK_FAIL_LOG (FAIL_ID, TRANS_NO, BUS_SIDE, TX_CODE, 
+      REQ_DATE, REQ_TIME)
+    values (#{failId,jdbcType=VARCHAR}, #{transNo,jdbcType=VARCHAR}, #{busSide,jdbcType=VARCHAR}, #{txCode,jdbcType=VARCHAR}, 
+      #{reqDate,jdbcType=VARCHAR}, #{reqTime,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.uranus.platform.business.pub.entity.po.CallbackFailLogData">
+    update CALLBACK_FAIL_LOG
+    set TRANS_NO = #{transNo,jdbcType=VARCHAR},
+      BUS_SIDE = #{busSide,jdbcType=VARCHAR},
+      TX_CODE = #{txCode,jdbcType=VARCHAR},
+      REQ_DATE = #{reqDate,jdbcType=VARCHAR},
+      REQ_TIME = #{reqTime,jdbcType=VARCHAR}
+    where FAIL_ID = #{failId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select FAIL_ID, TRANS_NO, BUS_SIDE, TX_CODE, REQ_DATE, REQ_TIME
+    from CALLBACK_FAIL_LOG
+    where FAIL_ID = #{failId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select FAIL_ID, TRANS_NO, BUS_SIDE, TX_CODE, REQ_DATE, REQ_TIME
+    from CALLBACK_FAIL_LOG
+  </select>
+</mapper>

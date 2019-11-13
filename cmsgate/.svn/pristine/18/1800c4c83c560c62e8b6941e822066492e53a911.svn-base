@@ -1,0 +1,42 @@
+package com.uranus.platform.business.jd.entity.po;
+
+import lombok.Data;
+
+@Data
+public class JdPaymentOrderData {
+    private String jdId;
+
+    private String applicationNo;
+
+    private String transferType;
+
+    private String batchNumber;
+
+    private String paymentNo;
+
+    private String tradeNo;
+
+    private String tradeTime;
+
+    private String paymentChannel;
+
+    private Double amount;
+
+    private String payerAccountNo;
+
+    private String payerAccountName;
+
+    private String payerBankCode;
+
+    private String payeeAccountNo;
+
+    private String payeeAccountName;
+
+    private String payeeBankCode;
+
+    private String createDate;
+
+    private String createTime;
+
+    private String mfsBatchNo;
+}

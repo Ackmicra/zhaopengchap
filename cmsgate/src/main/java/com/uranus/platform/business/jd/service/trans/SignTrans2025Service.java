@@ -1,0 +1,390 @@
+package com.uranus.platform.business.jd.service.trans;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.uranus.platform.business.jd.entity.po.JdSigningData;
+import com.uranus.platform.business.jd.entity.pojo.JdResponse2011;
+import com.uranus.platform.business.jd.entity.pojo.JdResponse2025;
+import com.uranus.platform.business.jd.entity.status.JdResponseStatus;
+import com.uranus.platform.business.jd.entity.vo.JdResponseView;
+import com.uranus.platform.business.pub.entity.dto.Request2011Dto;
+import com.uranus.platform.business.pub.entity.dto.Request2025Dto;
+import com.uranus.platform.business.pub.entity.dto.Response2011Dto;
+import com.uranus.platform.business.pub.entity.dto.Response2025Dto;
+import com.uranus.platform.business.pub.entity.po.ParmDicData;
+import com.uranus.platform.business.pub.service.ParmDicService;
+import com.uranus.platform.business.ws.search.Request;
+import com.uranus.platform.business.ws.search.Response;
+import com.uranus.platform.business.ws.service.ProcessService;
+import com.uranus.platform.business.ws.service.SearchService;
+import com.uranus.platform.utils.exception.PlatformExceptionFactory;
+import com.uranus.platform.utils.status.CmsBusinessStatus;
+import com.uranus.tools.utils.DateUtils;
+
+/**
+ * @Description: 将小微接口响应转换为京东接口响应
+ * @author    wangshuai0106@dhcc.com.cn
+ * @Date 2019年8月8日下午4:11:58
+ */
+@Service
+public class SignTrans2025Service {
+	@Autowired
+	private ObjectMapper objectMapper;
+	@Autowired
+	private ProcessService processService;
+	@Autowired
+	private SearchService searchService;
+	@Autowired
+	private ParmDicService parmDicService;
+
+	
+	/**  
+	* @Description 拼装报文、请求小微、转换响应
+	* @param tradeNo 交易流水号
+	* @param brNo 合作机构编号
+	* @param projNo 信托项目编号
+	* @param jdSigningData 京东数据
+	* @return 京东响应数据、京东业务数据
+	*/  
+	public Map<String, Object> request2025(String tradeNo, String brNo, String projNo, JdSigningData jdSigningData) {
+		//拼发送小微业务数据给2025接口
+		Request request2025 = getRequest2025(tradeNo, brNo, projNo, jdSigningData);
+		
+		//发送小微系统
+		Response response2025 = searchService.search(CmsBusinessStatus.MFS.businessCode(), request2025);
+		
+		//转换小微的2025接口响应为京东所需响应数据
+		Map<String, Object> map2025 = transSignResponseBy2025(tradeNo, response2025);
+		if("go2011".equals(map2025.get("go2011"))) {
+			//拼发送小微业务数据给2011接口
+			com.uranus.platform.business.ws.process.Request request2011 = getRequest2011(tradeNo, brNo, projNo, jdSigningData);
+			
+			//发送小微系统
+			com.uranus.platform.business.ws.process.Response response2011 = processService.wsProcess(CmsBusinessStatus.MFS.businessCode(), request2011);
+			
+			//转换小微2011接口的响应为京东所需响应数据
+			Map<String, Object> map2011 = transSignResponseBy2011(tradeNo, response2011);
+			
+			return map2011;
+		}
+		return map2025;
+	}
+	/**  
+	* @Description: 拼发送2025小微请求报文
+	* @param brNo
+	* @param projNo
+	* @param jdSigningData
+	* @return 小微请求报文
+	*/  
+	public Request getRequest2025(String tradeNo, String brNo, String projNo, JdSigningData jdSigningData) {
+		
+		//转换支付渠道字典项
+		ParmDicData cardChnDic = parmDicService.getParmDic("PAYMENT_CHANNEL", jdSigningData.getPaymentChannel().toString());
+		//转换支付渠道字典项
+		ParmDicData idTypeDic = parmDicService.getParmDic("SIGN_ID_TYPE", jdSigningData.getPayeeCeritificateType());
+		
+		//转换支付渠道字典项
+		ParmDicData bankCodeDic = parmDicService.getParmDic("BANK_CODE", jdSigningData.getPayeeBankCode());
+		Request2025Dto requestdto = new Request2025Dto();
+		requestdto.setProjNo(projNo);
+		requestdto.setCustName(jdSigningData.getPayeeAccountName());
+		requestdto.setIdNo(jdSigningData.getPayeeCeritificateNo());
+		requestdto.setPhoneNo(jdSigningData.getPayeeMobileNo());
+		requestdto.setAcno(jdSigningData.getPayeeAccountNo());
+		if(cardChnDic != null) {
+			requestdto.setCardChn(cardChnDic.getMateCode());
+		} else {
+			requestdto.setCardChn(jdSigningData.getPaymentChannel().toString());
+		}
+		if(idTypeDic != null) {
+			requestdto.setIdType(idTypeDic.getMateCode());
+		} else {
+			requestdto.setIdType(jdSigningData.getPayeeCeritificateType());
+		}
+		if(bankCodeDic != null) {
+			requestdto.setBankCode(bankCodeDic.getMateCode());
+		}else {
+			requestdto.setBankCode(jdSigningData.getPayeeBankCode());
+		}
+
+		//拼发送小微报文
+		Request request = new Request();
+		request.setTxCode(CmsBusinessStatus.WS_2025.businessCode());	//接口编号
+		request.setBrNo(brNo);							//机构号
+		request.setReqDate(DateUtils.nowDateFormat());			//设置请求日期
+		request.setToken("test");	//设置token
+		request.setReqTime(DateUtils.nowTimeFormat());			//设置请求时间
+		request.setReqSerial(tradeNo);						//设置请求流水号
+		try {
+			request.setContent(objectMapper.writeValueAsString(requestdto));
+		} catch (JsonProcessingException e) {
+			throw PlatformExceptionFactory.jsonParseException(JdResponseStatus.UNKNOWN_ERROR).build(e);
+		}
+		return request;
+	}
+	/**  
+	* @Description 转换签约申请2025接口响应
+	* @param tradeNo 交易流水号
+	* @param response 小微响应
+	* @return 京东响应
+	*/  
+	public Map<String, Object> transSignResponseBy2025(String tradeNo, Response response) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		JdResponseView jdResponseDto = null;
+		try {
+			if(response != null) {
+				//判断业务是否成功
+				if(CmsBusinessStatus.MFS_SUCCESS.businessCode().equals(response.getRespCode())) {
+					JdResponse2011 jdResponse2011Dto = new JdResponse2011();
+					Response2025Dto response2025Dto = objectMapper.readValue(response.getContent(), Response2025Dto.class);
+					String dealNo = response2025Dto.getSignType();
+					String serialNo = response2025Dto.getSerialNo();
+					String agreeCode =response2025Dto.getAgreeCode();
+					//01-已签约
+					if(CmsBusinessStatus.QUERY_SIGN_SUCCESS.businessCode().equals(dealNo)) {
+						jdResponse2011Dto.setSignTransactionNo(serialNo);
+						jdResponse2011Dto.setIsSigned(2);//重复签约
+						jdResponse2011Dto.setSignNo(agreeCode);//协议号
+						jdResponseDto = new JdResponseView(JdResponseStatus.SUCCESS.businessCode(), 
+								JdResponseStatus.SUCCESS.businessMessage(), 
+								tradeNo, objectMapper.writeValueAsString(jdResponse2011Dto));
+						map.put("jdResponseDto", jdResponseDto);
+					//02-未签约，03-签约失败	
+					}else if(CmsBusinessStatus.QUERY_SIGN_NO.businessCode().equals(dealNo)||CmsBusinessStatus.QUERY_SIGN_FAIL.businessCode().equals(dealNo)){
+						//返回一个判断数据
+						String go2011 = "go2011";
+						map.put("go2011", go2011);
+
+					}else {
+						jdResponseDto = new JdResponseView(JdResponseStatus.UNKNOWN_ERROR.businessCode(), 
+								JdResponseStatus.UNKNOWN_ERROR.businessMessage(), tradeNo, null);
+						map.put("jdResponseDto", jdResponseDto);
+					}
+				}else if(CmsBusinessStatus.INVALIDATE_PARAM.businessCode().equals(response.getRespCode())) {
+					//如果业务不成功(查询失败)
+					//返回一个判断数据
+					String go2011 = "go2011";
+					map.put("go2011", go2011);
+				}
+			} else {
+				jdResponseDto = new JdResponseView(JdResponseStatus.UNKNOWN_ERROR.businessCode(), 
+						CmsBusinessStatus.NO_RESPONSE.businessMessage(), tradeNo, null);
+				map.put("jdResponseDto", jdResponseDto);
+			}
+		} catch (IOException e) {
+			throw PlatformExceptionFactory.jsonParseException(JdResponseStatus.UNKNOWN_ERROR).build(e);
+		}
+		return map;
+	}
+	
+	/**  
+	* @Description: 拼发送小微2011接口请求报文
+	* @param brNo
+	* @param projNo
+	* @param jdSigningData
+	* @return 小微请求报文
+	*/  
+	public com.uranus.platform.business.ws.process.Request getRequest2011(String tradeNo, String brNo, String projNo, JdSigningData jdSigningData) {
+		
+		//转换支付渠道字典项
+		ParmDicData cardChnDic = parmDicService.getParmDic("PAYMENT_CHANNEL", jdSigningData.getPaymentChannel().toString());
+		//转换支付渠道字典项
+		ParmDicData idTypeDic = parmDicService.getParmDic("SIGN_ID_TYPE", jdSigningData.getPayeeCeritificateType());
+		
+		//转换支付渠道字典项
+		ParmDicData bankCodeDic = parmDicService.getParmDic("BANK_CODE", jdSigningData.getPayeeBankCode());
+		Request2011Dto requestdto = new Request2011Dto();
+		requestdto.setBrNo(brNo);
+		requestdto.setProjNo(projNo);
+		requestdto.setCustName(jdSigningData.getPayeeAccountName());
+		requestdto.setIdNo(jdSigningData.getPayeeCeritificateNo());
+		requestdto.setPhoneNo(jdSigningData.getPayeeMobileNo());
+		requestdto.setAcno(jdSigningData.getPayeeAccountNo());
+		requestdto.setAcType("1");
+		if(cardChnDic != null) {
+			requestdto.setCardChn(cardChnDic.getMateCode());
+		} else {
+			requestdto.setCardChn(jdSigningData.getPaymentChannel().toString());
+		}
+		if(idTypeDic != null) {
+			requestdto.setIdType(idTypeDic.getMateCode());
+		} else {
+			requestdto.setIdType(jdSigningData.getPayeeCeritificateType());
+		}
+		if(bankCodeDic != null) {
+			requestdto.setBankCode(bankCodeDic.getMateCode());
+		}else {
+			requestdto.setBankCode(jdSigningData.getPayeeBankCode());
+		}
+		requestdto.setValidDate("");
+		requestdto.setCvvNo("");
+		//拼发送小微报文
+		com.uranus.platform.business.ws.process.Request request = new com.uranus.platform.business.ws.process.Request();
+		request.setTxCode(CmsBusinessStatus.WS_2011.businessCode());								//接口编号
+		request.setBrNo(brNo);							//机构号
+		request.setReqDate(DateUtils.nowDateFormat());			//设置请求日期
+		request.setToken("test");	//设置token
+		request.setReqTime(DateUtils.nowTimeFormat());			//设置请求时间
+		request.setReqSerial(tradeNo);						//设置请求流水号
+		try {
+			request.setContent(objectMapper.writeValueAsString(requestdto));
+		} catch (JsonProcessingException e) {
+			throw PlatformExceptionFactory.jsonParseException(JdResponseStatus.UNKNOWN_ERROR).build(e);
+		}
+		return request;
+	}
+	
+	/**  
+	* @Description 转换签约申请2011接口响应
+	* @param tradeNo 交易流水号
+	* @param response 小微响应
+	* @return 京东响应
+	*/  
+	public Map<String, Object> transSignResponseBy2011(String tradeNo, com.uranus.platform.business.ws.process.Response response) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		JdResponseView jdResponseDto = null;
+		try {
+			if(response != null) {
+				//判断业务是否成功
+				if(CmsBusinessStatus.MFS_SUCCESS.businessCode().equals(response.getRespCode())) {
+					JdResponse2011 jdResponse2011Dto = new JdResponse2011();
+					Response2011Dto response2011Dto = objectMapper.readValue(response.getContent(), Response2011Dto.class);
+					String dealNo = response2011Dto.getDealNo();
+					String serialNo = response2011Dto.getSerialNo();
+					String dealDesc = response2011Dto.getDealDesc();
+					//01-成功
+					if(CmsBusinessStatus.SIGN_SUCCESS.businessCode().equals(dealNo)) {
+						jdResponse2011Dto.setSignTransactionNo(serialNo);
+						jdResponse2011Dto.setIsSigned(1);//首次签约
+						jdResponseDto = new JdResponseView(JdResponseStatus.SUCCESS.businessCode(), 
+								JdResponseStatus.SUCCESS.businessMessage(), 
+								tradeNo, objectMapper.writeValueAsString(jdResponse2011Dto));
+						map.put("jdResponseDto", jdResponseDto);
+						map.put("TransactionNo", serialNo);
+					//02-失败	
+					}else if(CmsBusinessStatus.SIGN_FAIL.businessCode().equals(dealNo)){
+							jdResponseDto = new JdResponseView(JdResponseStatus.DATA_ERROR.businessCode(), 
+									dealDesc, tradeNo, "{}");
+							map.put("jdResponseDto", jdResponseDto);
+					//03-异常
+					}else if(CmsBusinessStatus.SIGN_ABNORMAL.businessCode().equals(dealNo)){
+						jdResponseDto = new JdResponseView(JdResponseStatus.UNKNOWN_ERROR.businessCode(), 
+								dealDesc, tradeNo, "{}");
+						map.put("jdResponseDto", jdResponseDto);
+					}
+				}else {
+					//如果业务不成功
+					//传给JD——业务返回码、业务返回描述、交易流水号
+					jdResponseDto = new JdResponseView(JdResponseStatus.DATA_ERROR.businessCode(), 
+							response.getRespDesc(), tradeNo, "{}");
+					map.put("jdResponseDto", jdResponseDto);
+				}
+			} else {
+				jdResponseDto = new JdResponseView(JdResponseStatus.UNKNOWN_ERROR.businessCode(), 
+						CmsBusinessStatus.NO_RESPONSE.businessMessage(), tradeNo, "{}");
+				map.put("jdResponseDto", jdResponseDto);
+			}
+		} catch (IOException e) {
+			throw PlatformExceptionFactory.jsonParseException(JdResponseStatus.UNKNOWN_ERROR).build(e);
+		}
+		return map;
+	}
+
+/**  
+* @Description 拼装报文、请求小微、转换响应(签约查询)
+* @param tradeNo 交易流水号
+* @param brNo 合作机构编号
+* @param projNo 信托项目编号
+* @param jdSigningData 京东数据
+* @return 京东响应数据、京东业务数据
+*/  
+public JdResponseView query2025(String tradeNo, String brNo, String projNo, JdSigningData jdSigningData) {
+	//拼发送小微业务数据给2025接口
+	Request request2025 = getRequest2025(tradeNo, brNo, projNo, jdSigningData);
+	
+	//发送小微系统
+	Response response2025 = searchService.search(CmsBusinessStatus.MFS.businessCode(), request2025);
+	
+	//转换小微的2025接口响应为京东所需响应数据
+	JdResponseView jdResponseView = transSignQueryResponseBy2025(tradeNo, response2025);
+	
+	return jdResponseView;
+ }
+/**  
+* @Description 转换签约查询2025接口响应
+* @param tradeNo 交易流水号
+* @param response 小微响应
+* @return 京东响应
+*/  
+public JdResponseView transSignQueryResponseBy2025(String tradeNo, Response response) {
+	//Map<String, Object> map = new HashMap<String, Object>();
+	JdResponseView jdResponseDto = null;
+	try {
+		if(response != null) {
+			//判断业务是否成功
+			if(CmsBusinessStatus.MFS_SUCCESS.businessCode().equals(response.getRespCode())) {
+				JdResponse2025 jdResponse2025Dto = new JdResponse2025();
+				Response2025Dto response2025Dto = objectMapper.readValue(response.getContent(), Response2025Dto.class);
+				String dealNo = response2025Dto.getSignType();
+				String serialNo = response2025Dto.getSerialNo();
+				String agreeCode =response2025Dto.getAgreeCode();
+				String upTime =response2025Dto.getUpTime();
+				//01-已签约
+				if(CmsBusinessStatus.QUERY_SIGN_SUCCESS.businessCode().equals(dealNo)) {
+					jdResponse2025Dto.setSignTransactionNo(serialNo);//签约流水号
+					jdResponse2025Dto.setSignStatus(JdResponseStatus.SIGN_SUCCESS.businessCode());//已签约(签约状态)
+					jdResponse2025Dto.setSignNo(agreeCode);//协议号
+					jdResponse2025Dto.setSignTime(upTime);//签约时间
+					jdResponseDto = new JdResponseView(JdResponseStatus.SUCCESS.businessCode(), 
+							JdResponseStatus.SUCCESS.businessMessage(), 
+							tradeNo, objectMapper.writeValueAsString(jdResponse2025Dto));
+				//02-未签约(返回京东的为00-未签约)	
+				}else if(CmsBusinessStatus.QUERY_SIGN_NO.businessCode().equals(dealNo)){
+					jdResponse2025Dto.setSignStatus(JdResponseStatus.SIGN_NO.businessCode());;//未签约(签约状态)
+					jdResponseDto = new JdResponseView(JdResponseStatus.SUCCESS.businessCode(), 
+							JdResponseStatus.SUCCESS.businessMessage(), 
+							tradeNo, objectMapper.writeValueAsString(jdResponse2025Dto));
+				//03-签约失败(返回京东的为02-签约失败)
+				}else if(CmsBusinessStatus.QUERY_SIGN_FAIL.businessCode().equals(dealNo)){
+		
+					jdResponse2025Dto.setSignStatus(JdResponseStatus.SIGN_FAIL.businessCode());;//签约失败(签约状态)
+					jdResponseDto = new JdResponseView(JdResponseStatus.SUCCESS.businessCode(), 
+							JdResponseStatus.SUCCESS.businessMessage(), 
+							tradeNo, objectMapper.writeValueAsString(jdResponse2025Dto));
+
+				}else {
+					jdResponseDto = new JdResponseView(JdResponseStatus.UNKNOWN_ERROR.businessCode(), 
+							JdResponseStatus.UNKNOWN_ERROR.businessMessage(), tradeNo, "{}");
+				}
+			}else if(CmsBusinessStatus.INVALIDATE_PARAM.businessCode().equals(response.getRespCode())) {
+				//数据参数错误返回未签约状态给JD
+				JdResponse2025 jdResponse2025Dto = new JdResponse2025();
+				jdResponse2025Dto.setSignStatus(JdResponseStatus.SIGN_NO.businessCode());;//未签约(签约状态)
+				jdResponseDto = new JdResponseView(JdResponseStatus.SUCCESS.businessCode(), 
+						JdResponseStatus.SUCCESS.businessMessage(), 
+						tradeNo, objectMapper.writeValueAsString(jdResponse2025Dto));
+			}
+			else {
+				//如果业务不成功
+				//传给JD——业务返回码、业务返回描述、交易流水号
+				jdResponseDto = new JdResponseView(JdResponseStatus.DATA_ERROR.businessCode(), 
+						JdResponseStatus.DATA_ERROR.businessMessage(), tradeNo, "{}");
+			}
+		} else {
+			jdResponseDto = new JdResponseView(JdResponseStatus.UNKNOWN_ERROR.businessCode(), 
+					CmsBusinessStatus.NO_RESPONSE.businessMessage(), tradeNo, "{}");
+		}
+	} catch (IOException e) {
+		throw PlatformExceptionFactory.jsonParseException(JdResponseStatus.UNKNOWN_ERROR).build(e);
+	}
+	return jdResponseDto;
+}
+}
+

@@ -1,0 +1,2 @@
+rocketmq.name-server=140.143.124.166:9876
+rocketmq.producer.group=my-group

@@ -1,0 +1,75 @@
+package com.uranus.platform.business.jd.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.alibaba.druid.util.StringUtils;
+import com.uranus.platform.business.jd.dao.JdTransferBatchDataMapper;
+import com.uranus.platform.business.jd.entity.po.JdTransferBatchData;
+import com.uranus.platform.business.jd.entity.status.JdResponseStatus;
+import com.uranus.platform.business.jd.entity.vo.JdResponseView;
+import com.uranus.platform.business.jd.service.JdTransferPlanCallbackService;
+import com.uranus.platform.business.jd.service.trans.TransferPlanCalllback2313Service;
+import com.uranus.platform.business.pub.entity.po.ProjBaseData;
+import com.uranus.platform.business.pub.service.CreateKeyService;
+import com.uranus.platform.business.pub.service.ProjBaseService;
+import com.uranus.platform.utils.exception.PlatformExceptionFactory;
+/**
+ * 
+* @ClassName:：JdTransferPlanCallbackServiceImpl 
+* @Description： 扣款计划回调
+* @author ：chenwendong
+* @date ：2019年8月22日 下午3:53:42 
+*
+ */
+@Service
+@Transactional
+public class JdTransferPlanCallbackServiceImpl implements JdTransferPlanCallbackService {
+
+	@Autowired
+	JdTransferBatchDataMapper jdTransferBatchDataMapper;
+	@Autowired
+	TransferPlanCalllback2313Service transferPlanCalllback2313Service;
+	@Autowired
+	private CreateKeyService createKeyService;
+	@Autowired
+	private ProjBaseService projBaseService;
+	
+	/**
+	 * 扣款计划回调
+	 */
+	@Override
+	public JdResponseView transferPlanCallback(String batchNo) {
+
+		JdTransferBatchData jdTransferBatch = jdTransferBatchDataMapper.getByBatchNo(batchNo);
+		// 根据批此扣款类型【1001-线上扣款，1002-线下扣款】
+		String transferType = jdTransferBatch.getTransferType();
+		String projNo = jdTransferBatch.getProjNo();
+
+		ProjBaseData projBaseData = projBaseService.getByProjNo(projNo);
+
+		if (projBaseData != null && !StringUtils.isEmpty(projBaseData.getBrNo())) {
+			String brNo = projBaseData.getBrNo();
+			if (JdResponseStatus.TRANSFER_TYPE_ONLINE.businessCode().equals(transferType)) {
+				// 1001线上调2313
+				return transferPlanCalllback2313Service.request2313(brNo, batchNo, createKeyService.getJdTradeNo(),
+						jdTransferBatch);
+
+			} else if (JdResponseStatus.TRANSFER_TYPE_OUTLINE.businessCode().equals(transferType)) {
+				// 1002线下查京东扣款计划表
+				return transferPlanCalllback2313Service.getTransferPlan(batchNo, createKeyService.getJdTradeNo());
+
+			} else {
+				// 其他返回数据参数错误
+				return new JdResponseView(JdResponseStatus.DATA_ERROR.businessCode(),
+						JdResponseStatus.DATA_ERROR.businessMessage(), createKeyService.getJdTradeNo(), null);
+			}
+		} else {
+			throw PlatformExceptionFactory.exception(JdResponseStatus.PROJ_UNEXISTS)
+					.build(JdResponseStatus.PROJ_UNEXISTS.businessMessage());
+		}
+
+	}
+
+}

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uranus.platform.business.pub.dao.MqLogDataMapper">
+  <resultMap id="BaseResultMap" type="com.uranus.platform.business.pub.entity.po.MqLogData">
+    <id column="TASK_ID" jdbcType="VARCHAR" property="taskId" />
+    <result column="TASK_TYPE" jdbcType="VARCHAR" property="taskType" />
+    <result column="TASK_DATA" jdbcType="CLOB" property="reqContent" />
+    <result column="TASK_DATE" jdbcType="VARCHAR" property="taskDate" />
+    <result column="TASK_TIME" jdbcType="VARCHAR" property="taskTime" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from MQ_LOG
+    where TASK_ID = #{taskId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.uranus.platform.business.pub.entity.po.MqLogData">
+     <selectKey keyProperty="taskId" order="BEFORE" resultType="java.lang.String">
+      SELECT MQ_LOG_SEQ.NEXTVAL FROM DUAL
+    </selectKey>
+    insert into MQ_LOG (TASK_ID, TASK_TYPE, TASK_DATA, TASK_DATE, 
+      TASK_TIME)
+    values (#{taskId,jdbcType=VARCHAR}, #{taskType,jdbcType=VARCHAR}, #{taskData,jdbcType=CLOB}, #{taskDate,jdbcType=VARCHAR}, 
+      #{taskTime,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.uranus.platform.business.pub.entity.po.MqLogData">
+    update MQ_LOG
+    set TASK_TYPE = #{taskType,jdbcType=VARCHAR},
+      TASK_DATA = #{taskData,jdbcType=CLOB},
+      TASK_DATE = #{taskDate,jdbcType=VARCHAR},
+      TASK_TIME = #{taskTime,jdbcType=VARCHAR}
+    where TASK_ID = #{taskId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select TASK_ID, TASK_TYPE, TASK_DATA, TASK_DATE, TASK_TIME
+    from MQ_LOG
+    where TASK_ID = #{taskId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select TASK_ID, TASK_TYPE, TASK_DATA, TASK_DATE, TASK_TIME
+    from MQ_LOG
+  </select>
+</mapper>

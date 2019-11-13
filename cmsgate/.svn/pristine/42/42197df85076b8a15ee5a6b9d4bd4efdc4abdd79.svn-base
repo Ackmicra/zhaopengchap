@@ -1,0 +1,19 @@
+package com.uranus.platform.business.jd.dao;
+
+import java.util.List;
+
+import com.uranus.platform.business.jd.entity.po.JdPaymentOrderData;
+
+public interface JdPaymentOrderDataMapper {
+    int deleteByPrimaryKey(String jdId);
+
+    int insert(JdPaymentOrderData record);
+
+    JdPaymentOrderData selectByPrimaryKey(String jdId);
+
+    List<JdPaymentOrderData> selectAll();
+
+    int updateByPrimaryKey(JdPaymentOrderData record);
+    
+    JdPaymentOrderData getByBatchNo(String batchNumber);
+}

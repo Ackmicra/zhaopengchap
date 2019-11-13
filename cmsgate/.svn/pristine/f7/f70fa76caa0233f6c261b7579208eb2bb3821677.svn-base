@@ -1,0 +1,39 @@
+package com.uranus.platform.business.pub.mq.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.uranus.platform.business.jd.service.JdLoanApplyService;
+import com.uranus.platform.business.jd.service.JdLoanPaymentsService;
+import com.uranus.platform.business.jd.service.JdTransferPlanCallbackService;
+import com.uranus.platform.business.pub.mq.service.MQTaskService;
+
+@Service
+@Transactional
+public class MQTaskServiceImpl implements MQTaskService {
+
+	@Autowired
+	private JdLoanApplyService jdLoanApplyService;
+	@Autowired
+	private JdTransferPlanCallbackService jdTransferPlanCallbackService;
+	@Autowired
+	private JdLoanPaymentsService jdLoanPaymentsService;
+	
+	@Override
+	public void queryAuditResult(Object applicationNo, int delayLevel) {
+		jdLoanApplyService.applyFor2002((String) applicationNo, delayLevel);
+	}
+
+	@Override
+	public void queryLoanPaymentsResult(Object applicationNo, int delayLevel) {
+		jdLoanPaymentsService.applyFor2102((String) applicationNo, delayLevel);
+		
+	}
+
+	@Override
+	public void querytransferPlanResult(Object batchNo, int delayLevel) {
+		jdTransferPlanCallbackService.transferPlanCallback((String) batchNo, delayLevel);
+	}
+
+}

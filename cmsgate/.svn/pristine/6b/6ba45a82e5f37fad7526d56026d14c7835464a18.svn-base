@@ -1,0 +1,52 @@
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@192.168.1.172:1521:orcl
+    username: mids
+    password: mids
+    driver-class-name: oracle.jdbc.OracleDriver
+  redis:
+    host: 140.143.124.166
+    port: 6380
+    password: dhcc_redis#0713
+  mvc:
+    throw-exception-if-no-handler-found: true
+server:
+  port: 10002
+
+
+platform:
+  webservice:
+    loginUrl: http://192.168.1.178:8082/mfs_sit/services/loginService?wsdl
+    processUrl: http://192.168.1.178:8082/mfs_sit/services/creditService?wsdl
+    searchUrl: http://192.168.1.178:8082/mfs_sit/services/searchService?wsdl
+
+#设置RestTemplate超时时间
+rest:
+  connection:
+    timeout: 5000
+  read:
+    timeout: 5000
+
+#rocketMQ配置
+rocketmq:
+  topic: JD_MFS_MESSAGE
+  group: my-group
+  sendTimeout: 5000        
+jd:
+  #安全秘钥
+  secretKey: P72MS3yGxmDdRuVyFG4ivQDUsp2U7rnk
+  #加密算法
+  encryptAlg: aks-3des-cbc
+  #签名算法
+  signAlg: aks-sha1
+  # 时间戳格式
+  timestamp: yyyyMMddHHmmssSSS
+  # 版本
+  version: 1.0.0
+# 京东密钥+
+  security:
+    priCert: /home/app/key/wk_private_key.pfx
+    pubCert: /home/app/key/jd_public_key.cer
+    password: test
+  #京东回调服务地址
+  callBackURI: http://59.151.64.31:8545/loan/fundport/callback

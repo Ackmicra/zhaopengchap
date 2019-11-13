@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uranus.platform.business.admin.dao.SystemRoleMapper">
+  <resultMap id="BaseResultMap" type="com.uranus.platform.business.admin.entity.model.SystemRoleData">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+    <result column="role_ch_name" jdbcType="VARCHAR" property="roleChName" />
+    <result column="role_type" jdbcType="CHAR" property="roleType" />
+    <result column="admin_id" jdbcType="BIGINT" property="adminId" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from system_role
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.uranus.platform.business.admin.entity.model.SystemRoleData">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into system_role (role_name, role_ch_name, role_type, 
+      admin_id)
+    values (#{roleName,jdbcType=VARCHAR}, #{roleChName,jdbcType=VARCHAR}, #{roleType,jdbcType=CHAR}, 
+      #{adminId,jdbcType=BIGINT})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.uranus.platform.business.admin.entity.model.SystemRoleData">
+    update system_role
+    set role_name = #{roleName,jdbcType=VARCHAR},
+      role_ch_name = #{roleChName,jdbcType=VARCHAR},
+      role_type = #{roleType,jdbcType=CHAR},
+      admin_id = #{adminId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select id, role_name, role_ch_name, role_type, admin_id
+    from system_role
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, role_name, role_ch_name, role_type, admin_id
+    from system_role
+  </select>
+</mapper>

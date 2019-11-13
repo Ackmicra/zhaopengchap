@@ -1,0 +1,31 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: demo
+  cache:
+    type: caffeine
+    cache-names: outLimit,notOutLimit,myCache,parmDicCatche,projBaseCatche
+    caffeine:
+      spec: initialCapacity=50,maximumSize=500,expireAfterWrite=5s,refreshAfterWrite=7s
+# OAuth2配置
+security:
+  oauth2:
+    client:
+      client-secret: demo-secret
+      client-id: demo-id
+  authorize:
+    oauth2:
+      storeType: jwt
+mybatis:
+  mapper-locations: classpath:/mapping/*.xml  #注意：一定要对应mapper映射xml文件的所在路径
+  type-aliases-package: com.uranus.platform.business.admin.entity.model  # 注意：对应实体类的路径
+swagger:
+  enabled: true
+  title: ${spring.application.name}
+  version: "@project.version@"
+  description: 授权系统API服务
+  base-package: com.uranus.platform.business
+logging:
+  level:
+    com.uranus.platform: debug

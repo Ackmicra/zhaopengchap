@@ -1,0 +1,23 @@
+package com.uranus.platform.business.jd.entity.vo;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+import com.uranus.platform.business.jd.entity.pojo.JDLoanfileUpload;
+
+import lombok.Data;
+
+@Data
+public class JdHttpRequestView {
+	
+	@NotBlank
+	private String channelId;
+	@NotBlank
+	private String channelProdNo;
+	@NotBlank
+	private String outTradeNo;
+	@NotBlank
+	private String timestamp;
+	@NotNull
+	private JDLoanfileUpload bizContent;
+}

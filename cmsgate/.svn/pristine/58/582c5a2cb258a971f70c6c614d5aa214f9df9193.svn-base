@@ -1,0 +1,185 @@
+package com.uranus.platform.utils.status;
+
+import com.uranus.tools.psm.status.BusinessCodeDefine;
+
+/**
+ * @author 李亚斌
+ * @date 2019/08/01 20:59
+ * @since v1.1
+ */
+public enum  CmsBusinessStatus implements BusinessCodeDefine {
+    FANGKUANSHIBAI("1000","放款失败"),
+    yoghubuhefa("1001","用户不合法"),
+    
+    /**
+     * 	系统编码
+     */
+    MFS("MFS", "小微金融业务系统"),
+    JD("JD", "京东金融"),
+    /**
+     * 	WS_BASE表状态
+     */
+    UN_PROCESS("01", "未处理"),
+    PROCESS("02", "已处理"),
+    CALLBACK_CODE("CALLBACK","回调服务"),
+    /**
+	 * 签约相关
+	 */
+    SIGN_REQUEST("01","签约申请"),
+    SIGN_CONFIRM("02","签约确认"),
+    SIGN_QUERY("03","签约查询"),
+    
+    /**
+     * 	接口对应编号相关 
+     */
+    WS_0001("0001", "登陆接口"),
+    WS_2001("2001", "授信批量申请"),
+    WS_2002("2002", "授信批量查询"),
+    WS_2004("2004", "授信单笔申请"),
+    WS_2101("2101", "进件批量申请"),
+    WS_2102("2102", "进件处理结果查询"),
+    WS_2103("2103", "进件批次查询"),
+    WS_2104("2104", "进件信息查询"),
+    WS_2105("2105", "合同信息查询"),
+    WS_2106("2106", "影像信息上传"),
+    WS_2107("2107", "影像资料上传结果查询"),
+    WS_2108("2108", "影像信息上传"),
+    WS_2201("2201", "还款计划上传"),
+    WS_2202("2202", "还款计划单笔查询"),
+    WS_2204("2204", "还款计划上传结果查询"),
+    WS_3101("3101", "合同取消申请"),
+    WS_3102("3102", "合同取消结果查询"),
+    WS_2501("2501", "还款账户单笔维护"),
+    WS_2502("2502", "还款账户批量维护"),
+    WS_2503("2503", "还款账户变更结果查询"),
+    WS_2311("2311", "线上扣款"),
+    WS_2312("2312", "线下实收"),
+    WS_2313("2313", "扣款查询"),
+    WS_3204("3204", "意向金信息上传"),
+    WS_3205("3205", "意向金上传结果查询"),
+    WS_3206("3206", "意向金余额查询"),
+    WS_3301("3301", "待债转信息上传"),
+    WS_3302("3302", "待债转信息撤销"),
+    WS_3303("3303", "债转查询"),
+    WS_3304("3304", "债转清单上传"),
+    WS_3306("3306", "系统债转台账查询"),
+    WS_3401("3401", "解押信息上传"),
+    WS_3402("3402", "解押信息上传结果查询"),
+    WS_3501("3501", "他项权证补录申请"),
+    WS_3502("3502", "他项权证补录结果查询"),
+    WS_2011("2011", "建立签约关系"),
+    WS_2012("2012", "确认签约关系"),
+    WS_2013("2013", "建立解约关系"),
+    WS_2014("2014", "确认解约关系"),
+    WS_2015("2015", "查询签约/解约关系"),
+    WS_2016("2016", "短信重新发送"),
+    WS_2017("2017", "商业委托签约申请"),
+    WS_2018("2018", "商业委托签约确认"),
+    WS_2019("2019", "商业委托短信重发"),
+    WS_2020("2020", "商业委托解约接口"),
+    WS_2021("2021", "商业委托签约/解约查询接口"),
+    WS_2022("2022", "兴业银行鉴权审核申请"),
+    WS_2023("2023", "兴业银行鉴权审核申请结果查询"),
+    WS_2025("2025", "签约查询接口"),
+    
+    MFS_SUCCESS("0000","成功"),
+    MFS_HALF_SUCCESS("0001","部分成功"),
+    JSON_PARSE_FAILURE("9003","Json数据转换出现异常"),
+    INVALIDATE_PARAM("9004","参数校验异常"),
+    BUSINESS_FAILURE("9999","系统异常"),
+    MFS_NO_PACT("1004","无该合同，或该合同未上传还款计划"),
+    NO_RESPONSE("---","响应异常"),
+    
+    /**
+     * 账户类型(2101接口数据库取数据)
+     */
+    ACCT_TYPE_LOAN("03", "放款账户"),
+    ACCT_TYPE_REPAY("04", "扣款账户"),
+    
+    /**
+     * 账户用途(2101接口拼小微报文)
+     */
+    AC_USE_LOAN("2", "放款账户"),
+    AC_USE_REPAY("1", "扣款账户"),
+    
+    /**
+     * 还款计划结清状态
+     */
+    SETTLE("Y","已结清"),
+    UN_SETTLE("N","未结清"),
+    
+    /**
+     * 处理结果(2002小微接口响应数据)
+     */
+    APPROVAL_WORKING("0","处理中"),
+    APPROVAL_PASS("1","通过"),
+    APPROVAL_FAIL("2","筛查不通过"),
+    BEFORE_APPROVAL_FAIL("3","预审批不通过"),
+    
+    /**
+     * 返回码(2011接口小微返回码响应数据)
+     */
+    SIGN_SUCCESS("01", "签约成功"),
+    SIGN_FAIL("02", "签约失败"),
+    SIGN_ABNORMAL("03", "签约异常"),
+    
+    /**
+     * 返回码(2012接口小微返回码响应数据)
+     */
+    CONFIRM_SIGN_SUCCESS("01", "签约成功"),
+    CONFIRM_SIGN_FAIL("02", "签约失败"),
+    CONFIRM_SIGN_WORKING("03", "处理中"),
+    CONFIRM_SIGN_ABNORMAL("04", "异常"),
+    
+    /**
+     * 返回码(2025接口小微签约状态响应数据)
+     */
+    QUERY_SIGN_SUCCESS("01", "已签约"),
+    QUERY_SIGN_NO("02", "未签约"),
+    QUERY_SIGN_FAIL("03", "签约失败"),
+    
+    /**
+     * 处理结果(2102接口小微签约状态响应数据)
+     */
+    PAYMENTS_SUCCESS("8", "放款成功"),
+    PAYMENTS_WORKING("4", "审批中"),
+    PAYMENTS_READY("6", "待放款"),
+    
+    /**
+     * 	回调服务类型
+     */
+    CALLBACK_AUDIT_RESULT("01","审核结果回调"),
+    CALLBACK_LOAN_PAYMENTS_RESULT("02","放款结果回调"),
+    CALLBACK_TRANSFER_PLAN_RESULT("03","扣款计划校验结果回调"),
+    CALLBACK_PAYMENT_ORDER_RESULT("04","支付订单结果回调"),
+    
+    /**
+     * MQ消息延时级别
+     * "1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h 2h"
+     */
+    MQ_DELAY_LEVEL_TWO("2","MQ消息延时级别：2"),
+    MQ_DELAY_LEVEL_THREE("3","MQ消息延时级别：3"),
+    MQ_DELAY_LEVEL_FOUR("4","MQ消息延时级别：4"),
+    
+    /**
+     * 小微返回支付流水前缀
+     */
+    PAY_SERIAL_NO_PREFIX("000003", "支付流水号前缀"),
+    ;
+    @Override
+    public String businessCode() {
+        return this.businessCode;
+    }
+
+    @Override
+    public String businessMessage() {
+        return this.responseMsg;
+    }
+    private String businessCode;
+    private String responseMsg;
+
+    private CmsBusinessStatus(String businessCode, String responseMsg) {
+        this.businessCode = businessCode;
+        this.responseMsg = responseMsg;
+    }
+}

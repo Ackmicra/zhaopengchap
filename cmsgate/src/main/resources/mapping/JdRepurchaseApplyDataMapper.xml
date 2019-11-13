@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uranus.platform.business.jd.dao.JdRepurchaseApplyDataMapper">
+  <resultMap id="BaseResultMap" type="com.uranus.platform.business.jd.entity.po.JdRepurchaseApplyData">
+    <id column="JD_ID" jdbcType="VARCHAR" property="jdId" />
+    <result column="APPLICATION_NO" jdbcType="VARCHAR" property="applicationNo" />
+    <result column="CHANNEL_BUYBACK_APPLY_NO" jdbcType="VARCHAR" property="channelBuybackApplyNo" />
+    <result column="REPURCHASE_TYPE" jdbcType="VARCHAR" property="repurchaseType" />
+    <result column="PRINCIPAL_AMOUNT" jdbcType="DECIMAL" property="principalAmount" />
+    <result column="INTEREST_AMOUNT" jdbcType="DECIMAL" property="interestAmount" />
+    <result column="PENALTY_RATE" jdbcType="DECIMAL" property="penaltyRate" />
+    <result column="OTHER_FEE_AMOUNT" jdbcType="DECIMAL" property="otherFeeAmount" />
+    <result column="CREATE_DATE" jdbcType="VARCHAR" property="createDate" />
+    <result column="CREATE_TIME" jdbcType="VARCHAR" property="createTime" />
+    <result column="REPURCHASE_STS" jdbcType="VARCHAR" property="repurchaseSts" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from JD_REPURCHASE_APPLY
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.uranus.platform.business.jd.entity.po.JdRepurchaseApplyData">
+    <selectKey keyProperty="jdId" order="BEFORE" resultType="java.lang.String">
+      SELECT JD_REPURCHASE_APPLY_SEQ.NEXTVAL FROM DUAL
+    </selectKey>
+    insert into JD_REPURCHASE_APPLY (JD_ID, APPLICATION_NO, CHANNEL_BUYBACK_APPLY_NO, 
+      REPURCHASE_TYPE, PRINCIPAL_AMOUNT, INTEREST_AMOUNT, 
+      PENALTY_RATE, OTHER_FEE_AMOUNT, CREATE_DATE, 
+      CREATE_TIME,REPURCHASE_STS)
+    values (#{jdId,jdbcType=VARCHAR}, #{applicationNo,jdbcType=VARCHAR}, #{channelBuybackApplyNo,jdbcType=VARCHAR}, 
+      #{repurchaseType,jdbcType=VARCHAR}, #{principalAmount,jdbcType=DECIMAL}, #{interestAmount,jdbcType=DECIMAL}, 
+      #{penaltyRate,jdbcType=DECIMAL}, #{otherFeeAmount,jdbcType=DECIMAL}, #{createDate,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=VARCHAR},#{repurchaseSts,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.uranus.platform.business.jd.entity.po.JdRepurchaseApplyData">
+    update JD_REPURCHASE_APPLY
+    set APPLICATION_NO = #{applicationNo,jdbcType=VARCHAR},
+      CHANNEL_BUYBACK_APPLY_NO = #{channelBuybackApplyNo,jdbcType=VARCHAR},
+      REPURCHASE_TYPE = #{repurchaseType,jdbcType=VARCHAR},
+      PRINCIPAL_AMOUNT = #{principalAmount,jdbcType=DECIMAL},
+      INTEREST_AMOUNT = #{interestAmount,jdbcType=DECIMAL},
+      PENALTY_RATE = #{penaltyRate,jdbcType=DECIMAL},
+      OTHER_FEE_AMOUNT = #{otherFeeAmount,jdbcType=DECIMAL},
+      CREATE_DATE = #{createDate,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=VARCHAR},
+      REPURCHASE_STS = #{repurchaseSts,jdbcType=VARCHAR}
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, CHANNEL_BUYBACK_APPLY_NO, REPURCHASE_TYPE, PRINCIPAL_AMOUNT, 
+    INTEREST_AMOUNT, PENALTY_RATE, OTHER_FEE_AMOUNT, CREATE_DATE, CREATE_TIME,REPURCHASE_STS
+    from JD_REPURCHASE_APPLY
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, CHANNEL_BUYBACK_APPLY_NO, REPURCHASE_TYPE, PRINCIPAL_AMOUNT, 
+    INTEREST_AMOUNT, PENALTY_RATE, OTHER_FEE_AMOUNT, CREATE_DATE, CREATE_TIME,REPURCHASE_STS
+    from JD_REPURCHASE_APPLY
+  </select>
+  <select id="getByApplicationNoAndSts" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, CHANNEL_BUYBACK_APPLY_NO, REPURCHASE_TYPE, PRINCIPAL_AMOUNT, 
+    INTEREST_AMOUNT, PENALTY_RATE, OTHER_FEE_AMOUNT, CREATE_DATE, CREATE_TIME,REPURCHASE_STS
+    from JD_REPURCHASE_APPLY
+    where APPLICATION_NO = #{applicationNo,jdbcType=VARCHAR} AND REPURCHASE_STS IN ('01','02')
+  </select>
+  <!-- 通过申请号更新回购状态 -->
+  <update id="updateByApplicationNo" parameterType="com.uranus.platform.business.jd.entity.po.JdRepurchaseApplyData">
+    update JD_REPURCHASE_APPLY
+    set APPLICATION_NO = #{applicationNo,jdbcType=VARCHAR},
+      CHANNEL_BUYBACK_APPLY_NO = #{channelBuybackApplyNo,jdbcType=VARCHAR},
+      REPURCHASE_TYPE = #{repurchaseType,jdbcType=VARCHAR},
+      PRINCIPAL_AMOUNT = #{principalAmount,jdbcType=DECIMAL},
+      INTEREST_AMOUNT = #{interestAmount,jdbcType=DECIMAL},
+      PENALTY_RATE = #{penaltyRate,jdbcType=DECIMAL},
+      OTHER_FEE_AMOUNT = #{otherFeeAmount,jdbcType=DECIMAL},
+      CREATE_DATE = #{createDate,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=VARCHAR},
+      REPURCHASE_STS = #{repurchaseSts,jdbcType=VARCHAR}
+    where APPLICATION_NO = #{applicationNo,jdbcType=VARCHAR}
+  </update>
+  <!-- 根据申请号查询回购中的数据 -->
+  <select id="getByApplicationNoAndSts01" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, CHANNEL_BUYBACK_APPLY_NO, REPURCHASE_TYPE, PRINCIPAL_AMOUNT, 
+    INTEREST_AMOUNT, PENALTY_RATE, OTHER_FEE_AMOUNT, CREATE_DATE, CREATE_TIME,REPURCHASE_STS
+    from JD_REPURCHASE_APPLY
+    where APPLICATION_NO = #{applicationNo,jdbcType=VARCHAR} AND REPURCHASE_STS = '01'
+  </select>
+</mapper>

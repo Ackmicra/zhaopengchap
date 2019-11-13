@@ -1,0 +1,27 @@
+package com.uranus.platform.business.jd.service;
+
+import com.uranus.platform.business.jd.entity.vo.JdCallbackRequestView;
+import com.uranus.platform.business.jd.entity.vo.JdResponseView;
+
+/**
+ * @Describe 
+ * @author  wangshuai
+ * @Date 创建时间：2019年8月7日 下午3:02:16
+ * 
+ */
+public interface JdLoanApplyService {
+
+	/**  
+	* @Description 批量预授信接口
+	* @param projNo 项目编号
+	* @param channelId 京东机构编号，AOP插入ws_base记录表会使用
+	* @param bizContent bizContent 京东业务数据（解密后）
+	*/ 
+	JdResponseView applyFor2001(String projNo, String channelId, String bizContent);
+	/**  
+	* @Description 授信审核结果查询回调接口
+	* @param applicationNo 申请号
+	*/ 
+	JdCallbackRequestView applyFor2002(String applicationNo, int delayLevel);
+	
+}

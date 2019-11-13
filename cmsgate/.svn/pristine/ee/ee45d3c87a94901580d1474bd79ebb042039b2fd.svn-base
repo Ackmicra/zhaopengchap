@@ -1,0 +1,67 @@
+package com.uranus.platform.business.jd.service.impl;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.uranus.platform.business.jd.entity.po.JdSigningData;
+import com.uranus.platform.business.jd.entity.vo.JdResponseView;
+import com.uranus.platform.business.jd.service.JdSigningService;
+import com.uranus.platform.utils.jd.security.SignEnvelopServiceKey;
+
+/**
+ * @Describe 签约支付测试类
+ * @author  wangshuai0106@dhcc.com.cn
+ * @Date 创建时间：2019年8月26日 下午6:07:31
+ * 
+ */
+@SpringBootTest
+public class JdSigningServiceImplTest {
+	@Autowired
+    private SignEnvelopServiceKey signEnvelopServiceKey;
+	@Autowired
+	private JdSigningService jdSigningService;
+	
+	@Test
+	void test() {
+		//签约申请
+		String projNo = "2004101";
+		String channelId = "2003";
+		String bizContent = "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";
+		String businessType = "01";//(01-签约申请接口  02-签约确认接口 03-签约查询接口)
+		//提取京东发送的业务数据
+		String decryptDate = signEnvelopServiceKey.verifyEnvelop(bizContent);
+		JdResponseView jdResponseView = jdSigningService.sign(projNo,channelId,decryptDate,businessType);
+		System.out.println(jdResponseView.toString());
+		
+		//签约查询
+//		String projNo1 = "2004101";
+//		String channelId1 = "2003";
+//		String bizContent1 = "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";
+//		//提取京东发送的业务数据
+//		String decryptDate1 = signEnvelopServiceKey.verifyEnvelop(bizContent1);
+//		String businessType1 = "03";//(01-签约申请接口  02-签约确认接口 03-签约查询接口)
+//		JdResponseView jdResponseView1 = jdSigningService.sign(projNo1,channelId1,decryptDate1,businessType1);
+//		System.out.println(jdResponseView1.toString());
+		
+		
+//		JdSigningData jdSigningData= new JdSigningData();
+//		jdSigningData.setJdId("1000000000099");
+//		jdSigningData.setBrNo("2004");
+//		jdSigningData.setChannelProdNo("2004101");
+//		jdSigningData.setPayeeAccountName("李四");
+//		jdSigningData.setPayeeCeritificateType("01");
+//		jdSigningData.setPayeeCeritificateNo("320301198502169142");
+//		jdSigningData.setPayeeMobileNo("132568495231");
+//		jdSigningData.setPayeeAccountNo("6222020111122220000");
+//		jdSigningData.setPayeeBankCode("ICBC");
+//		jdSigningData.setPaymentChannel(5);
+//		jdSigningData.setCreateDate("20190826");
+//		jdSigningData.setCreateTime("20190826 14:20:58");
+////		jdSigningData.setSignTransactionNo(signTransactionNo);
+//		//验证返回值是不是期望的值
+//		Assertions.assertTrue(jdSigningService.insert(jdSigningData));
+
+	}
+}

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uranus.platform.business.pub.dao.WsBaseDataMapper">
+  <resultMap id="BaseResultMap" type="com.uranus.platform.business.pub.entity.po.WsBaseData">
+    <id column="WS_BASE_ID" jdbcType="VARCHAR" property="wsBaseId" />
+    <result column="WS_SERIAL" jdbcType="VARCHAR" property="wsSerial" />
+    <result column="BUS_SIDE" jdbcType="VARCHAR" property="busSide" />
+    <result column="BR_NO" jdbcType="VARCHAR" property="brNo" />
+    <result column="TX_CODE" jdbcType="VARCHAR" property="txCode" />
+    <result column="WS_DATE" jdbcType="VARCHAR" property="wsDate" />
+    <result column="WS_TIME" jdbcType="VARCHAR" property="wsTime" />
+    <result column="RESP_TIME" jdbcType="VARCHAR" property="respTime" />
+    <result column="RESP_CODE" jdbcType="VARCHAR" property="respCode" />
+    <result column="RESP_DESC" jdbcType="VARCHAR" property="respDesc" />
+    <result column="WS_STS" jdbcType="VARCHAR" property="wsSts" />
+    <result column="REQ_CONTENT" jdbcType="CLOB" property="reqContent" />
+    <result column="RESP_CONTENT" jdbcType="CLOB" property="respContent" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from WS_BASE
+    where WS_BASE_ID = #{wsBaseId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.uranus.platform.business.pub.entity.po.WsBaseData">
+    <selectKey keyProperty="wsBaseId" order="BEFORE" resultType="java.lang.String">
+      SELECT WS_BASE_SEQ.NEXTVAL FROM DUAL
+    </selectKey>
+    insert into WS_BASE (WS_BASE_ID, WS_SERIAL, BUS_SIDE, BR_NO, 
+      TX_CODE, WS_DATE, WS_TIME, 
+      RESP_TIME, RESP_CODE, RESP_DESC, 
+      WS_STS, REQ_CONTENT, RESP_CONTENT
+      )
+    values (#{wsBaseId,jdbcType=VARCHAR},#{wsSerial,jdbcType=VARCHAR}, #{busSide,jdbcType=VARCHAR}, #{brNo,jdbcType=VARCHAR}, 
+      #{txCode,jdbcType=VARCHAR}, #{wsDate,jdbcType=VARCHAR}, #{wsTime,jdbcType=VARCHAR}, 
+      #{respTime,jdbcType=VARCHAR}, #{respCode,jdbcType=VARCHAR}, #{respDesc,jdbcType=VARCHAR}, 
+      #{wsSts,jdbcType=VARCHAR}, #{reqContent,jdbcType=CLOB}, #{respContent,jdbcType=CLOB}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.uranus.platform.business.pub.entity.po.WsBaseData">
+    update WS_BASE
+    set WS_SERIAL = #{wsSerial,jdbcType=VARCHAR},
+      BUS_SIDE = #{busSide,jdbcType=VARCHAR},
+      BR_NO = #{brNo,jdbcType=VARCHAR},
+      TX_CODE = #{txCode,jdbcType=VARCHAR},
+      WS_DATE = #{wsDate,jdbcType=VARCHAR},
+      WS_TIME = #{wsTime,jdbcType=VARCHAR},
+      RESP_TIME = #{respTime,jdbcType=VARCHAR},
+      RESP_CODE = #{respCode,jdbcType=VARCHAR},
+      RESP_DESC = #{respDesc,jdbcType=VARCHAR},
+      WS_STS = #{wsSts,jdbcType=VARCHAR},
+      REQ_CONTENT = #{reqContent,jdbcType=CLOB},
+      RESP_CONTENT = #{respContent,jdbcType=CLOB}
+    where WS_BASE_ID = #{wsBaseId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select WS_BASE_ID, WS_SERIAL, BUS_SIDE, BR_NO, TX_CODE, WS_DATE, WS_TIME, RESP_TIME, 
+    RESP_CODE, RESP_DESC, WS_STS, REQ_CONTENT, RESP_CONTENT
+    from WS_BASE
+    where WS_BASE_ID = #{wsBaseId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select WS_BASE_ID, WS_SERIAL, BUS_SIDE, BR_NO, TX_CODE, WS_DATE, WS_TIME, RESP_TIME, 
+    RESP_CODE, RESP_DESC, WS_STS, REQ_CONTENT, RESP_CONTENT
+    from WS_BASE
+  </select>
+</mapper>

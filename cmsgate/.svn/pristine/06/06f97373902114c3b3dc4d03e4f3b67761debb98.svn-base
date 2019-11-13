@@ -1,0 +1,11 @@
+package com.uranus.platform.business.pub.entity.dto;
+
+import lombok.Data;
+
+@Data
+public class Response2318List {
+
+	private String pactNo;
+	private String chkRes;
+	private String chkDesc;
+}

@@ -1,0 +1,216 @@
+package com.uranus.platform.business.jd.service.impl;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.alibaba.druid.util.StringUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.uranus.platform.business.jd.dao.JdRepayPlanDataMapper;
+import com.uranus.platform.business.jd.entity.po.JdRepayPlanData;
+import com.uranus.platform.business.jd.entity.pojo.JdLoanChangeRepayPlan;
+import com.uranus.platform.business.jd.entity.pojo.JdLoanSyncRepayPlan;
+import com.uranus.platform.business.jd.entity.pojo.JdQueryRepayPlan;
+import com.uranus.platform.business.jd.entity.pojo.JdRepayPlan;
+import com.uranus.platform.business.jd.entity.status.JdResponseStatus;
+import com.uranus.platform.business.jd.entity.vo.JdResponseView;
+import com.uranus.platform.business.jd.service.JdRepayPlanService;
+import com.uranus.platform.business.jd.service.trans.PlanTrans2201Service;
+import com.uranus.platform.business.jd.service.trans.RepayPlanQuery2202Service;
+import com.uranus.platform.business.pub.entity.po.ProjBaseData;
+import com.uranus.platform.business.pub.service.CreateKeyService;
+import com.uranus.platform.business.pub.service.ProjBaseService;
+import com.uranus.platform.utils.aop.log.WsBaseLog;
+import com.uranus.platform.utils.exception.PlatformExceptionFactory;
+import com.uranus.platform.utils.status.CmsBusinessStatus;
+import com.uranus.tools.beans.BeanCopyUtils;
+import com.uranus.tools.utils.DateUtils;
+import com.uranus.tools.validator.UranusValidator;
+
+@Service
+public class JdRepayPlanServiceImpl implements JdRepayPlanService {
+
+	@Autowired
+	JdRepayPlanDataMapper jdRepayPlanDataMapper;
+	@Autowired
+	private ObjectMapper objectMapper;
+	@Autowired
+	private UranusValidator uranusValidator;
+	@Autowired
+	private ProjBaseService projBaseService;
+	@Autowired
+	private PlanTrans2201Service planTrans2201Service;
+	@Autowired
+	private RepayPlanQuery2202Service repayPlanQuery2202Service;
+	@Autowired
+	private CreateKeyService createKeyService;
+	
+	
+	/**  
+	* @Description 还款计划上传接口入库、请求小微、将响应转换成京东所需响应
+	* @param projNo 信托项目编号
+	* @param brNo 合作机构编号
+	* @param jdLoanSyncRepayPlan 还款计划数据
+	*/  
+	public JdResponseView getRepayPlan(String brNo, JdLoanSyncRepayPlan jdLoanSyncRepayPlan, String projNo) {
+		//获取申请号
+		String applicationNo = jdLoanSyncRepayPlan.getApplicationNo();
+		//此部分的对象同上文解释，也应该是一个Bean对象
+		List<JdRepayPlan> jdRepayPlanList = jdLoanSyncRepayPlan.getRepayPlans();
+		//数量不多的情况下，不要使用parallel多线程，反而降低效率
+		List<JdRepayPlanData> JdRepayPlanDataList = jdRepayPlanList.stream().map(pojo -> {
+			JdRepayPlanData jdRepayPlanData = BeanCopyUtils.INSTANCE.convertTo(pojo, JdRepayPlanData.class);
+			jdRepayPlanData.setApplicationNo(applicationNo);
+			jdRepayPlanData.setCreateDate(DateUtils.nowDateFormat());
+			jdRepayPlanData.setCreateTime(DateUtils.nowTimeFormat());
+			jdRepayPlanData.setUpType(JdResponseStatus.PLN_SYN.businessCode());
+			return jdRepayPlanData;
+		}).collect(Collectors.toList());
+		
+		jdRepayPlanDataMapper.insert(JdRepayPlanDataList);
+		
+		//拼京东响应报文
+		JdResponseView jdResponseDto = planTrans2201Service.request2201(brNo, createKeyService.getJdTradeNo(), JdRepayPlanDataList);
+		
+		return jdResponseDto;
+	}
+
+	
+	/**
+	 *  还款计划上传校验部分
+	 * @param projNo 信托项目编号
+	 * @param bizContent 已经解密后的消息正文
+	 * @param channelId 京东机构编号，AOP插入ws_base记录表会使用
+	 * @return
+	 */
+	@Override
+	@WsBaseLog
+	public JdResponseView syncRepayPlan(String projNo, String channelId, String bizContent) {
+		//通过项目号查询机构信息
+		ProjBaseData projBaseData = projBaseService.getByProjNo(projNo);
+		if(projBaseData != null && !StringUtils.isEmpty(projBaseData.getBrNo())) {
+			//此处要处理的是京东的消息正文，，此部分不是走的rest服务，所以这部分不是View对象，而是一个Bean对象。你可以理解为一个POJO，或者把这个理解为一个DTO也可以。我建议就把它当作一个POJO对象，就叫JdLoanSyncRepayPlan或者JdLoanSyncRepayPlanEntity
+			try {
+				JdLoanSyncRepayPlan jdLoanSyncRepayPlan = objectMapper.readValue(bizContent,JdLoanSyncRepayPlan.class);
+				List<String> errorMessList = uranusValidator.validatorAll(jdLoanSyncRepayPlan);
+				if(errorMessList.size() == 0 ) {
+					String brNo = projBaseData.getBrNo();
+					//此处返回正确结果，否则一律抛出异常，由异常拦截进行处理
+					return getRepayPlan(brNo, jdLoanSyncRepayPlan, projNo);
+					//TODO 此处需要使用AOP做一个WsBaseData的插入操作。但不确定是只有成功才插入还是成功或失败都插入。
+				}else {
+					throw PlatformExceptionFactory.paramInValidateException(CmsBusinessStatus.INVALIDATE_PARAM).build(errorMessList);
+				}
+			} catch (IOException e) {
+				throw PlatformExceptionFactory.jsonParseException(CmsBusinessStatus.JSON_PARSE_FAILURE).build(e);
+			}
+		}else {
+			throw PlatformExceptionFactory.exception(JdResponseStatus.PROJ_UNEXISTS).build(JdResponseStatus.PROJ_UNEXISTS.businessMessage());
+		}
+	}
+
+
+	/**
+	 *  还款计划变更校验部分
+	 * @param projNo 信托项目编号
+	 * @param bizContent 已经解密后的消息正文
+	 * @param channelId 京东机构编号，AOP插入ws_base记录表会使用
+	 * @return
+	 */
+	@Override
+	@WsBaseLog
+	public JdResponseView changeRepayPlan(String projNo, String channelId, String bizContent) {
+		//通过项目号查询机构信息
+		ProjBaseData projBaseData = projBaseService.getByProjNo(projNo);
+		if(projBaseData != null && !StringUtils.isEmpty(projBaseData.getBrNo())) {
+			//此处要处理的是京东的消息正文，，此部分不是走的rest服务，所以这部分不是View对象，而是一个Bean对象。你可以理解为一个POJO，或者把这个理解为一个DTO也可以。我建议就把它当作一个POJO对象，就叫JdLoanSyncRepayPlan或者JdLoanSyncRepayPlanEntity
+			try {
+				JdLoanChangeRepayPlan jdLoanChangeRepayPlan = objectMapper.readValue(bizContent,JdLoanChangeRepayPlan.class);
+				List<String> errorMessList = uranusValidator.validatorAll(jdLoanChangeRepayPlan);
+				if(errorMessList.size() == 0 ) {
+					String brNo = projBaseData.getBrNo();
+					//此处返回正确结果，否则一律抛出异常，由异常拦截进行处理
+					return changeRepayPlan(brNo, jdLoanChangeRepayPlan, projNo);
+					//TODO 此处需要使用AOP做一个WsBaseData的插入操作。但不确定是只有成功才插入还是成功或失败都插入。
+				}else {
+					throw PlatformExceptionFactory.paramInValidateException(CmsBusinessStatus.INVALIDATE_PARAM).build(errorMessList);
+				}
+			} catch (IOException e) {
+				throw PlatformExceptionFactory.jsonParseException(CmsBusinessStatus.JSON_PARSE_FAILURE).build(e);
+			}
+		}else {
+			throw PlatformExceptionFactory.exception(JdResponseStatus.PROJ_UNEXISTS).build(JdResponseStatus.PROJ_UNEXISTS.businessMessage());
+		}
+	}
+
+
+	/**  
+	* @Description 京东还款计划变更 入库、请求小微、将响应转换成京东所需响应
+	* @param brNo 合作机构编号
+	* @param jdLoanChangeRepayPlan 还款计划变更数据
+	* @param projNo	信托项目编号
+	* @return
+	*/  
+	private JdResponseView changeRepayPlan(String brNo, JdLoanChangeRepayPlan jdLoanChangeRepayPlan, String projNo) {
+		Map<String, JdRepayPlan> planMap = new HashMap<String, JdRepayPlan>();
+		
+		List<JdRepayPlan> jdRepayPlans = jdLoanChangeRepayPlan.getRepayPlans();
+		jdRepayPlans.stream().forEach((M) -> {
+			planMap.put(String.valueOf(M.getIssue()), M);
+		});
+		// 调用2201接口上传还款计划
+		// 数量不多的情况下，不要使用parallel多线程，反而降低效率
+		String applicationNo = jdLoanChangeRepayPlan.getApplicationNo();	// 获取申请号
+		String changeReason = jdLoanChangeRepayPlan.getChangeReason();		//获取变更原因
+		List<JdRepayPlanData> jdRepayPlanDataList = jdRepayPlans.stream().map(pojo -> {
+			JdRepayPlanData jdRepayPlanData = BeanCopyUtils.INSTANCE.convertTo(pojo, JdRepayPlanData.class);
+			jdRepayPlanData.setApplicationNo(applicationNo);
+			jdRepayPlanData.setCreateDate(DateUtils.nowDateFormat());
+			jdRepayPlanData.setCreateTime(DateUtils.nowTimeFormat());
+			jdRepayPlanData.setUpType(JdResponseStatus.PLN_CHANGE.businessCode());
+			jdRepayPlanData.setChangeReason(changeReason);
+			return jdRepayPlanData;
+		}).collect(Collectors.toList());
+		jdRepayPlanDataMapper.insert(jdRepayPlanDataList);
+		// 拼京东响应报文
+		JdResponseView jdResponseView = planTrans2201Service.request2201ForChange(brNo, createKeyService.getJdTradeNo(),
+				jdRepayPlanDataList, applicationNo, planMap);
+		return jdResponseView;
+	}
+
+	/**
+	 *  还款计划查询
+	 * @param projNo 信托项目编号
+	 * @param bizContent 已经解密后的消息正文
+	 * @param channelId 京东机构编号，AOP插入ws_base记录表会使用
+	 * @return
+	 */
+	@Override
+	@WsBaseLog
+	public JdResponseView queryRepayPlan(String projNo, String channelId, String bizContent) {
+		//通过项目号查询机构信息
+		ProjBaseData projBaseData = projBaseService.getByProjNo(projNo);
+		if(projBaseData != null && !StringUtils.isEmpty(projBaseData.getBrNo())) {
+			try {
+				JdQueryRepayPlan jdQueryRepayPlan = objectMapper.readValue(bizContent,JdQueryRepayPlan.class);
+				List<String> errorMessList = uranusValidator.validatorAll(jdQueryRepayPlan);
+				if(errorMessList.size() == 0 ) {
+					String brNo = projBaseData.getBrNo();
+					//此处返回正确结果，否则一律抛出异常，由异常拦截进行处理
+					return repayPlanQuery2202Service.request2202(brNo, createKeyService.getJdTradeNo(), jdQueryRepayPlan.getApplicationNo());
+				}else {
+					throw PlatformExceptionFactory.paramInValidateException(CmsBusinessStatus.INVALIDATE_PARAM).build(errorMessList);
+				}
+			} catch (IOException e) {
+				throw PlatformExceptionFactory.jsonParseException(CmsBusinessStatus.JSON_PARSE_FAILURE).build(e);
+			}
+		}else {
+			throw PlatformExceptionFactory.exception(JdResponseStatus.PROJ_UNEXISTS).build(JdResponseStatus.PROJ_UNEXISTS.businessMessage());
+		}				
+	}
+}

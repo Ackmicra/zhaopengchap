@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uranus.platform.business.pub.dao.CallbackLogDataMapper">
+  <resultMap id="BaseResultMap" type="com.uranus.platform.business.pub.entity.po.CallbackLogData">
+    <id column="LOG_ID" jdbcType="VARCHAR" property="logId" />
+    <result column="TRANS_NO" jdbcType="VARCHAR" property="transNo" />
+    <result column="BUS_SIDE" jdbcType="VARCHAR" property="busSide" />
+    <result column="TX_CODE" jdbcType="VARCHAR" property="txCode" />
+    <result column="CALLBACK_STS" jdbcType="VARCHAR" property="callbackSts" />
+    <result column="REQ_DATE" jdbcType="VARCHAR" property="reqDate" />
+    <result column="REQ_TIME" jdbcType="VARCHAR" property="reqTime" />
+    <result column="RESP_TIME" jdbcType="VARCHAR" property="respTime" />
+    <result column="REQ_CONTENT" jdbcType="CLOB" property="reqContent" />
+    <result column="RESP_CONTENT" jdbcType="CLOB" property="respContent" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from CALLBACK_LOG
+    where LOG_ID = #{logId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.uranus.platform.business.pub.entity.po.CallbackLogData">
+    <selectKey keyProperty="logId" order="BEFORE" resultType="java.lang.String">
+      SELECT CALLBACK_LOG_SEQ.NEXTVAL FROM DUAL
+    </selectKey>
+    insert into CALLBACK_LOG (LOG_ID, TRANS_NO, BUS_SIDE, TX_CODE, 
+      CALLBACK_STS, REQ_DATE, REQ_TIME, 
+      RESP_TIME, REQ_CONTENT, RESP_CONTENT
+      )
+    values (#{logId,jdbcType=VARCHAR}, #{transNo,jdbcType=VARCHAR}, #{busSide,jdbcType=VARCHAR}, #{txCode,jdbcType=VARCHAR}, 
+      #{callbackSts,jdbcType=VARCHAR}, #{reqDate,jdbcType=VARCHAR}, #{reqTime,jdbcType=VARCHAR}, 
+      #{respTime,jdbcType=VARCHAR}, #{reqContent,jdbcType=CLOB}, #{respContent,jdbcType=CLOB}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.uranus.platform.business.pub.entity.po.CallbackLogData">
+    update CALLBACK_LOG
+    set TRANS_NO = #{transNo,jdbcType=VARCHAR},
+      BUS_SIDE = #{busSide,jdbcType=VARCHAR},
+      TX_CODE = #{txCode,jdbcType=VARCHAR},
+      CALLBACK_STS = #{callbackSts,jdbcType=VARCHAR},
+      REQ_DATE = #{reqDate,jdbcType=VARCHAR},
+      REQ_TIME = #{reqTime,jdbcType=VARCHAR},
+      RESP_TIME = #{respTime,jdbcType=VARCHAR},
+      REQ_CONTENT = #{reqContent,jdbcType=CLOB},
+      RESP_CONTENT = #{respContent,jdbcType=CLOB}
+    where LOG_ID = #{logId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select LOG_ID, TRANS_NO, BUS_SIDE, TX_CODE, CALLBACK_STS, REQ_DATE, REQ_TIME, RESP_TIME, 
+    REQ_CONTENT, RESP_CONTENT
+    from CALLBACK_LOG
+    where LOG_ID = #{logId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select LOG_ID, TRANS_NO, BUS_SIDE, TX_CODE, CALLBACK_STS, REQ_DATE, REQ_TIME, RESP_TIME, 
+    REQ_CONTENT, RESP_CONTENT
+    from CALLBACK_LOG
+  </select>
+</mapper>

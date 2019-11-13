@@ -1,0 +1,32 @@
+package com.uranus.platform.business.jd.entity.pojo;
+
+import java.util.List;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import com.uranus.tools.beans.annotation.ConvertBean;
+
+import lombok.Data;
+
+/**@Describe JD贷款申请放款步骤信息实体类
+ * 
+ * @author wangshuai0106@dhcc.com.cn
+ *
+ */
+
+@Data
+@ConvertBean
+public class JDLoanPaymentSteps {
+	
+	@NotBlank
+	private String paymentNo;  //放宽步骤序列号
+	@NotNull
+	private Double paymentAmount; //本步骤放款额
+	@NotEmpty
+	@Valid
+	private List<JDAccount> receivingAccount; //收款账户
+
+}

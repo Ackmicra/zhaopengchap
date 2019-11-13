@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uranus.platform.business.pub.dao.CreateKeyMapper">
+	<!-- 获取京东业务流水号 -->
+	<select id="getJdTradeNo" resultType="String">
+	     SELECT JD_TRADE_NO_SEQ.NEXTVAL FROM DUAL
+	</select>
+	
+	<!-- 获取批次号 -->
+	<select id="getBatchNoNo" resultType="String">
+	     SELECT BATCH_NO_SEQ.NEXTVAL FROM DUAL
+	</select>
+	<!-- 获取批次号 -->
+	<select id="getJdBatchNo" resultType="String">
+	     SELECT JD_BATCH_NO_SEQ.NEXTVAL FROM DUAL
+	</select>
+</mapper>

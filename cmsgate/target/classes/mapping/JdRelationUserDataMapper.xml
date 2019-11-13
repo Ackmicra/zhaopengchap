@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uranus.platform.business.jd.dao.JdRelationUserDataMapper">
+  <resultMap id="BaseResultMap" type="com.uranus.platform.business.jd.entity.po.JdRelationUserData">
+    <id column="JD_ID" jdbcType="VARCHAR" property="jdId" />
+    <result column="APPLICATION_NO" jdbcType="VARCHAR" property="applicationNo" />
+    <result column="RELATION_USER_TYPE" jdbcType="VARCHAR" property="relationUserType" />
+    <result column="RELATION_TYPE" jdbcType="VARCHAR" property="relationType" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="CERTIFICATE_TYPE" jdbcType="VARCHAR" property="certificateType" />
+    <result column="CERTIFICATE_NO" jdbcType="VARCHAR" property="certificateNo" />
+    <result column="COMPANY" jdbcType="VARCHAR" property="company" />
+    <result column="TELEPHONE" jdbcType="VARCHAR" property="telephone" />
+    <result column="EMAIL" jdbcType="VARCHAR" property="email" />
+    <result column="MONTHLY_INCOME" jdbcType="DECIMAL" property="monthlyIncome" />
+    <result column="VALID" jdbcType="DECIMAL" property="valid" />
+    <result column="BOOKLET_NUMBER" jdbcType="VARCHAR" property="bookletNumber" />
+    <result column="HOUSEREGIS_ADDR" jdbcType="VARCHAR" property="houseregisAddr" />
+    <result column="ADDRESS" jdbcType="VARCHAR" property="address" />
+    <result column="USED_NAME" jdbcType="VARCHAR" property="usedName" />
+    <result column="MARR_STATUS" jdbcType="VARCHAR" property="marrStatus" />
+    <result column="FLY_BRITHDT" jdbcType="VARCHAR" property="flyBrithdt" />
+    <result column="GUARANTEE_AMOUNT" jdbcType="DECIMAL" property="guaranteeAmount" />
+    <result column="CREATE_DATE" jdbcType="VARCHAR" property="createDate" />
+    <result column="CREATE_TIME" jdbcType="VARCHAR" property="createTime" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from JD_RELATION_USER
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.uranus.platform.business.jd.entity.po.JdRelationUserData">
+    <selectKey keyProperty="jdId" order="BEFORE" resultType="java.lang.String">
+      SELECT JD_RELATION_USER_SEQ.NEXTVAL FROM DUAL
+    </selectKey>
+    insert into JD_RELATION_USER (JD_ID, APPLICATION_NO, RELATION_USER_TYPE, 
+      RELATION_TYPE, NAME, CERTIFICATE_TYPE, 
+      CERTIFICATE_NO, COMPANY, TELEPHONE, 
+      EMAIL, MONTHLY_INCOME, VALID, 
+      BOOKLET_NUMBER, HOUSEREGIS_ADDR, ADDRESS, 
+      USED_NAME, MARR_STATUS, FLY_BRITHDT, 
+      GUARANTEE_AMOUNT, CREATE_DATE, CREATE_TIME
+      )
+    values (#{jdId,jdbcType=VARCHAR}, #{applicationNo,jdbcType=VARCHAR}, #{relationUserType,jdbcType=VARCHAR}, 
+      #{relationType,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{certificateType,jdbcType=VARCHAR}, 
+      #{certificateNo,jdbcType=VARCHAR}, #{company,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, 
+      #{email,jdbcType=VARCHAR}, #{monthlyIncome,jdbcType=DECIMAL}, #{valid,jdbcType=DECIMAL}, 
+      #{bookletNumber,jdbcType=VARCHAR}, #{houseregisAddr,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
+      #{usedName,jdbcType=VARCHAR}, #{marrStatus,jdbcType=VARCHAR}, #{flyBrithdt,jdbcType=VARCHAR}, 
+      #{guaranteeAmount,jdbcType=DECIMAL}, #{createDate,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.uranus.platform.business.jd.entity.po.JdRelationUserData">
+    update JD_RELATION_USER
+    set APPLICATION_NO = #{applicationNo,jdbcType=VARCHAR},
+      RELATION_USER_TYPE = #{relationUserType,jdbcType=VARCHAR},
+      RELATION_TYPE = #{relationType,jdbcType=VARCHAR},
+      NAME = #{name,jdbcType=VARCHAR},
+      CERTIFICATE_TYPE = #{certificateType,jdbcType=VARCHAR},
+      CERTIFICATE_NO = #{certificateNo,jdbcType=VARCHAR},
+      COMPANY = #{company,jdbcType=VARCHAR},
+      TELEPHONE = #{telephone,jdbcType=VARCHAR},
+      EMAIL = #{email,jdbcType=VARCHAR},
+      MONTHLY_INCOME = #{monthlyIncome,jdbcType=DECIMAL},
+      VALID = #{valid,jdbcType=DECIMAL},
+      BOOKLET_NUMBER = #{bookletNumber,jdbcType=VARCHAR},
+      HOUSEREGIS_ADDR = #{houseregisAddr,jdbcType=VARCHAR},
+      ADDRESS = #{address,jdbcType=VARCHAR},
+      USED_NAME = #{usedName,jdbcType=VARCHAR},
+      MARR_STATUS = #{marrStatus,jdbcType=VARCHAR},
+      FLY_BRITHDT = #{flyBrithdt,jdbcType=VARCHAR},
+      GUARANTEE_AMOUNT = #{guaranteeAmount,jdbcType=DECIMAL},
+      CREATE_DATE = #{createDate,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=VARCHAR}
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, RELATION_USER_TYPE, RELATION_TYPE, NAME, CERTIFICATE_TYPE, 
+    CERTIFICATE_NO, COMPANY, TELEPHONE, EMAIL, MONTHLY_INCOME, VALID, BOOKLET_NUMBER, 
+    HOUSEREGIS_ADDR, ADDRESS, USED_NAME, MARR_STATUS, FLY_BRITHDT, GUARANTEE_AMOUNT, 
+    CREATE_DATE, CREATE_TIME
+    from JD_RELATION_USER
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, RELATION_USER_TYPE, RELATION_TYPE, NAME, CERTIFICATE_TYPE, 
+    CERTIFICATE_NO, COMPANY, TELEPHONE, EMAIL, MONTHLY_INCOME, VALID, BOOKLET_NUMBER, 
+    HOUSEREGIS_ADDR, ADDRESS, USED_NAME, MARR_STATUS, FLY_BRITHDT, GUARANTEE_AMOUNT, 
+    CREATE_DATE, CREATE_TIME
+    from JD_RELATION_USER
+  </select>
+  <select id="getByApplicationNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, RELATION_USER_TYPE, RELATION_TYPE, NAME, CERTIFICATE_TYPE, 
+    CERTIFICATE_NO, COMPANY, TELEPHONE, EMAIL, MONTHLY_INCOME, VALID, BOOKLET_NUMBER, 
+    HOUSEREGIS_ADDR, ADDRESS, USED_NAME, MARR_STATUS, FLY_BRITHDT, GUARANTEE_AMOUNT, 
+    CREATE_DATE, CREATE_TIME
+    from JD_RELATION_USER
+    where APPLICATION_NO = #{applicationNo,jdbcType=VARCHAR}
+  </select>
+</mapper>

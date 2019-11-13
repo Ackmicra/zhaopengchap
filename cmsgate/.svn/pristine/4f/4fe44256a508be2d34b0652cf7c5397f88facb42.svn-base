@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uranus.platform.business.pub.dao.ParmDicDataMapper">
+  <resultMap id="BaseResultMap" type="com.uranus.platform.business.pub.entity.po.ParmDicData">
+    <id column="KEY_ID" jdbcType="VARCHAR" property="keyId" />
+    <result column="KEY_NAME" jdbcType="VARCHAR" property="keyName" />
+    <result column="OPT_CODE" jdbcType="VARCHAR" property="optCode" />
+    <result column="OPT_NAME" jdbcType="VARCHAR" property="optName" />
+    <result column="MATE_CODE" jdbcType="VARCHAR" property="mateCode" />
+    <result column="MATE_NAME" jdbcType="VARCHAR" property="mateName" />
+    <result column="OPT_SEQ" jdbcType="DECIMAL" property="optSeq" />
+    <result column="OPT_STS" jdbcType="VARCHAR" property="optSts" />
+  </resultMap>
+  <delete id="deleteParmDic" parameterType="java.lang.String">
+    delete from PARM_DIC
+    where KEY_NAME = #{keyName,jdbcType=VARCHAR} AND OPT_CODE = #{optCode,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.uranus.platform.business.pub.entity.po.ParmDicData">
+    <selectKey keyProperty="keyId" order="BEFORE" resultType="java.lang.String">
+      SELECT PARM_DIC_SEQ.NEXTVAL FROM DUAL
+    </selectKey>
+    insert into PARM_DIC (KEY_ID, KEY_NAME, OPT_CODE, OPT_NAME, 
+      MATE_CODE, MATE_NAME, OPT_SEQ, 
+      OPT_STS)
+    values (#{keyId,jdbcType=VARCHAR}, #{keyName,jdbcType=VARCHAR}, #{optCode,jdbcType=VARCHAR}, #{optName,jdbcType=VARCHAR}, 
+      #{mateCode,jdbcType=VARCHAR}, #{mateName,jdbcType=VARCHAR}, #{optSeq,jdbcType=DECIMAL}, 
+      #{optSts,jdbcType=VARCHAR})
+  </insert>
+  <update id="update" parameterType="com.uranus.platform.business.pub.entity.po.ParmDicData" >
+    update PARM_DIC
+    set 
+      OPT_NAME = #{optName,jdbcType=VARCHAR},
+      MATE_CODE = #{mateCode,jdbcType=VARCHAR},
+      MATE_NAME = #{mateName,jdbcType=VARCHAR},
+      OPT_STS = #{optSts,jdbcType=VARCHAR}
+    where KEY_NAME = #{keyName,jdbcType=VARCHAR} AND OPT_CODE = #{optCode,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select KEY_ID, KEY_NAME, OPT_CODE, OPT_NAME, MATE_CODE, MATE_NAME, OPT_SEQ, OPT_STS
+    from PARM_DIC
+    where KEY_ID = #{keyId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select KEY_ID, KEY_NAME, OPT_CODE, OPT_NAME, MATE_CODE, MATE_NAME, OPT_SEQ, OPT_STS
+    from PARM_DIC
+  </select>
+  
+  <select id="getByKeyNameOptCode" parameterType="com.uranus.platform.business.pub.entity.po.ParmDicData" resultMap="BaseResultMap">
+    select KEY_ID, KEY_NAME, OPT_CODE, OPT_NAME, MATE_CODE, MATE_NAME, OPT_SEQ, OPT_STS
+    from PARM_DIC
+    where KEY_NAME = #{keyName,jdbcType=VARCHAR} AND OPT_CODE = #{optCode,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="getByKeyNameMateCode" parameterType="com.uranus.platform.business.pub.entity.po.ParmDicData" resultMap="BaseResultMap">
+    select KEY_ID, KEY_NAME, OPT_CODE, OPT_NAME, MATE_CODE, MATE_NAME, OPT_SEQ, OPT_STS
+    from PARM_DIC
+    where KEY_NAME = #{keyName,jdbcType=VARCHAR} AND MATE_CODE = #{mateCode,jdbcType=VARCHAR}
+  </select>
+</mapper>

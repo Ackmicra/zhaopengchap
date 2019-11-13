@@ -1,0 +1,99 @@
+package com.uranus.platform.business.jd.entity.po;
+
+import lombok.Data;
+
+@Data
+public class JdTransferBatchData {
+    private String jdId;
+
+    private String batchNumber;
+
+    private String transferType;
+
+    private String paymentAgentType;
+
+    private String checkSts;
+
+    private String createDate;
+
+    private String createTime;
+
+    private String upDate;
+
+    private String upTime;
+    
+    private String projNo;
+    
+    public String getJdId() {
+        return jdId;
+    }
+
+    public void setJdId(String jdId) {
+        this.jdId = jdId;
+    }
+
+    public String getBatchNumber() {
+        return batchNumber;
+    }
+
+    public void setBatchNumber(String batchNumber) {
+        this.batchNumber = batchNumber;
+    }
+
+    public String getTransferType() {
+        return transferType;
+    }
+
+    public void setTransferType(String transferType) {
+        this.transferType = transferType;
+    }
+
+    public String getPaymentAgentType() {
+        return paymentAgentType;
+    }
+
+    public void setPaymentAgentType(String paymentAgentType) {
+        this.paymentAgentType = paymentAgentType;
+    }
+
+    public String getCheckSts() {
+        return checkSts;
+    }
+
+    public void setCheckSts(String checkSts) {
+        this.checkSts = checkSts;
+    }
+
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getUpDate() {
+        return upDate;
+    }
+
+    public void setUpDate(String upDate) {
+        this.upDate = upDate;
+    }
+
+    public String getUpTime() {
+        return upTime;
+    }
+
+    public void setUpTime(String upTime) {
+        this.upTime = upTime;
+    }
+    
+}

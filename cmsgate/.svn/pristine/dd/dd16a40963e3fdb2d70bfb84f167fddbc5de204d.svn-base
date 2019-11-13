@@ -1,0 +1,28 @@
+authorization.login-uri=/authorization/loginPage
+authorization.login-process-uri=/authorization/login
+authorization.logout-uri=/authorization/logout
+authorization.logout-success-uri=/authorization/logoutPage
+authorization.all-authority-role-name=ALL_ADMIN
+authorization.session_invalid=/authorization/mvc/sessionInvalid
+
+authorization.oauth2.client-id=demo-id
+authorization.oauth2.client-secret=demo-secret
+#是否开启权限校验
+authorization.enablePermission=false
+authorization.enableAuthorize=false
+
+
+#authorization.access_token_validity_second = 600
+#authorization.refresh_token_validity_seconds = 43200
+#
+##系统1
+#authorization.oauth2.clients[0].client-id=uranus_security
+#authorization.oauth2.clients[0].client-secret=uranus_secret
+#authorization.oauth2.clients[0].redirect-uri=http://example.com
+#authorization.oauth2.clients[0].validity-seconds=1200
+#
+##系统2
+#authorization.oauth2.clients[1].client-id=uranus1_security
+#authorization.oauth2.clients[1].client-secret=uranus1_secret
+#authorization.oauth2.clients[1].redirect-uri=http://example.com
+#authorization.oauth2.clients[1].validity-seconds=2400

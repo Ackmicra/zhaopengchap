@@ -1,0 +1,30 @@
+package com.uranus.platform.business.jd.dao;
+
+import java.util.List;
+
+import com.uranus.platform.business.jd.entity.po.JdLoanApplyInfoData;
+
+public interface JdLoanApplyInfoDataMapper {
+    int deleteByPrimaryKey(String jdId);
+
+    int insert(JdLoanApplyInfoData record);
+
+    JdLoanApplyInfoData selectByPrimaryKey(String jdId);
+
+    List<JdLoanApplyInfoData> selectAll();
+
+    int updateByPrimaryKey(JdLoanApplyInfoData record);
+    
+    String getJdId();
+    
+    int updateBatchNo(JdLoanApplyInfoData jdLoanApplyInfoData);
+
+	JdLoanApplyInfoData getByApplicationNo(String applicationNo);
+
+	JdLoanApplyInfoData getByContractNo(String contractNo);
+	
+	int updateSuccessAudit(JdLoanApplyInfoData jdLoanApplyInfoData);
+	
+	int updateFailAudit(JdLoanApplyInfoData jdLoanApplyInfoData);
+    
+}

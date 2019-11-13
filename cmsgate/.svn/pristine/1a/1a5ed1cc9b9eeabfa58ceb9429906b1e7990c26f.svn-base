@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>uranus</groupId>
+        <artifactId>uranus-boot-platform</artifactId>
+        <version>1.1.0-SNAPSHOT</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.uranus</groupId>
+    <artifactId>single-system</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <properties>
+        <uranus.version>1.1.0-SNAPSHOT</uranus.version>
+
+        <targetJavaProject>${basedir}/src/main/java</targetJavaProject>
+        <targetMapperPackage>com.uranus.platform.business.pub.dao</targetMapperPackage>
+        <targetModelPackage>com.uranus.platform.business.pub.entity.po</targetModelPackage>
+        <targetResourcesProject>${basedir}/src/main/resources</targetResourcesProject>
+        <targetXMLPackage>mapping</targetXMLPackage>
+        <!--  依赖版本  -->
+        <mysql.version>5.1.46</mysql.version>
+    </properties>
+    <dependencies>
+
+        <dependency>
+            <groupId>uranus</groupId>
+            <artifactId>uranus-database-mybatis</artifactId>
+            <version>${uranus.version}</version>
+        </dependency>
+        <!--京东金融加解密工具 -->
+
+        <dependency>
+            <groupId>dhc.xwxt</groupId>
+            <artifactId>wyaks-security</artifactId>
+            <version>1.0.5</version>
+        </dependency>
+        <!--京东金融加解密工具 end-->
+        
+        <!-- webservice 相关 -->
+        <dependency>
+		     <groupId>org.apache.cxf</groupId>
+		     <artifactId>cxf-spring-boot-starter-jaxws</artifactId>
+		     <version>3.2.4</version>
+ 		</dependency>
+		
+	    <!-- JAXB for Java 11 -->
+	    <dependency>
+	        <groupId>org.glassfish.jaxb</groupId>
+	        <artifactId>jaxb-runtime</artifactId>
+	        <version>2.4.0-b180830.0438</version>
+	    </dependency>
+	    <!-- JAXWS for Java 11 -->
+	    <dependency>
+	        <groupId>com.sun.xml.ws</groupId>
+	        <artifactId>jaxws-rt</artifactId>
+	        <version>2.3.1</version>
+	        <type>pom</type>
+	    </dependency>
+	    <dependency>
+	        <groupId>com.sun.xml.ws</groupId>
+	        <artifactId>rt</artifactId>
+	        <version>2.3.1</version>
+	    </dependency>
+    	<!-- webservice 相关end -->
+    
+    	<!-- aop相关jar包 -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+    
+    </dependencies>
+</project>

@@ -1,0 +1,12 @@
+package com.uranus.platform.business.pub.entity.dto;
+
+import java.util.List;
+
+import lombok.Data;
+
+@Data
+public class Response2318Dto {
+	
+	private List<Response2318List> list;
+	
+}

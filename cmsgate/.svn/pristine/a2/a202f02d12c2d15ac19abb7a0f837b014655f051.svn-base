@@ -1,0 +1,191 @@
+package com.uranus.platform.business.jd.service.impl;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.alibaba.druid.util.StringUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.uranus.platform.business.jd.dao.JdAccountDataMapper;
+import com.uranus.platform.business.jd.dao.JdLoanApplyInfoDataMapper;
+import com.uranus.platform.business.jd.dao.JdLoanPaymentStepDataMapper;
+import com.uranus.platform.business.jd.dao.JdLoanUserDataMapper;
+import com.uranus.platform.business.jd.dao.JdRelationUserDataMapper;
+import com.uranus.platform.business.jd.entity.po.JdAccountData;
+import com.uranus.platform.business.jd.entity.po.JdLoanApplyInfoData;
+import com.uranus.platform.business.jd.entity.po.JdLoanPaymentStepData;
+import com.uranus.platform.business.jd.entity.po.JdLoanUserData;
+import com.uranus.platform.business.jd.entity.po.JdRelationUserData;
+import com.uranus.platform.business.jd.entity.pojo.JDLoanPaymentsRequest;
+import com.uranus.platform.business.jd.entity.status.JdResponseStatus;
+import com.uranus.platform.business.jd.entity.vo.JdCallbackRequestView;
+import com.uranus.platform.business.jd.entity.vo.JdResponseView;
+import com.uranus.platform.business.jd.service.JdLoanPaymentsService;
+import com.uranus.platform.business.jd.service.trans.LnPaymentsQueryTrans2102Service;
+import com.uranus.platform.business.jd.service.trans.LnPaymentsTrans2101Service;
+import com.uranus.platform.business.pub.entity.po.ProjBaseData;
+import com.uranus.platform.business.pub.service.CreateKeyService;
+import com.uranus.platform.business.pub.service.ProjBaseService;
+import com.uranus.platform.utils.aop.log.WsBaseLog;
+import com.uranus.platform.utils.exception.PlatformExceptionFactory;
+import com.uranus.platform.utils.status.CmsBusinessStatus;
+import com.uranus.tools.validator.UranusValidator;
+
+/**
+ * @Describe 放款指令接口数据处理
+ * @author  wangshuai0106@dhcc.com.cn
+ * @Date 创建时间：2019年8月14日 上午11:22:45
+ * 
+ */
+@Service
+@Transactional
+public class JdLoanPaymentsServiceImpl implements JdLoanPaymentsService{
+	@Autowired
+	private ProjBaseService projBaseService;
+	@Autowired
+	private ObjectMapper objectMapper;
+	@Autowired
+	private UranusValidator uranusValidator;
+	@Autowired
+	private CreateKeyService createKeyService;
+	@Autowired
+	private JdLoanApplyInfoDataMapper jdLoanApplyInfoDataMapper;
+	@Autowired
+	private JdLoanUserDataMapper jdLoanUserDataMapper;
+	@Autowired
+	private JdRelationUserDataMapper jdRelationUserDataMapper;
+	@Autowired
+	private JdAccountDataMapper jdAccountDataMapper;
+	@Autowired
+	private JdLoanPaymentStepDataMapper jdLoanPaymentStepDataMapper;
+	@Autowired
+	private LnPaymentsTrans2101Service lnPaymentsTrans2101Service;
+	@Autowired
+	private LnPaymentsQueryTrans2102Service lnPaymentsQueryTrans2102Service;
+	
+	/**  
+	* @Description 放款指令接口校验
+	* @param projNo 信托项目编号
+	* @param channelId 京东机构编号，AOP插入ws_base记录表会使用
+	* @param bizContent 解密后的京东业务数据
+	* @return
+	*/  
+	@Override
+	@WsBaseLog
+	public JdResponseView requestfor2101(String projNo, String channelId, String bizContent) {
+		//通过项目号查询机构信息
+		ProjBaseData projBaseData = projBaseService.getByProjNo(projNo);
+		if(projBaseData != null && !StringUtils.isEmpty(projBaseData.getBrNo())) {
+			//此处要处理的是京东的消息正文，，此部分不是走的rest服务，所以这部分不是View对象，而是一个Bean对象。你可以理解为一个POJO，或者把这个理解为一个DTO也可以。我建议就把它当作一个POJO对象，就叫JdLoanSyncRepayPlan或者JdLoanSyncRepayPlanEntity
+			try {
+				//将解密后的数据转换成pojo对象
+				JDLoanPaymentsRequest jDRequest = objectMapper.readValue(bizContent,JDLoanPaymentsRequest.class);
+		
+				//校验View层对象是否为空属性以及长度
+				List<String> errorMessList = uranusValidator.validatorAll(jDRequest);
+				if(errorMessList.size() == 0 ) {
+					String brNo = projBaseData.getBrNo();
+					String prdtNo = projBaseData.getPrdtNo();
+					//此处返回正确结果，否则一律抛出异常，由异常拦截进行处理
+					return requestInfo2101(brNo, projNo, prdtNo, jDRequest);
+					//TODO 此处需要使用AOP做一个WsBaseData的插入操作。但不确定是只有成功才插入还是成功或失败都插入。
+				}else {
+					throw PlatformExceptionFactory.paramInValidateException(CmsBusinessStatus.INVALIDATE_PARAM).build(errorMessList);
+				}
+			} catch (IOException e) {
+				throw PlatformExceptionFactory.jsonParseException(CmsBusinessStatus.JSON_PARSE_FAILURE).build(e);
+			}
+		}else {
+			throw PlatformExceptionFactory.exception(JdResponseStatus.PROJ_UNEXISTS).build("项目不存在");
+		}
+	}
+	
+	/**
+	  *  校验京东业务数据
+	 * @param jDRequest 京东业务数据
+	 * @return checkView 校验结果
+	 */
+	public JdResponseView CheckNo(JDLoanPaymentsRequest jDRequest) {
+		JdResponseView checkView = null;
+		//校验
+		//1.校验贷款单是否存在
+		String applicationNo = jDRequest.getApplicationNo();
+		JdLoanApplyInfoData jdLoanApplyInfoData = jdLoanApplyInfoDataMapper.getByApplicationNo(applicationNo);
+		if(jdLoanApplyInfoData == null){
+			checkView = new JdResponseView(JdResponseStatus.NO_LOAN_NO.businessCode(), JdResponseStatus.NO_LOAN_NO.businessMessage(),
+					createKeyService.getJdTradeNo(), null);
+			return checkView;
+		}
+		//2.校验放款指令是否重复（待写）
+		return null;
+	}
+	
+	
+	/**  
+	* @Description 放款指令接口从Data层获取数据
+	* @param brNo 合作机构编号
+	* @param projNo 信托项目编号
+	* @param jDRequest 京东pojo对象
+	* @return 京东响应报文
+	*/  
+	public JdResponseView requestInfo2101(String brNo, String projNo, String prdtNo, JDLoanPaymentsRequest jDRequest) {
+		JdResponseView jdResponseView = null;
+		//校验
+		JdResponseView checkView = CheckNo(jDRequest);
+		if(checkView != null) {
+			return checkView;
+		}else {
+		String tradeNo = createKeyService.getJdTradeNo();
+		//通过贷款申请号获取贷款申请信息
+		JdLoanApplyInfoData jdLoanApplyInfoData = jdLoanApplyInfoDataMapper.getByApplicationNo(jDRequest.getApplicationNo());
+		List<JdLoanUserData> jdLoanUserDataList = jdLoanUserDataMapper.getByApplicationNo(jDRequest.getApplicationNo());
+		List<JdRelationUserData> jdRelationUserDataList = jdRelationUserDataMapper.getByApplicationNo(jDRequest.getApplicationNo());
+		//放款账户信息(从放款步骤中查询)
+		List<JdLoanPaymentStepData> jdLoanPaymentStepData = jdLoanPaymentStepDataMapper.getByApplicationNo(jDRequest.getApplicationNo());
+		//还款账户信息
+		List<JdAccountData> jdRepayAccountDataList = jdAccountDataMapper.getByApplicationNoAndAcUse(jDRequest.getApplicationNo(),CmsBusinessStatus.ACCT_TYPE_REPAY.businessCode());
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("jdLoanApplyInfoData", jdLoanApplyInfoData);
+		map.put("jdLoanUserDataList", jdLoanUserDataList);
+		map.put("jdRelationUserDataList", jdRelationUserDataList);
+		map.put("jdLoanPaymentStepData", jdLoanPaymentStepData);
+		map.put("jdRepayAccountDataList", jdRepayAccountDataList);
+		if(jdLoanUserDataList != null && jdRelationUserDataList != null && jdLoanPaymentStepData != null && jdRepayAccountDataList != null) {
+			//进件批量申请接口返回报文
+			jdResponseView = lnPaymentsTrans2101Service.request2101(tradeNo, brNo, projNo, prdtNo, map, jDRequest.getApplicationNo());
+		} else {
+			jdResponseView = new JdResponseView(JdResponseStatus.DATA_ERROR.businessCode(), 
+					"贷款申请号有误", tradeNo, null);
+		}
+		return jdResponseView;
+		}
+	}
+	/**
+	 * 将数据从数据库提取并传输给小微2102,再接收小微返回的处理响应码
+	 * @param applicationNo 申请号
+	 * @return  
+	 */
+	@Override
+	public JdCallbackRequestView applyFor2102(String applicationNo) {
+		JdCallbackRequestView jdCallbackRequestView = new JdCallbackRequestView();
+		JdLoanApplyInfoData jdLoanApplyInfoData = jdLoanApplyInfoDataMapper.getByApplicationNo(applicationNo);
+		//合作机构号、批次编号、合同号
+		String batchNo = jdLoanApplyInfoData.getBatchNo();
+		String brNo = jdLoanApplyInfoData.getBrNo();
+		//获取项目编号为返回JD的响应赋值
+		String projNo = jdLoanApplyInfoData.getProjNo();
+		// 获取流水号
+		String tradeNo = createKeyService.getJdTradeNo();
+		//请求小微2102接口，返回京东响应数据 
+		jdCallbackRequestView = lnPaymentsQueryTrans2102Service.request2102(brNo, batchNo, tradeNo, applicationNo, projNo);
+		
+		
+		return jdCallbackRequestView;
+	}
+}

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uranus.platform.business.jd.dao.JdTransferBatchDataMapper">
+  <resultMap id="BaseResultMap" type="com.uranus.platform.business.jd.entity.po.JdTransferBatchData">
+    <id column="JD_ID" jdbcType="VARCHAR" property="jdId" />
+    <result column="BATCH_NUMBER" jdbcType="VARCHAR" property="batchNumber" />
+    <result column="TRANSFER_TYPE" jdbcType="VARCHAR" property="transferType" />
+    <result column="PAYMENT_AGENT_TYPE" jdbcType="VARCHAR" property="paymentAgentType" />
+    <result column="CHECK_STS" jdbcType="VARCHAR" property="checkSts" />
+    <result column="CREATE_DATE" jdbcType="VARCHAR" property="createDate" />
+    <result column="CREATE_TIME" jdbcType="VARCHAR" property="createTime" />
+    <result column="UP_DATE" jdbcType="VARCHAR" property="upDate" />
+    <result column="UP_TIME" jdbcType="VARCHAR" property="upTime" />
+    <result column="PROJ_NO" jdbcType="VARCHAR" property="projNo" />
+    <result column="CHECK_DESC" jdbcType="VARCHAR" property="checkDesc" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from JD_TRANSFER_BATCH
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.uranus.platform.business.jd.entity.po.JdTransferBatchData">
+    <selectKey keyProperty="jdId" order="BEFORE" resultType="java.lang.String">
+      SELECT JD_TRANSFER_BATCH_SEQ.NEXTVAL FROM DUAL
+    </selectKey>
+    insert into JD_TRANSFER_BATCH (JD_ID,BATCH_NUMBER, TRANSFER_TYPE, PAYMENT_AGENT_TYPE, 
+      CHECK_STS, CREATE_DATE, CREATE_TIME, 
+      UP_DATE, UP_TIME,PROJ_NO)
+    values (#{jdId,jdbcType=VARCHAR}, #{batchNumber,jdbcType=VARCHAR}, #{transferType,jdbcType=VARCHAR}, #{paymentAgentType,jdbcType=VARCHAR}, 
+      #{checkSts,jdbcType=VARCHAR}, #{createDate,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR}, 
+      #{upDate,jdbcType=VARCHAR}, #{upTime,jdbcType=VARCHAR},#{projNo,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.uranus.platform.business.jd.entity.po.JdTransferBatchData">
+    update JD_TRANSFER_BATCH
+    set BATCH_NUMBER = #{batchNumber,jdbcType=VARCHAR},
+      TRANSFER_TYPE = #{transferType,jdbcType=VARCHAR},
+      PAYMENT_AGENT_TYPE = #{paymentAgentType,jdbcType=VARCHAR},
+      CHECK_STS = #{checkSts,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=VARCHAR},
+      UP_DATE = #{upDate,jdbcType=VARCHAR},
+      UP_TIME = #{upTime,jdbcType=VARCHAR},
+      PROJ_NO = #{projNo,jdbcType=VARCHAR}
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select JD_ID, BATCH_NUMBER, TRANSFER_TYPE, PAYMENT_AGENT_TYPE, CHECK_STS, CREATE_DATE, 
+    CREATE_TIME, UP_DATE, UP_TIME,PROJ_NO
+    from JD_TRANSFER_BATCH
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select JD_ID, BATCH_NUMBER, TRANSFER_TYPE, PAYMENT_AGENT_TYPE, CHECK_STS, CREATE_DATE, 
+    CREATE_TIME, UP_DATE, UP_TIME,PROJ_NO
+    from JD_TRANSFER_BATCH
+  </select>
+  <!-- 通过批次号查询记录 -->
+  <select id="getByBatchNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select JD_ID, BATCH_NUMBER, TRANSFER_TYPE, PAYMENT_AGENT_TYPE, CHECK_STS, CREATE_DATE, 
+    CREATE_TIME, UP_DATE, UP_TIME,PROJ_NO
+    from JD_TRANSFER_BATCH
+    where BATCH_NUMBER = #{batchNumber,jdbcType=VARCHAR}
+  </select>
+  <!-- 通过批次号更新记录 -->
+  <update id="updateByBatchNo" parameterType="com.uranus.platform.business.jd.entity.po.JdTransferBatchData">
+    update JD_TRANSFER_BATCH
+    set 
+      TRANSFER_TYPE = #{transferType,jdbcType=VARCHAR},
+      PAYMENT_AGENT_TYPE = #{paymentAgentType,jdbcType=VARCHAR},
+      CHECK_STS = #{checkSts,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=VARCHAR},
+      UP_DATE = #{upDate,jdbcType=VARCHAR},
+      UP_TIME = #{upTime,jdbcType=VARCHAR},
+      PROJ_NO = #{projNo,jdbcType=VARCHAR}
+    where BATCH_NUMBER = #{batchNumber,jdbcType=VARCHAR}
+  </update>
+  <!-- 通过批次号更新记录 -->
+  <update id="updateCheckResultByBatchNo" parameterType="com.uranus.platform.business.jd.entity.po.JdTransferBatchData">
+    update JD_TRANSFER_BATCH
+    set 
+      CHECK_STS = #{checkSts,jdbcType=VARCHAR},
+      UP_DATE = #{upDate,jdbcType=VARCHAR},
+      UP_TIME = #{upTime,jdbcType=VARCHAR},
+      CHECK_DESC = #{checkDesc,jdbcType=VARCHAR},
+      PROJ_NO = #{projNo,jdbcType=VARCHAR}
+    where BATCH_NUMBER = #{batchNumber,jdbcType=VARCHAR}
+  </update>
+</mapper>

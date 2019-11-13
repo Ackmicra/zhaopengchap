@@ -1,0 +1,22 @@
+package com.uranus.platform.business.jd.service;
+
+import com.uranus.platform.business.jd.entity.vo.JdResponseView;
+
+/**
+ * @Describe HTTP文件上传
+ * @author  wangshuai0106@dhcc.com.cn
+ * @Date 创建时间：2019年8月20日 上午11:06:11
+ * 
+ */
+public interface JdLoanfileUploadService {
+
+	/**  
+	* @Description 小微2018影响信息上传接口
+	* @param projNo  项目编号
+	* @param channelId 京东传过来的机构编号
+	* @param bizContent 解密后的业务数据
+	* @return
+	*/  
+	JdResponseView requestFor2108(String projNo, String channelId, String bizContent);
+	
+}

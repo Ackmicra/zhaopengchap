@@ -1,0 +1,235 @@
+package com.uranus.platform.business.jd.service.trans;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.uranus.platform.business.jd.dao.JdTransferPlansDataMapper;
+import com.uranus.platform.business.jd.entity.po.JdTransferBatchData;
+import com.uranus.platform.business.jd.entity.po.JdTransferPlansData;
+import com.uranus.platform.business.jd.entity.pojo.JdPayments;
+import com.uranus.platform.business.jd.entity.pojo.JdResponse2313;
+import com.uranus.platform.business.jd.entity.status.JdResponseStatus;
+import com.uranus.platform.business.jd.entity.vo.JdResponseView;
+import com.uranus.platform.business.pub.entity.dto.Request2313Dto;
+import com.uranus.platform.business.pub.entity.dto.Response2313Dto;
+import com.uranus.platform.business.pub.entity.dto.Response2313List;
+import com.uranus.platform.business.ws.search.Request;
+import com.uranus.platform.business.ws.search.Response;
+import com.uranus.platform.business.ws.service.SearchService;
+import com.uranus.platform.utils.exception.PlatformExceptionFactory;
+import com.uranus.platform.utils.status.CmsBusinessStatus;
+import com.uranus.tools.utils.DateUtils;
+
+/**
+ * 
+* @ClassName:：TransferPlanCalllback2313Service 
+* @Description： 扣款计划查询回调
+* @author ：chenwendong
+* @date ：2019年8月22日 下午4:15:21 
+*
+ */
+@Service
+public class TransferPlanCalllback2313Service {
+
+	@Autowired
+	private ObjectMapper objectMapper;
+	@Autowired
+	SearchService searchService;
+	@Autowired
+	JdTransferPlansDataMapper jdTransferPlansDataMapper;
+	/**
+	 * 
+	* @Title：request2313 
+	* @Description：线上查询2313接口
+	* @param ：@return 
+	* @return ：JdResponseView 
+	* @throws
+	 */
+	public JdResponseView request2313(String brNo,String batchNo,String tradeNo,JdTransferBatchData JdTransferPBatchData) {
+		
+		// 拼发送小微业务数据
+		Request request = getRequest2313(brNo,batchNo,tradeNo,JdTransferPBatchData);
+		
+		// 发送小微系统
+		Response response = searchService.search(CmsBusinessStatus.MFS.businessCode(), request);
+		
+		// 转换小微的响应为京东所需响s应数据
+		JdResponseView jdResponseView = transferPlanCallbackResponse(tradeNo,response);
+		
+		return jdResponseView;
+		
+	}
+	/**
+	 * 
+	* @Title：getTransferPlan 
+	* @Description：线下查询扣款表
+	* @param ：@param batchNo
+	* @param ：@param tradeNo
+	* @param ：@return 
+	* @return ：JdResponseView 
+	* @throws
+	 */
+	public JdResponseView getTransferPlan(String batchNo,String tradeNo) {
+		
+		// 根据批次号和扣款状态为02-扣款成功查扣款计划
+		List<JdTransferPlansData> jdTransferPlansDatalist = jdTransferPlansDataMapper.getByBatchNoAndSts(batchNo);
+
+		// 转换小微的响应为京东所需响s应数据
+		JdResponseView jdResponseView = outLineResponse(jdTransferPlansDatalist,tradeNo);
+
+		return jdResponseView;
+	}
+	
+	/**  
+	* @Description 拼装扣款计划回调接口请求报文
+	* @param tradeNo 交易流水号
+	* @param brNo 合作机构编号
+	* @param JdRepayPlanDataList 京东数据
+	* @return 扣款计划上传请求报文
+	* @throws  
+	*/  
+	private Request getRequest2313(String brNo,String batchNo,String tradeNo,JdTransferBatchData JdTransferPBatchData) {
+
+
+		Request2313Dto request2313Dto = new Request2313Dto();
+		request2313Dto.setBatNo(batchNo);
+		request2313Dto.setBrNo(brNo);
+		request2313Dto.setOnLine(JdResponseStatus.REPAY_TYPE_NORMAL.businessCode());
+		request2313Dto.setPageNo(1);
+		request2313Dto.setPageSize(1);
+
+		// 拼发送小微报文
+		Request request = new Request();
+		request.setTxCode(CmsBusinessStatus.WS_2313.businessCode()); // 接口编号
+		request.setBrNo(brNo); // 机构号
+		request.setReqDate(DateUtils.nowDateFormat()); // 设置请求日期
+		request.setToken("test"); // 设置token
+		request.setReqTime(DateUtils.nowTimeFormat()); // 设置请求时间
+		request.setReqSerial(tradeNo); // 设置请求流水号
+		try {
+			request.setContent(objectMapper.writeValueAsString(request2313Dto));
+		} catch (JsonProcessingException e) {
+			throw PlatformExceptionFactory.jsonParseException(CmsBusinessStatus.JSON_PARSE_FAILURE).build(e);
+		}
+		return request;
+	}
+	/**  
+	* @Description 将小微响应报文转换成京东所需响应
+	* @param tradeNo 业务流水号
+	* @param response 小微响应
+	* @return 京东响应
+	* @throws  
+	*/  
+	private JdResponseView transferPlanCallbackResponse(String tradeNo, Response response) {
+		JdResponseView jdResponseDto = null;
+		if (response != null) {
+			// 判断业务是否成功
+			if ("0000".equals(response.getRespCode()) || "0001".equals(response.getRespCode())) {
+				//返回数据解析
+				String jdResponseStr = responseTrans(response);
+				
+				jdResponseDto = new JdResponseView(JdResponseStatus.SUCCESS_FOR_DEAL.businessCode(),
+						JdResponseStatus.SUCCESS_FOR_DEAL.businessMessage(), tradeNo, jdResponseStr);
+			} else {
+				jdResponseDto = new JdResponseView(JdResponseStatus.DATA_ERROR.businessCode(), response.getRespDesc(),
+						tradeNo, null);
+			}
+		} else {
+			jdResponseDto = new JdResponseView(JdResponseStatus.UNKNOWN_ERROR.businessCode(), "响应数据为空", tradeNo, null);
+		}
+		return jdResponseDto;
+	}
+
+	/**
+	 * 
+	* @Title：responseTrans 
+	* @Description：返回数据解析
+	* @param ：@param response
+	* @param ：@return 
+	* @return ：JdResponseView 
+	* @throws
+	 */
+	public String responseTrans(Response response) {
+
+		String responseStr = response.getContent();
+		try {
+			Response2313Dto response2313Dto = objectMapper.readValue(responseStr, Response2313Dto.class);
+			double chargeAmt = 0.00;
+			String batNo = null;
+			JdResponse2313 JdResponse2313 = new JdResponse2313();
+			List<JdPayments> JdPaymentList = new ArrayList<JdPayments>();
+			List<Response2313List> response2313List = response2313Dto.getList();
+			for (Response2313List M : response2313List) {
+				batNo = M.getBatNo(); // 批次号
+				JdPayments jdPayments = new JdPayments();
+				if (JdResponseStatus.DEAL_STS_SUCCESS.businessCode().equals(M.getDealSts())) {
+					// 处理成功的扣款计划
+					chargeAmt += M.getPaymentAmount();
+					jdPayments.setAccountName(M.getAccountName());
+					jdPayments.setAccountNo(M.getAccountNo());
+					jdPayments.setBankName(M.getBankName());
+					jdPayments.setPaymentAmount(M.getPaymentAmount());
+					jdPayments.setPaymentTime(M.getPaymentTime());
+					jdPayments.setPaymentTradeNo(M.getPaymentTradeNo());
+					JdPaymentList.add(jdPayments);
+				} else {
+					// 其他状态无支付信息
+					continue;
+				}
+			}
+			JdResponse2313.setBatchNumber(batNo);
+			JdResponse2313.setValidateStatus(JdResponseStatus.CHECK_SUCCESS.businessCode()); // 暂定为校验成功
+			JdResponse2313.setChargeAmount(chargeAmt);
+			JdResponse2313.setDealStatus(""); // 待定
+			JdResponse2313.setPayments(JdPaymentList);
+
+			return objectMapper.writeValueAsString(JdResponse2313);
+
+		} catch (IOException e) {
+			throw PlatformExceptionFactory.jsonParseException(CmsBusinessStatus.JSON_PARSE_FAILURE).build(e);
+		}
+
+	}
+
+	/**
+	 * 
+	* @Title：outLineResponse 
+	* @Description：线下扣款回调返回
+	* @param ：@param jdTransferPlansDatalist
+	* @param ：@param tradeNo
+	* @param ：@return 
+	* @return ：JdResponseView 
+	* @throws
+	 */
+	public JdResponseView outLineResponse(List<JdTransferPlansData> jdTransferPlansDatalist, String tradeNo) {
+
+		double chargeAmt = 0.00;
+		String batNo = null;
+		JdResponse2313 JdResponse2313 = new JdResponse2313();
+		try {
+
+			for (JdTransferPlansData M : jdTransferPlansDatalist) {
+				batNo = M.getBatchNumber(); // 批次号
+				chargeAmt += M.getChargeAmount();
+			}
+			JdResponse2313.setBatchNumber(batNo);
+			JdResponse2313.setValidateStatus(JdResponseStatus.CHECK_SUCCESS.businessCode()); // 为校验成功
+			JdResponse2313.setChargeAmount(chargeAmt);
+			JdResponse2313.setDealStatus(JdResponseStatus.DEAL_STATUS_UNEXECUTED.businessCode());  //未执行
+
+			String responseStr = objectMapper.writeValueAsString(JdResponse2313);
+
+			return new JdResponseView(JdResponseStatus.SUCCESS_FOR_DEAL.businessCode(),
+					JdResponseStatus.SUCCESS_FOR_DEAL.businessMessage(), tradeNo, responseStr);
+			
+		} catch (IOException e) {
+			throw PlatformExceptionFactory.jsonParseException(CmsBusinessStatus.JSON_PARSE_FAILURE).build(e);
+		}
+	}
+}

@@ -1,0 +1,200 @@
+package com.uranus.platform.business.jd.service.trans;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.uranus.platform.business.jd.callback.JdCallbackHttpClient;
+import com.uranus.platform.business.jd.dao.JdLoanPaymentStepDataMapper;
+import com.uranus.platform.business.jd.entity.po.JdLoanPaymentStepData;
+import com.uranus.platform.business.jd.entity.pojo.JDLoanStepExecuteResult;
+import com.uranus.platform.business.jd.entity.pojo.JdResponse2102;
+import com.uranus.platform.business.jd.entity.status.JdResponseStatus;
+import com.uranus.platform.business.jd.entity.vo.JdCallbackRequestView;
+import com.uranus.platform.business.jd.entity.vo.JdCallbackResponseView;
+import com.uranus.platform.business.pub.entity.dto.Request2002Dto;
+import com.uranus.platform.business.pub.entity.dto.Response2102AcListDto;
+import com.uranus.platform.business.pub.entity.dto.Response2102Dto;
+import com.uranus.platform.business.pub.entity.dto.Response2102ListDto;
+import com.uranus.platform.business.pub.entity.po.ProjBaseData;
+import com.uranus.platform.business.pub.service.CreateKeyService;
+import com.uranus.platform.business.pub.service.ParmDicService;
+import com.uranus.platform.business.pub.service.ProjBaseService;
+import com.uranus.platform.business.ws.search.Request;
+import com.uranus.platform.business.ws.search.Response;
+import com.uranus.platform.business.ws.service.SearchService;
+import com.uranus.platform.utils.exception.PlatformExceptionFactory;
+import com.uranus.platform.utils.status.CmsBusinessStatus;
+import com.uranus.tools.utils.DateUtils;
+
+/**
+ * @Describe: 向小微2102进件批量申请查询接口发送请求，并且向京东返回响应数据
+ * @author  wangshuai0106@dhcc.com.cn
+ * @Date 创建时间：2019年8月23日 上午11:39:50
+ * 
+ */
+@Service
+public class LnPaymentsQueryTrans2102Service {
+	@Autowired
+	private ObjectMapper objectMapper;
+	@Autowired
+	private SearchService searchService;
+	@Autowired
+	private ParmDicService parmDicService;
+	@Autowired
+	private CreateKeyService createKeyService;
+	@Autowired
+	private JdCallbackHttpClient jdCallbackHttpClient;
+	@Autowired
+	private ProjBaseService projBaseService;
+	@Autowired
+	private JdLoanPaymentStepDataMapper jdLoanPaymentStepDataMapper;
+	/**
+	 * @Description 拼装报文、请求小微、转换响应
+	 * @param tradeNo 交易流水号
+	 * @param brNo    合作机构编号
+	 * @param projNo  信托项目编号
+	 * @param Data    京东数据
+	 * @return 京东响应数据、京东业务数据
+	 */
+	public JdCallbackRequestView request2102(String brNo, String batchNo, String tradeNo, String pactNo, String projNo) {
+		// 拼发送小微业务数据
+		Request request2102 = getRequest2102(batchNo, brNo, tradeNo, pactNo);  
+		// 发送小微系统
+		Response response2102 = searchService.search(CmsBusinessStatus.MFS.businessCode(), request2102); 
+		// 转换小微的响应为京东所需响应数据
+		JdCallbackRequestView jdCallbackRequestView = transLnPaymentsQueryResponse(brNo, tradeNo, response2102, projNo, pactNo);
+
+		return jdCallbackRequestView;
+	}
+ 
+	private Request getRequest2102(String batchNo, String brNo, String tradeNo, String pactNo) {
+		//因2102接口请求数据与2002相同，故在此使用2002实体类
+		Request2002Dto requestDto = new Request2002Dto();
+		
+	    //request请求赋值
+ 		requestDto.setBatchNo(batchNo);
+ 		requestDto.setBrNo(brNo);
+ 		requestDto.setPrePactNo(pactNo);
+ 		
+        //发送request请求给小微
+ 		Request request = new Request();
+ 		request.setTxCode(CmsBusinessStatus.WS_2102.businessCode()); // 接口编号
+ 		request.setBrNo(brNo); // 机构号
+ 		request.setReqDate(DateUtils.nowDateFormat()); // 设置请求日期
+ 		request.setToken("test"); // 设置token
+ 		request.setReqTime(DateUtils.nowTimeFormat()); // 设置请求时间
+ 		request.setReqSerial(tradeNo); // 设置请求流水号
+ 		try {
+ 			request.setContent(objectMapper.writeValueAsString(requestDto));
+ 		} catch (JsonProcessingException e) {
+ 			throw PlatformExceptionFactory.jsonParseException(JdResponseStatus.UNKNOWN_ERROR).build(e);
+ 		}
+ 		return request;
+	}
+
+	private JdCallbackRequestView transLnPaymentsQueryResponse(String brNo, String tradeNo, Response response2102,
+			String projNo, String pactNo) {
+		//通过申请号查询【京东合作机构编号!=brNo】
+		ProjBaseData projBaseData = projBaseService.getByProjNo(projNo);
+		String jdBrNo = projBaseData.getJdBrNo();
+		String timestamp = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
+		JdCallbackRequestView jdCallbackRequestView = null;
+    	JdResponse2102 jdResponse2102 = new JdResponse2102();
+		//获取放款步骤序列号(假设利用合同号查出来一组数据)
+		JdLoanPaymentStepData jdLoanPaymentStepData = jdLoanPaymentStepDataMapper.getByApplicationNo1(pactNo);
+		String paymentNo = jdLoanPaymentStepData.getPaymentNo();
+		try {
+			// 判断业务是否成功
+			if (response2102.getContent() != null) {
+				Response2102Dto responseDto = objectMapper.readValue(response2102.getContent(), Response2102Dto.class);
+				//获取小微业务数据中的listAc
+				String dealSts = "";
+				String payDate = "";
+				List<Response2102AcListDto> listAc = new ArrayList<>();
+				
+				for(Response2102ListDto listDto : responseDto.getList()) {
+				dealSts = listDto.getDealSts();
+				payDate = listDto.getPayDate();
+				listAc = listDto.getListAc();
+				
+				}
+		
+				//暂时用不到
+//				String pactNo = responseDto.getPactNo();
+//				String dealDesc = responseDto.getDealDesc();
+
+				if (CmsBusinessStatus.MFS_SUCCESS.businessCode().equals(response2102.getRespCode())) {
+					//判断处理结果数值
+					//8.放款成功（JD：放款状态paymentStatus=01）
+					if(CmsBusinessStatus.PAYMENTS_SUCCESS.businessCode().equals(dealSts)) {
+						List<JDLoanStepExecuteResult> loanStepExecuteResults = new ArrayList<>();
+						for(Response2102AcListDto acresponse:listAc){
+							JDLoanStepExecuteResult result = new JDLoanStepExecuteResult();
+							result.setApplicationNo(pactNo);
+							result.setPaymentNo(paymentNo);
+							result.setPaymentAmount(acresponse.getAcAmt());
+							result.setPaymentStatus("01");
+							//放款时间仅在PaymentStatus为01的时候增添
+							result.setPaymentTime(payDate);
+							loanStepExecuteResults.add(result);
+						}
+						jdResponse2102.setLoanStepExecuteResults(loanStepExecuteResults);
+						
+						//TODO 重新扔到MQ里面执行
+						
+					//4.审批中\6.待放款（JD：放款状态paymentStatus=02）
+					}else if(CmsBusinessStatus.PAYMENTS_WORKING.businessCode().equals(dealSts)||CmsBusinessStatus.PAYMENTS_READY.businessCode().equals(dealSts)) {
+						List<JDLoanStepExecuteResult> loanStepExecuteResults = new ArrayList<>();
+						for(Response2102AcListDto acresponse:listAc){
+							JDLoanStepExecuteResult result = new JDLoanStepExecuteResult();
+							result.setApplicationNo(pactNo);
+							result.setPaymentNo(paymentNo);
+							result.setPaymentAmount(acresponse.getAcAmt());
+							result.setPaymentStatus("02");
+							loanStepExecuteResults.add(result);
+						}
+						jdResponse2102.setLoanStepExecuteResults(loanStepExecuteResults);
+					}else {
+						List<JDLoanStepExecuteResult> loanStepExecuteResults = new ArrayList<>();
+						for(Response2102AcListDto acresponse:listAc){
+							JDLoanStepExecuteResult result = new JDLoanStepExecuteResult();
+							result.setApplicationNo(pactNo);
+							result.setPaymentNo(paymentNo);
+							result.setPaymentAmount(acresponse.getAcAmt());
+							result.setPaymentStatus("03");
+							loanStepExecuteResults.add(result);
+						}
+						jdResponse2102.setLoanStepExecuteResults(loanStepExecuteResults);
+						}
+				}else {
+					jdCallbackRequestView = new JdCallbackRequestView(jdBrNo, projNo, tradeNo, JdResponseStatus.CALLBACK_CREDIT.businessCode(),
+							timestamp, null);
+					}
+				jdCallbackRequestView = new JdCallbackRequestView(jdBrNo, projNo, tradeNo, JdResponseStatus.CALLBACK_CREDIT.businessCode(),
+						timestamp, objectMapper.writeValueAsString(jdResponse2102));
+				//回调京东,若【京东响应失败】，则需要重新回调京东
+				JdCallbackResponseView jdCallbackResponseView = jdCallbackHttpClient.callbackJD(jdCallbackRequestView);
+				if(!JdResponseStatus.SUCCESS.businessCode().equals(jdCallbackResponseView.getCode())) {
+					//TODO 重新扔到MQ里面执行
+					
+				} 
+			}else {
+				//TODO 重新扔到MQ里面执行
+				return jdCallbackRequestView;
+			}
+		} catch (IOException e) {
+			throw PlatformExceptionFactory.jsonParseException(CmsBusinessStatus.JSON_PARSE_FAILURE).build(e);
+		}
+		return jdCallbackRequestView;
+	
+	}
+
+}

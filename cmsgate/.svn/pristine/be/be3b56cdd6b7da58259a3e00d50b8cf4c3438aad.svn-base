@@ -1,0 +1,40 @@
+package com.uranus.platform.business.jd.service.impl;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.uranus.platform.business.jd.entity.vo.JdCallbackRequestView;
+import com.uranus.platform.business.jd.entity.vo.JdResponseView;
+import com.uranus.platform.business.jd.service.JdLoanPaymentsService;
+import com.uranus.platform.utils.jd.security.SignEnvelopServiceKey;
+
+/**
+ * @Describe 放款指令测试类
+ * @author  wangshuai0106@dhcc.com.cn
+ * @Date 创建时间：2019年8月26日 下午6:03:55
+ * 
+ */
+@SpringBootTest
+public class JdLoanPaymentsServiceImplTest {
+	@Autowired
+	private JdLoanPaymentsService jdLoanPaymentsService;
+	@Autowired
+    private SignEnvelopServiceKey signEnvelopServiceKey;
+	
+	@Test
+	void test() {
+//		String projNo = "2004101";
+//		String channelId = "2003";
+//		String bizContent = "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";
+//		//提取京东发送的业务数据
+//		String decryptDate = signEnvelopServiceKey.verifyEnvelop(bizContent);
+//		JdResponseView jdResponseView = jdLoanPaymentsService.requestfor2101(projNo,channelId,decryptDate);
+//		System.out.println(jdResponseView.toString());
+		
+		String applicationNo = "9266997323140816896";
+		JdCallbackRequestView jdCallbackRequestView = jdLoanPaymentsService.applyFor2102(applicationNo, 0);
+		System.out.println(jdCallbackRequestView.toString());
+	}
+
+}

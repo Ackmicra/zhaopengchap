@@ -1,0 +1,252 @@
+package com.uranus.platform.business.jd.service.impl;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.alibaba.druid.util.StringUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.uranus.platform.business.jd.dao.JdSigningDataMapper;
+import com.uranus.platform.business.jd.entity.po.JdSigningData;
+import com.uranus.platform.business.jd.entity.pojo.JDConfirm;
+import com.uranus.platform.business.jd.entity.pojo.JDSignRequest;
+import com.uranus.platform.business.jd.entity.status.JdResponseStatus;
+import com.uranus.platform.business.jd.entity.vo.JdResponseView;
+import com.uranus.platform.business.jd.service.JdSigningService;
+import com.uranus.platform.business.jd.service.trans.SignTrans2012Service;
+import com.uranus.platform.business.jd.service.trans.SignTrans2025Service;
+import com.uranus.platform.business.pub.entity.po.ProjBaseData;
+import com.uranus.platform.business.pub.service.CreateKeyService;
+import com.uranus.platform.business.pub.service.ProjBaseService;
+import com.uranus.platform.utils.aop.log.WsBaseLog;
+import com.uranus.platform.utils.exception.PlatformExceptionFactory;
+import com.uranus.platform.utils.status.CmsBusinessStatus;
+import com.uranus.tools.beans.BeanCopyUtils;
+import com.uranus.tools.utils.DateUtils;
+import com.uranus.tools.validator.UranusValidator;
+
+
+@Service
+public class JdSigningServiceImpl implements JdSigningService {
+	@Autowired
+	private JdSigningDataMapper jdSigningDataMapper;
+	@Autowired
+	private ObjectMapper objectMapper;
+	@Autowired
+	private ProjBaseService projBaseService;
+	@Autowired
+	private UranusValidator uranusValidator;
+
+	@Autowired
+	private SignTrans2025Service signTrans2025Service;
+	@Autowired
+	private SignTrans2012Service signTrans2012Service;
+	@Autowired
+	private CreateKeyService createKeyService;
+	
+	@Override
+	public boolean insert(JdSigningData jdSigningData) {
+		
+		return jdSigningDataMapper.insert(jdSigningData) > 0;
+	}
+	
+	/**
+	 * 	签约接口
+	 * 	CmsBusinessStatus.SIGN_REQUEST.businessCode() 签约申请
+	 *  CmsBusinessStatus.SIGN_CONFIRM.businessCode() 签约确认
+	 *  CmsBusinessStatus.SIGN_QUERY.businessCode() 签约确认
+	 */
+	@Override
+	@WsBaseLog
+	public JdResponseView sign(String projNo, String channelId, String bizContent, String businessType) {
+		JdResponseView JdResponseDto = null;
+		if(CmsBusinessStatus.SIGN_REQUEST.businessCode().equals(businessType)) {
+			JdResponseDto = signFor2011(projNo, channelId, bizContent);//签约申请接口
+		} else if(CmsBusinessStatus.SIGN_CONFIRM.businessCode().equals(businessType)) {
+			JdResponseDto = signFor2012(projNo, channelId, bizContent);//签约确认接口
+		}else if(CmsBusinessStatus.SIGN_QUERY.businessCode().equals(businessType)) {
+			JdResponseDto = signFor2025(projNo, channelId, bizContent);//签约查询接口
+		}
+		return JdResponseDto;
+	}
+
+	/**  
+	* @Description 签约申请接口校验
+	* @param projNo 信托项目编号
+	* @param channelId 京东机构编号，AOP插入ws_base记录表会使用
+	* @param bizContent 解密后的京东业务数据
+	* @return
+	*/  
+	private JdResponseView signFor2011(String projNo, String channelId, String bizContent) {
+		//通过项目号查询机构信息
+		ProjBaseData projBaseData = projBaseService.getByProjNo(projNo);
+		if(projBaseData != null && !StringUtils.isEmpty(projBaseData.getBrNo())) {
+			//此处要处理的是京东的消息正文，，此部分不是走的rest服务，所以这部分不是View对象，而是一个Bean对象。你可以理解为一个POJO，或者把这个理解为一个DTO也可以。我建议就把它当作一个POJO对象，就叫JdLoanSyncRepayPlan或者JdLoanSyncRepayPlanEntity
+			try {
+				//将解密后的数据转换成pojo对象
+				JDSignRequest jDRequest = objectMapper.readValue(bizContent,JDSignRequest.class);
+				//校验View层对象是否为空属性以及长度
+				List<String> errorMessList = uranusValidator.validatorAll(jDRequest);
+				if(errorMessList.size() == 0 ) {
+					String brNo = projBaseData.getBrNo();
+					//此处返回正确结果，否则一律抛出异常，由异常拦截进行处理
+					return signRequst(brNo, projNo, jDRequest);
+					//TODO 此处需要使用AOP做一个WsBaseData的插入操作。但不确定是只有成功才插入还是成功或失败都插入。
+				}else {
+					throw PlatformExceptionFactory.paramInValidateException(JdResponseStatus.DATA_ERROR).build(errorMessList);
+				}
+			} catch (IOException e) {
+				throw PlatformExceptionFactory.jsonParseException(JdResponseStatus.DATA_ERROR).build(e);
+			}
+		}else {
+			throw PlatformExceptionFactory.exception(JdResponseStatus.PROJ_UNEXISTS).build(JdResponseStatus.PROJ_UNEXISTS.businessMessage());
+		}
+	}
+
+
+	/**  
+	* @Description 签约确认接口校验
+	* @param projNo 信托项目编号
+	* @param channelId 京东机构编号，AOP插入ws_base记录表会使用
+	* @param bizContent 解密后的京东业务数据
+	* @return
+	*/  
+	private JdResponseView signFor2012(String projNo, String channelId, String bizContent) {
+		//通过项目号查询机构信息
+		ProjBaseData projBaseData = projBaseService.getByProjNo(projNo);
+		if(projBaseData != null && !StringUtils.isEmpty(projBaseData.getBrNo())) {
+			//此处要处理的是京东的消息正文，，此部分不是走的rest服务，所以这部分不是View对象，而是一个Bean对象。你可以理解为一个POJO，或者把这个理解为一个DTO也可以。我建议就把它当作一个POJO对象，就叫JdLoanSyncRepayPlan或者JdLoanSyncRepayPlanEntity
+			try {
+				//将解密后的数据转换成pojo对象
+				JDConfirm jDConfirm = objectMapper.readValue(bizContent,JDConfirm.class);
+				
+				//校验View层对象是否为空属性以及长度
+				List<String> errorMessList = uranusValidator.validatorAll(jDConfirm);
+				if(errorMessList.size() == 0 ) {
+					String brNo = projBaseData.getBrNo();
+					//此处返回正确结果，否则一律抛出异常，由异常拦截进行处理
+					return signConfirm(brNo, projNo, jDConfirm);
+					//TODO 此处需要使用AOP做一个WsBaseData的插入操作。但不确定是只有成功才插入还是成功或失败都插入。
+				}else {
+					throw PlatformExceptionFactory.paramInValidateException(JdResponseStatus.DATA_ERROR).build(errorMessList);
+				}
+			} catch (IOException e) {
+				throw PlatformExceptionFactory.jsonParseException(JdResponseStatus.DATA_ERROR).build(e);
+			}
+		}else {
+			throw PlatformExceptionFactory.exception(JdResponseStatus.PROJ_UNEXISTS).build(JdResponseStatus.PROJ_UNEXISTS.businessMessage());
+		}
+	}
+	
+	/**  
+	* @Description 签约查询接口校验
+	* @param projNo 信托项目编号
+	* @param channelId 京东机构编号，AOP插入ws_base记录表会使用
+	* @param bizContent 解密后的京东业务数据
+	* @return
+	*/  
+	private JdResponseView signFor2025(String projNo, String channelId, String bizContent) {
+		//通过项目号查询机构信息
+		ProjBaseData projBaseData = projBaseService.getByProjNo(projNo);
+		if(projBaseData != null && !StringUtils.isEmpty(projBaseData.getBrNo())) {
+			//此处要处理的是京东的消息正文，，此部分不是走的rest服务，所以这部分不是View对象，而是一个Bean对象。你可以理解为一个POJO，或者把这个理解为一个DTO也可以。我建议就把它当作一个POJO对象，就叫JdLoanSyncRepayPlan或者JdLoanSyncRepayPlanEntity
+			try {
+				//将解密后的数据转换成pojo对象
+				JDSignRequest jDRequest = objectMapper.readValue(bizContent,JDSignRequest.class);
+				//校验View层对象是否为空属性以及长度
+				List<String> errorMessList = uranusValidator.validatorAll(jDRequest);
+				if(errorMessList.size() == 0 ) {
+					String brNo = projBaseData.getBrNo();
+					//此处返回正确结果，否则一律抛出异常，由异常拦截进行处理
+					return signQuery(brNo, projNo, jDRequest);
+					//TODO 此处需要使用AOP做一个WsBaseData的插入操作。但不确定是只有成功才插入还是成功或失败都插入。
+				}else {
+					throw PlatformExceptionFactory.paramInValidateException(JdResponseStatus.DATA_ERROR).build(errorMessList);
+				}
+			} catch (IOException e) {
+				throw PlatformExceptionFactory.jsonParseException(JdResponseStatus.DATA_ERROR).build(e);
+			}
+		}else {
+			throw PlatformExceptionFactory.exception(JdResponseStatus.PROJ_UNEXISTS).build(JdResponseStatus.PROJ_UNEXISTS.businessMessage());
+		}
+	}
+	
+	/**
+	 *	签约申请接口【请求小微、转换小微响应为京东响应】
+	 * @param brNo 合作机构编号
+	 * @param projNo 信托项目编号
+	 * @param jDRequest 京东pojo对象
+	 */
+	public JdResponseView signRequst(String brNo, String projNo, JDSignRequest jDRequest) {
+		//Data层数据组装
+		JdSigningData jdSigningData = BeanCopyUtils.INSTANCE.convertTo(jDRequest, JdSigningData.class);
+		String jdId = jdSigningDataMapper.selectJdId();
+		//补充机构、项目、时间等字段的值
+		jdSigningData.setBrNo(brNo);
+		jdSigningData.setCreateDate(DateUtils.nowDateFormat());
+		jdSigningData.setCreateTime(DateUtils.nowTimeFormat());
+		jdSigningData.setJdId(jdId);
+		//插入到签约申请数据库
+		jdSigningDataMapper.insert(jdSigningData);
+
+		//请求小微2025签约申请接口，返回京东响应数据
+		Map<String, Object> map = signTrans2025Service.request2025(createKeyService.getJdTradeNo(), brNo, projNo, jdSigningData);
+		String transactionNo = (String)map.get("TransactionNo");
+		if(transactionNo != null) {
+			//签约申请成功，则将签约流水号更新到签约申请表
+			JdSigningData jd = new JdSigningData(jdId, transactionNo);
+			jdSigningDataMapper.updateTransactionNo(jd);
+		}
+		
+		return (JdResponseView)map.get("jdResponseDto");
+	}
+
+	/**  
+	* @Description 签约确认
+	* @param brNo 合作机构编号
+	* @param projNo 信托项目编号
+	* @param jDRequest 京东pojo对象
+	* @return 京东响应报文
+	*/  
+	public JdResponseView signConfirm(String brNo, String projNo, JDConfirm jDConfirm) {
+		JdResponseView jdResponseDto = null;
+		String tradeNo = createKeyService.getJdTradeNo();
+		//通过签约流水号获取签约申请信息
+		JdSigningData jdSigningData = jdSigningDataMapper.getByTransactionNo(jDConfirm.getSignTransactionNo());
+		if(jdSigningData != null) {
+			//转换签约确认接口返回报文
+			jdResponseDto = signTrans2012Service.request2012(tradeNo, brNo, jdSigningData, jDConfirm.getSignTransactionNo(), jDConfirm.getVerificationCode());
+		} else {
+			jdResponseDto = new JdResponseView(JdResponseStatus.DATA_ERROR.businessCode(), 
+					"签约协议号有误", tradeNo, null);
+		}
+		return jdResponseDto;
+	}
+	
+
+	
+	/**
+	 *	签约查询接口【请求小微、转换小微响应为京东响应】
+	 * @param brNo 合作机构编号
+	 * @param projNo 信托项目编号
+	 * @param jDRequest 京东pojo对象
+	 */
+	public JdResponseView signQuery(String brNo, String projNo, JDSignRequest jDRequest) {
+		//Data层数据组装
+		JdSigningData jdSigningData = BeanCopyUtils.INSTANCE.convertTo(jDRequest, JdSigningData.class);
+		String jdId = jdSigningDataMapper.selectJdId();
+		//补充机构、项目、时间等字段的值
+		jdSigningData.setBrNo(brNo);
+		jdSigningData.setCreateDate(DateUtils.nowDateFormat());
+		jdSigningData.setCreateTime(DateUtils.nowTimeFormat());
+		jdSigningData.setJdId(jdId);
+		//请求小微2025签约申请接口，返回京东响应数据
+		JdResponseView jdResponseView = signTrans2025Service.query2025(createKeyService.getJdTradeNo(), brNo, projNo, jdSigningData);
+		
+		return jdResponseView;
+	}
+}

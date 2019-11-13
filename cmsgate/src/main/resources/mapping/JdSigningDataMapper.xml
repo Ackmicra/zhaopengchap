@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uranus.platform.business.jd.dao.JdSigningDataMapper">
+  <resultMap id="BaseResultMap" type="com.uranus.platform.business.jd.entity.po.JdSigningData">
+    <id column="JD_ID" jdbcType="VARCHAR" property="jdId" />
+    <result column="BR_NO" jdbcType="VARCHAR" property="brNo" />
+    <result column="CHANNEL_PROD_NO" jdbcType="VARCHAR" property="channelProdNo" />
+    <result column="PAYEE_ACCOUNT_NAME" jdbcType="VARCHAR" property="payeeAccountName" />
+    <result column="PAYEE_CERITIFICATE_TYPE" jdbcType="VARCHAR" property="payeeCeritificateType" />
+    <result column="PAYEE_CERITIFICATE_NO" jdbcType="VARCHAR" property="payeeCeritificateNo" />
+    <result column="PAYEE_MOBILE_NO" jdbcType="VARCHAR" property="payeeMobileNo" />
+    <result column="PAYEE_ACCOUNT_NO" jdbcType="VARCHAR" property="payeeAccountNo" />
+    <result column="PAYEE_BANK_CODE" jdbcType="VARCHAR" property="payeeBankCode" />
+    <result column="PAYMENT_CHANNEL" jdbcType="DECIMAL" property="paymentChannel" />
+    <result column="CREATE_DATE" jdbcType="VARCHAR" property="createDate" />
+    <result column="CREATE_TIME" jdbcType="VARCHAR" property="createTime" />
+    <result column="SIGN_TRANSACTION_NO" jdbcType="VARCHAR" property="signTransactionNo" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from JD_SIGNING
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.uranus.platform.business.jd.entity.po.JdSigningData">
+    insert into JD_SIGNING (JD_ID, BR_NO, CHANNEL_PROD_NO, PAYEE_ACCOUNT_NAME, 
+      PAYEE_CERITIFICATE_TYPE, PAYEE_CERITIFICATE_NO, 
+      PAYEE_MOBILE_NO, PAYEE_ACCOUNT_NO, PAYEE_BANK_CODE, 
+      PAYMENT_CHANNEL, CREATE_DATE, CREATE_TIME
+      )
+    values (#{jdId,jdbcType=VARCHAR},#{brNo,jdbcType=VARCHAR}, #{channelProdNo,jdbcType=VARCHAR}, #{payeeAccountName,jdbcType=VARCHAR}, 
+      #{payeeCeritificateType,jdbcType=VARCHAR}, #{payeeCeritificateNo,jdbcType=VARCHAR}, 
+      #{payeeMobileNo,jdbcType=VARCHAR}, #{payeeAccountNo,jdbcType=VARCHAR}, #{payeeBankCode,jdbcType=VARCHAR}, 
+      #{paymentChannel,jdbcType=DECIMAL}, #{createDate,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.uranus.platform.business.jd.entity.po.JdSigningData">
+    update JD_SIGNING
+    set BR_NO = #{brNo,jdbcType=VARCHAR},
+      CHANNEL_PROD_NO = #{channelProdNo,jdbcType=VARCHAR},
+      PAYEE_ACCOUNT_NAME = #{payeeAccountName,jdbcType=VARCHAR},
+      PAYEE_CERITIFICATE_TYPE = #{payeeCeritificateType,jdbcType=VARCHAR},
+      PAYEE_CERITIFICATE_NO = #{payeeCeritificateNo,jdbcType=VARCHAR},
+      PAYEE_MOBILE_NO = #{payeeMobileNo,jdbcType=VARCHAR},
+      PAYEE_ACCOUNT_NO = #{payeeAccountNo,jdbcType=VARCHAR},
+      PAYEE_BANK_CODE = #{payeeBankCode,jdbcType=VARCHAR},
+      PAYMENT_CHANNEL = #{paymentChannel,jdbcType=DECIMAL},
+      CREATE_DATE = #{createDate,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=VARCHAR}
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select JD_ID, BR_NO, CHANNEL_PROD_NO, PAYEE_ACCOUNT_NAME, PAYEE_CERITIFICATE_TYPE, 
+    PAYEE_CERITIFICATE_NO, PAYEE_MOBILE_NO, PAYEE_ACCOUNT_NO, PAYEE_BANK_CODE, PAYMENT_CHANNEL, 
+    CREATE_DATE, CREATE_TIME, SIGN_TRANSACTION_NO
+    from JD_SIGNING
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select JD_ID, BR_NO, CHANNEL_PROD_NO, PAYEE_ACCOUNT_NAME, PAYEE_CERITIFICATE_TYPE, 
+    PAYEE_CERITIFICATE_NO, PAYEE_MOBILE_NO, PAYEE_ACCOUNT_NO, PAYEE_BANK_CODE, PAYMENT_CHANNEL, 
+    CREATE_DATE, CREATE_TIME, SIGN_TRANSACTION_NO
+    from JD_SIGNING
+  </select>
+  
+   <update id="updateTransactionNo" parameterType="com.uranus.platform.business.jd.entity.po.JdSigningData">
+    update JD_SIGNING
+    set 
+      SIGN_TRANSACTION_NO = #{signTransactionNo,jdbcType=VARCHAR}
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="selectJdId" parameterType="java.lang.String" resultType="String">
+     SELECT JD_SIGNING_SEQ.NEXTVAL FROM DUAL
+  </select>
+  
+  <select id="getByTransactionNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select JD_ID, BR_NO, CHANNEL_PROD_NO, PAYEE_ACCOUNT_NAME, PAYEE_CERITIFICATE_TYPE, 
+    PAYEE_CERITIFICATE_NO, PAYEE_MOBILE_NO, PAYEE_ACCOUNT_NO, PAYEE_BANK_CODE, PAYMENT_CHANNEL, 
+    CREATE_DATE, CREATE_TIME, SIGN_TRANSACTION_NO
+    from JD_SIGNING
+    where SIGN_TRANSACTION_NO = #{signTransactionNo,jdbcType=VARCHAR}
+  </select>
+</mapper>

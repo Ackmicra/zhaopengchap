@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uranus.platform.business.jd.dao.JdLoanPaymentStepDataMapper">
+  <resultMap id="BaseResultMap" type="com.uranus.platform.business.jd.entity.po.JdLoanPaymentStepData">
+    <id column="JD_ID" jdbcType="VARCHAR" property="jdId" />
+    <result column="APPLICATION_NO" jdbcType="VARCHAR" property="applicationNo" />
+    <result column="PAYMENT_NO" jdbcType="VARCHAR" property="paymentNo" />
+    <result column="PAYMENT_AMOUNT" jdbcType="DECIMAL" property="paymentAmount" />
+    <result column="ACCOUNT_NAME" jdbcType="VARCHAR" property="accountName" />
+    <result column="ACCOUNT_NO" jdbcType="VARCHAR" property="accountNo" />
+    <result column="BANK_CODE" jdbcType="VARCHAR" property="bankCode" />
+    <result column="HOLDER_MOBILE_NO" jdbcType="VARCHAR" property="holderMobileNo" />
+    <result column="HOLDER_ID_TYPE" jdbcType="VARCHAR" property="holderIdType" />
+    <result column="HOLDER_ID_NO" jdbcType="VARCHAR" property="holderIdNo" />
+    <result column="CREATE_DATE" jdbcType="VARCHAR" property="createDate" />
+    <result column="CREATE_TIME" jdbcType="VARCHAR" property="createTime" />
+    <result column="LOAN_STS" jdbcType="VARCHAR" property="loanSts" />
+    <result column="UP_DATE" jdbcType="VARCHAR" property="upDate" />
+    <result column="UP_TIME" jdbcType="VARCHAR" property="upTime" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from JD_LOAN_PAYMENT_STEP
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.uranus.platform.business.jd.entity.po.JdLoanPaymentStepData">
+    <selectKey keyProperty="jdId" order="BEFORE" resultType="java.lang.String">
+      SELECT JD_LOAN_PAYMENT_STEP_SEQ.NEXTVAL FROM DUAL
+    </selectKey>
+    insert into JD_LOAN_PAYMENT_STEP (JD_ID, APPLICATION_NO, PAYMENT_NO, PAYMENT_AMOUNT, 
+      ACCOUNT_NAME, ACCOUNT_NO, BANK_CODE, 
+      HOLDER_MOBILE_NO, HOLDER_ID_TYPE, HOLDER_ID_NO, 
+      CREATE_DATE, CREATE_TIME)
+    values (#{jdId,jdbcType=VARCHAR}, #{applicationNo,jdbcType=VARCHAR}, #{paymentNo,jdbcType=VARCHAR}, #{paymentAmount,jdbcType=DECIMAL}, 
+      #{accountName,jdbcType=VARCHAR}, #{accountNo,jdbcType=VARCHAR}, #{bankCode,jdbcType=VARCHAR}, 
+      #{holderMobileNo,jdbcType=VARCHAR}, #{holderIdType,jdbcType=VARCHAR}, #{holderIdNo,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.uranus.platform.business.jd.entity.po.JdLoanPaymentStepData">
+    update JD_LOAN_PAYMENT_STEP
+    set APPLICATION_NO = #{applicationNo,jdbcType=VARCHAR},
+      PAYMENT_NO = #{paymentNo,jdbcType=VARCHAR},
+      PAYMENT_AMOUNT = #{paymentAmount,jdbcType=DECIMAL},
+      ACCOUNT_NAME = #{accountName,jdbcType=VARCHAR},
+      ACCOUNT_NO = #{accountNo,jdbcType=VARCHAR},
+      BANK_CODE = #{bankCode,jdbcType=VARCHAR},
+      HOLDER_MOBILE_NO = #{holderMobileNo,jdbcType=VARCHAR},
+      HOLDER_ID_TYPE = #{holderIdType,jdbcType=VARCHAR},
+      HOLDER_ID_NO = #{holderIdNo,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=VARCHAR}
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, PAYMENT_NO, PAYMENT_AMOUNT, ACCOUNT_NAME, ACCOUNT_NO, 
+    BANK_CODE, HOLDER_MOBILE_NO, HOLDER_ID_TYPE, HOLDER_ID_NO, CREATE_DATE, CREATE_TIME
+    from JD_LOAN_PAYMENT_STEP
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, PAYMENT_NO, PAYMENT_AMOUNT, ACCOUNT_NAME, ACCOUNT_NO, 
+    BANK_CODE, HOLDER_MOBILE_NO, HOLDER_ID_TYPE, HOLDER_ID_NO, CREATE_DATE, CREATE_TIME
+    from JD_LOAN_PAYMENT_STEP
+  </select>
+  <select id="getByApplicationNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, PAYMENT_NO, PAYMENT_AMOUNT, ACCOUNT_NAME, ACCOUNT_NO, 
+    BANK_CODE, HOLDER_MOBILE_NO, HOLDER_ID_TYPE, HOLDER_ID_NO, CREATE_DATE, CREATE_TIME
+    from JD_LOAN_PAYMENT_STEP
+    where APPLICATION_NO = #{applicationNo,jdbcType=VARCHAR}
+  </select>
+</mapper>

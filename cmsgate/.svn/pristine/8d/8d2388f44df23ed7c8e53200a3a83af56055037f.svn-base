@@ -1,0 +1,14 @@
+package com.uranus.platform.business.jd.entity.pojo;
+
+import lombok.Data;
+
+@Data
+public class JdPayments {
+
+	private String paymentTradeNo; //
+	private double paymentAmount; //
+	private String paymentTime; //
+	private String accountNo; //
+	private String accountName; //
+	private String bankName; //
+}

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uranus.platform.business.jd.dao.JdLoanUserDataMapper">
+  <resultMap id="BaseResultMap" type="com.uranus.platform.business.jd.entity.po.JdLoanUserData">
+    <id column="JD_ID" jdbcType="VARCHAR" property="jdId" />
+    <result column="APPLICATION_NO" jdbcType="VARCHAR" property="applicationNo" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="CERITIFICATE_TYPE" jdbcType="VARCHAR" property="ceritificateType" />
+    <result column="CERITIFICATE_NO" jdbcType="VARCHAR" property="ceritificateNo" />
+    <result column="EFFSTARTDATE" jdbcType="VARCHAR" property="effstartdate" />
+    <result column="EFFENDDATE" jdbcType="VARCHAR" property="effenddate" />
+    <result column="AUTHROITY" jdbcType="VARCHAR" property="authroity" />
+    <result column="NATION" jdbcType="VARCHAR" property="nation" />
+    <result column="JOB" jdbcType="VARCHAR" property="job" />
+    <result column="TELEPHONE" jdbcType="VARCHAR" property="telephone" />
+    <result column="CELLPHONE" jdbcType="VARCHAR" property="cellphone" />
+    <result column="POSTCODE" jdbcType="VARCHAR" property="postcode" />
+    <result column="ADDRESS" jdbcType="VARCHAR" property="address" />
+    <result column="EMAIL" jdbcType="VARCHAR" property="email" />
+    <result column="MARITAL_STATUS" jdbcType="VARCHAR" property="maritalStatus" />
+    <result column="EDUCATION" jdbcType="VARCHAR" property="education" />
+    <result column="CENSUS_REGISTER" jdbcType="VARCHAR" property="censusRegister" />
+    <result column="CENSUS_REGISTER_ADDRESS" jdbcType="VARCHAR" property="censusRegisterAddress" />
+    <result column="MONTHLY_INCOME" jdbcType="DECIMAL" property="monthlyIncome" />
+    <result column="HOME_ADDRESS" jdbcType="VARCHAR" property="homeAddress" />
+    <result column="HOME_POSTCODE" jdbcType="VARCHAR" property="homePostcode" />
+    <result column="HOME_TELPHONE" jdbcType="VARCHAR" property="homeTelphone" />
+    <result column="USER_NET_ASSETS" jdbcType="DECIMAL" property="userNetAssets" />
+    <result column="USER_HOUSE_VALUE" jdbcType="DECIMAL" property="userHouseValue" />
+    <result column="USER_HOUSE_AREA" jdbcType="DECIMAL" property="userHouseArea" />
+    <result column="REAL_ESTATE_TYPE" jdbcType="DECIMAL" property="realEstateType" />
+    <result column="CREATE_DATE" jdbcType="VARCHAR" property="createDate" />
+    <result column="CREATE_TIME" jdbcType="VARCHAR" property="createTime" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from JD_LOAN_USER
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.uranus.platform.business.jd.entity.po.JdLoanUserData">
+    <selectKey keyProperty="jdId" order="BEFORE" resultType="java.lang.String">
+      SELECT JD_LOAN_USER_SEQ.NEXTVAL FROM DUAL
+    </selectKey>
+    insert into JD_LOAN_USER (JD_ID, APPLICATION_NO, NAME, CERITIFICATE_TYPE, 
+      CERITIFICATE_NO, EFFSTARTDATE, EFFENDDATE, 
+      AUTHROITY, NATION, JOB, 
+      TELEPHONE, CELLPHONE, POSTCODE, 
+      ADDRESS, EMAIL, MARITAL_STATUS, 
+      EDUCATION, CENSUS_REGISTER, CENSUS_REGISTER_ADDRESS, 
+      MONTHLY_INCOME, HOME_ADDRESS, HOME_POSTCODE, 
+      HOME_TELPHONE, USER_NET_ASSETS, USER_HOUSE_VALUE, 
+      USER_HOUSE_AREA, REAL_ESTATE_TYPE, CREATE_DATE, 
+      CREATE_TIME)
+    values (#{jdId,jdbcType=VARCHAR}, #{applicationNo,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{ceritificateType,jdbcType=VARCHAR}, 
+      #{ceritificateNo,jdbcType=VARCHAR}, #{effstartdate,jdbcType=VARCHAR}, #{effenddate,jdbcType=VARCHAR}, 
+      #{authroity,jdbcType=VARCHAR}, #{nation,jdbcType=VARCHAR}, #{job,jdbcType=VARCHAR}, 
+      #{telephone,jdbcType=VARCHAR}, #{cellphone,jdbcType=VARCHAR}, #{postcode,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{maritalStatus,jdbcType=VARCHAR}, 
+      #{education,jdbcType=VARCHAR}, #{censusRegister,jdbcType=VARCHAR}, #{censusRegisterAddress,jdbcType=VARCHAR}, 
+      #{monthlyIncome,jdbcType=DECIMAL}, #{homeAddress,jdbcType=VARCHAR}, #{homePostcode,jdbcType=VARCHAR}, 
+      #{homeTelphone,jdbcType=VARCHAR}, #{userNetAssets,jdbcType=DECIMAL}, #{userHouseValue,jdbcType=DECIMAL}, 
+      #{userHouseArea,jdbcType=DECIMAL}, #{realEstateType,jdbcType=DECIMAL}, #{createDate,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.uranus.platform.business.jd.entity.po.JdLoanUserData">
+    update JD_LOAN_USER
+    set APPLICATION_NO = #{applicationNo,jdbcType=VARCHAR},
+      NAME = #{name,jdbcType=VARCHAR},
+      CERITIFICATE_TYPE = #{ceritificateType,jdbcType=VARCHAR},
+      CERITIFICATE_NO = #{ceritificateNo,jdbcType=VARCHAR},
+      EFFSTARTDATE = #{effstartdate,jdbcType=VARCHAR},
+      EFFENDDATE = #{effenddate,jdbcType=VARCHAR},
+      AUTHROITY = #{authroity,jdbcType=VARCHAR},
+      NATION = #{nation,jdbcType=VARCHAR},
+      JOB = #{job,jdbcType=VARCHAR},
+      TELEPHONE = #{telephone,jdbcType=VARCHAR},
+      CELLPHONE = #{cellphone,jdbcType=VARCHAR},
+      POSTCODE = #{postcode,jdbcType=VARCHAR},
+      ADDRESS = #{address,jdbcType=VARCHAR},
+      EMAIL = #{email,jdbcType=VARCHAR},
+      MARITAL_STATUS = #{maritalStatus,jdbcType=VARCHAR},
+      EDUCATION = #{education,jdbcType=VARCHAR},
+      CENSUS_REGISTER = #{censusRegister,jdbcType=VARCHAR},
+      CENSUS_REGISTER_ADDRESS = #{censusRegisterAddress,jdbcType=VARCHAR},
+      MONTHLY_INCOME = #{monthlyIncome,jdbcType=DECIMAL},
+      HOME_ADDRESS = #{homeAddress,jdbcType=VARCHAR},
+      HOME_POSTCODE = #{homePostcode,jdbcType=VARCHAR},
+      HOME_TELPHONE = #{homeTelphone,jdbcType=VARCHAR},
+      USER_NET_ASSETS = #{userNetAssets,jdbcType=DECIMAL},
+      USER_HOUSE_VALUE = #{userHouseValue,jdbcType=DECIMAL},
+      USER_HOUSE_AREA = #{userHouseArea,jdbcType=DECIMAL},
+      REAL_ESTATE_TYPE = #{realEstateType,jdbcType=DECIMAL},
+      CREATE_DATE = #{createDate,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=VARCHAR}
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, NAME, CERITIFICATE_TYPE, CERITIFICATE_NO, EFFSTARTDATE, 
+    EFFENDDATE, AUTHROITY, NATION, JOB, TELEPHONE, CELLPHONE, POSTCODE, ADDRESS, EMAIL, 
+    MARITAL_STATUS, EDUCATION, CENSUS_REGISTER, CENSUS_REGISTER_ADDRESS, MONTHLY_INCOME, 
+    HOME_ADDRESS, HOME_POSTCODE, HOME_TELPHONE, USER_NET_ASSETS, USER_HOUSE_VALUE, USER_HOUSE_AREA, 
+    REAL_ESTATE_TYPE, CREATE_DATE, CREATE_TIME
+    from JD_LOAN_USER
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, NAME, CERITIFICATE_TYPE, CERITIFICATE_NO, EFFSTARTDATE, 
+    EFFENDDATE, AUTHROITY, NATION, JOB, TELEPHONE, CELLPHONE, POSTCODE, ADDRESS, EMAIL, 
+    MARITAL_STATUS, EDUCATION, CENSUS_REGISTER, CENSUS_REGISTER_ADDRESS, MONTHLY_INCOME, 
+    HOME_ADDRESS, HOME_POSTCODE, HOME_TELPHONE, USER_NET_ASSETS, USER_HOUSE_VALUE, USER_HOUSE_AREA, 
+    REAL_ESTATE_TYPE, CREATE_DATE, CREATE_TIME
+    from JD_LOAN_USER
+  </select>
+  <select id="getByApplicationNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, NAME, CERITIFICATE_TYPE, CERITIFICATE_NO, EFFSTARTDATE, 
+    EFFENDDATE, AUTHROITY, NATION, JOB, TELEPHONE, CELLPHONE, POSTCODE, ADDRESS, EMAIL, 
+    MARITAL_STATUS, EDUCATION, CENSUS_REGISTER, CENSUS_REGISTER_ADDRESS, MONTHLY_INCOME, 
+    HOME_ADDRESS, HOME_POSTCODE, HOME_TELPHONE, USER_NET_ASSETS, USER_HOUSE_VALUE, USER_HOUSE_AREA, 
+    REAL_ESTATE_TYPE, CREATE_DATE, CREATE_TIME
+    from JD_LOAN_USER
+    where APPLICATION_NO = #{applicationNo,jdbcType=VARCHAR}
+  </select>
+</mapper>

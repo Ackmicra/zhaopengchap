@@ -1,0 +1,110 @@
+package com.uranus.platform.business.jd.entity.status;
+
+import com.uranus.tools.psm.status.BusinessCodeDefine;
+
+public enum JdResponseStatus implements BusinessCodeDefine {
+	
+	//成功
+	SUCCESS("TR00000","成功"),
+	SUCCESS_FOR_DEAL("TR00001","受理成功，处理中"),
+	//基本校验性错误
+	UNKNOWN_ERROR("TR99999","未知异常"),
+	SERIAL_REPEAT("TR00002","流水号重复"),
+	AUTH_FAIL("TR00003","授权认证不通过"),
+	PROJ_UNEXISTS("TR00004","项目信息不存在"),
+	DATA_ERROR("TR00005","数据参数错误"),
+	FORE_ELEMENTS_ERROR("TR00006","用户账户四要素错误"),
+	UN_SIGNED("TR00007","用户未签约"),
+	SIGN_IDENTIFY_ERROR("TR00008","签约确认验证码错误"),
+	DENCRYPY_ERROR("TR00009", "签名/解密错误"),
+	ACCOUNT_AGREEMENT("TR00010", "申请变更的账户与当前一致"),
+	NO_PERMISSION("TR00011","无接口使用权限"),
+	NO_CONTRACT_NO("TR01003","贷款单合同号重复"),
+	NO_APPLICATION_NO("TR01004","申请号重复"),
+	NO_APPLICATION("TR01005","申请号在数据库中不存在"),
+	//扣款计划校验
+	NO_LOAN_NO("TR01001","贷款单不存在"),
+	NO_PAYMENTS_NO("TR03001","放款指令重复"),
+	NO_LOAN_PAYMENT("TR01001","贷款单不存在"),
+	PAYMENT_REPURCHASED("TR01008","贷款单已回购"),
+	NO_REPAYPLAN("TR05001","还款计划不存在"),
+	PAYMENT_PAYED("TR01007","贷款单已结清"),
+	LASTPAYMENT_EXISTED("TR06001","不可越期还款"),
+	REPATPLAN_EXAM_ERROR("TR06009","扣款计划验证不通过"),
+	/**
+	 * 支付单返回
+	 */
+	NO_TRANSFER_REPAYPLAN("TR06008","扣款计划不存在"),
+	NO_REPAYPLAN_BATCH("TR06017","扣款计划批次不存在"),
+	/**
+	 * 还款计划类型
+	 */
+	PLN_SYN("0","还款计划同步"),
+	PLN_CHANGE("1","还款计划变更"),
+	PLN_FEE_CHANGE("2","还款计划费用更新"),
+	//还款计划入京东库状态
+	LOAN_STS("00","扣款状态"),
+	//线上扣款科目类型
+	CHARGE_PRINCIPLE("1001","应扣本金"),
+	CHARGED_PRINCIPLE("2001","实收本金"),
+	CHARGE_RATE("1002","应扣利息"),
+	CHARGED_RATE("2002","实收利息"),
+	PENALTY_RATE("1003","应扣罚息"),
+	PENALTYED_RATE("2003","实收罚息"),
+	PENALTY_AMOUNT("4104","应扣违约金"),
+	CHARGE_MOENY("4105","应扣手续费"),
+	REFUND_SECURE_CHARGE("4103","应扣担保费"),
+	REFUND_SERVICE_CHARGE("4102","应扣服务费"),
+	//线上扣款扣款类型
+	REPAY_TYPE_NORMAL("01","扣款类型"),
+	REPAY_TYPE_PRE("02","提前清贷"),
+	REPAY_TYPE_OVERDUE("03","溢缴款充值"),
+	//京东扣款类型
+	TRANSFER_TYPE_ONLINE("1001","线上代扣"),
+	TRANSFER_TYPE_OUTLINE("1002","委托扣款"),
+	//京东回购表状态
+	ON_REPURCHASE("01","回购中"),
+	SUCCESS_REPURCHASE("02","回购中"),
+	FAIL_REPURCHASE("03","回购失败"),
+	//京东审核结果查询审批结果魔法值
+	APPROVAL_QUERY_NO("00","未审核或审核中"),
+	APPROVAL_QUERY_PASS("01","审批通过"),
+	APPROVAL_QUERY_REFUSE("02","审批拒绝"),
+	//京东贷款申请响应数据审批结果魔法值
+	ADUIT_RESULT_NO("00","未审核"),
+	ADUIT_RESULT_SUCCESS("01","审核成功"),
+	ADUIT_RESULT_FAIL("02","审核失败"),
+	//京东贷款申请响应数据审批结果魔法值
+	LOAN_STS_WORKING("00","处理中"),
+	LOAN_STS_SUCCESS("01","放款成功"),
+	LOAN_STS_FAIL("02","放款失败"),
+	//京东签约查询响应数据签约状态
+	SIGN_NO("00","未签约"),
+	SIGN_SUCCESS("01","已签约"),
+	SIGN_FAIL("02","签约失败"),
+	/**
+	 * 京东回调业务类型
+	 */
+	CALLBACK_CREDIT("011", "审核结果回调"),
+	CALLBACK_LOAN("012", "放款结果回调"),
+	CALLBACK_SYNC_REPAY_PLAN("023", "还款计划同步"),
+	CALLBACK_CHANGE_REPAY_PLAN("024", "还款计划费用更新"),
+	CALLBACK_TRANSFER_PLANS("035", "扣款计划校验结果"),
+	;
+	private String businessCode;
+	private String responseMsg;
+	@Override
+	public String businessCode() {
+		return this.businessCode;
+	}
+
+	@Override
+	public String businessMessage() {
+		return this.responseMsg;
+	}
+
+	private JdResponseStatus(String businessCode, String responseMsg) {
+		this.businessCode = businessCode;
+		this.responseMsg = responseMsg;
+	}
+}

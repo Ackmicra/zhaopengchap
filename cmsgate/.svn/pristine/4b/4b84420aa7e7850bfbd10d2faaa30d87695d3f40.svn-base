@@ -1,0 +1,157 @@
+package com.uranus.platform.business.jd.service.trans;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.uranus.platform.business.jd.callback.JdCallbackHttpClient;
+import com.uranus.platform.business.jd.entity.pojo.JdResponse2002;
+import com.uranus.platform.business.jd.entity.status.JdResponseStatus;
+import com.uranus.platform.business.jd.entity.vo.JdCallbackRequestView;
+import com.uranus.platform.business.jd.entity.vo.JdCallbackResponseView;
+import com.uranus.platform.business.pub.entity.dto.Request2002Dto;
+import com.uranus.platform.business.pub.entity.dto.Response2002ListDto;
+import com.uranus.platform.business.pub.entity.po.ProjBaseData;
+import com.uranus.platform.business.pub.service.ProjBaseService;
+import com.uranus.platform.business.ws.search.Request;
+import com.uranus.platform.business.ws.search.Response;
+import com.uranus.platform.business.ws.service.SearchService;
+import com.uranus.platform.utils.exception.PlatformExceptionFactory;
+import com.uranus.platform.utils.status.CmsBusinessStatus;
+import com.uranus.tools.utils.DateUtils;
+
+/**
+ * @Describe: 向小微2002授信结果查询接口发送请求，并且向京东返回响应数据
+ * @author  wangshuai0106@dhcc.com.cn
+ * @Date 创建时间：2019年8月21日 上午11:39:50
+ * 
+ */
+@Service
+public class LnQueryTrans2002Service {
+	@Autowired
+	private ObjectMapper objectMapper;
+	@Autowired
+	private SearchService searchService;
+	@Autowired
+	private JdCallbackHttpClient jdCallbackHttpClient;
+	@Autowired
+	private ProjBaseService projBaseService;
+	/**
+	 * @Description 拼装报文、请求小微、转换响应
+	 * @param tradeNo 交易流水号
+	 * @param brNo    合作机构编号
+	 * @param projNo  信托项目编号
+	 * @param Data    京东数据
+	 * @return 京东响应数据、京东业务数据
+	 */
+	public JdCallbackRequestView request2002(String brNo, String batchNo, String tradeNo, String prePactNo, String projNo) {
+		// 拼发送小微业务数据
+		Request request2002 = getRequest2002(batchNo, brNo, tradeNo, prePactNo);  
+		// 发送小微系统
+		Response response2002 = searchService.search(CmsBusinessStatus.MFS.businessCode(), request2002); 
+		// 转换小微的响应为京东所需响应数据
+		JdCallbackRequestView jdCallbackRequestView = transLnQueryResponse(brNo, tradeNo, response2002, projNo);
+
+		return jdCallbackRequestView;
+	}
+	
+	/**  
+	* @Description 拼发送小微报文
+	* 
+	*/  
+	private Request getRequest2002(String batchNo, String brNo, String tradeNo, String prePactNo) {
+		Request2002Dto requestDto = new Request2002Dto();
+	
+	    //request请求赋值
+ 		requestDto.setBatchNo(batchNo);
+ 		requestDto.setBrNo(brNo);
+ 		requestDto.setPrePactNo(prePactNo);
+ 		
+        //发送request请求给小微
+ 		Request request = new Request();
+ 		request.setTxCode(CmsBusinessStatus.WS_2002.businessCode()); // 接口编号
+ 		request.setBrNo(brNo); // 机构号
+ 		request.setReqDate(DateUtils.nowDateFormat()); // 设置请求日期
+ 		request.setToken("test"); // 设置token
+ 		request.setReqTime(DateUtils.nowTimeFormat()); // 设置请求时间
+ 		request.setReqSerial(tradeNo); // 设置请求流水号
+ 		try {
+ 			request.setContent(objectMapper.writeValueAsString(requestDto));
+ 		} catch (JsonProcessingException e) {
+ 			throw PlatformExceptionFactory.jsonParseException(JdResponseStatus.UNKNOWN_ERROR).build(e);
+ 		}
+ 		return request;
+	}
+	
+	/**  
+	* @Description
+	*    	转换小微的响应为京东所需响应数据
+	*
+	*/  
+	private JdCallbackRequestView transLnQueryResponse(String brNo, String tradeNo, Response response, String projNo) {
+		JdCallbackRequestView jdCallbackRequestView = null;
+		boolean ifCallback = false;
+		//通过申请号查询【京东合作机构编号!=brNo】
+		ProjBaseData projBaseData = projBaseService.getByProjNo(projNo);
+		String jdBrNo = projBaseData.getJdBrNo();
+		String timestamp = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
+		try {
+			// 判断业务是否成功
+			if (response != null) {
+				Response2002ListDto responseDto = objectMapper.readValue(response.getContent(), Response2002ListDto.class);
+				JdResponse2002 jdResponse2002 = new JdResponse2002();
+				String prePactNo = responseDto.getPrePactNo();
+				String dealSts = responseDto.getDealSts();
+				String dealDesc = responseDto.getDealDesc();
+				if (CmsBusinessStatus.MFS_SUCCESS.businessCode().equals(response.getRespCode())) {
+					jdResponse2002.setApplicationNo(prePactNo);
+					/**
+					 * 判断小微返回结果
+					 * 	成功，失败，处理中
+					 */
+					if(CmsBusinessStatus.APPROVAL_PASS.businessCode().equals(dealSts)) {
+						jdResponse2002.setAuditResult(JdResponseStatus.APPROVAL_QUERY_PASS.businessCode());
+						ifCallback = true;
+					//筛查不通过/预审批不通过	
+					} else if(CmsBusinessStatus.APPROVAL_FAIL.businessCode().equals(dealSts)||CmsBusinessStatus.BEFORE_APPROVAL_FAIL.businessCode().equals(dealSts)) {
+						jdResponse2002.setAuditResult(JdResponseStatus.APPROVAL_QUERY_REFUSE.businessCode());
+						//02审批拒绝时为必填（审核拒绝原因）
+						jdResponse2002.setAuditRejectReason(dealDesc);
+						ifCallback = true;
+					}else if(CmsBusinessStatus.APPROVAL_WORKING.businessCode().equals(dealSts)) {//处理中
+						jdResponse2002.setAuditResult(JdResponseStatus.APPROVAL_QUERY_NO.businessCode());
+						//TODO 重新扔到MQ里面执行
+					}
+				}else {
+					jdResponse2002.setAuditResult(JdResponseStatus.APPROVAL_QUERY_REFUSE.businessCode());
+					//02审批拒绝时为必填（审核拒绝原因）
+					jdResponse2002.setAuditRejectReason(response.getRespDesc());
+					ifCallback = true;
+				}
+				jdCallbackRequestView = new JdCallbackRequestView(jdBrNo, projNo, tradeNo, JdResponseStatus.CALLBACK_CREDIT.businessCode(),
+						timestamp, objectMapper.writeValueAsString(jdResponse2002));
+				
+				if(ifCallback) {
+					//回调京东,若【京东响应失败】，则需要重新回调京东
+					JdCallbackResponseView jdCallbackResponseView = jdCallbackHttpClient.callbackJD(jdCallbackRequestView);
+					if(!JdResponseStatus.SUCCESS.businessCode().equals(jdCallbackResponseView.getCode())) {
+						//TODO 重新扔到MQ里面执行
+						
+					}
+				}
+			} else {
+				//TODO 重新扔到MQ里面执行
+				
+			}
+		} catch (IOException e) {
+			throw PlatformExceptionFactory.jsonParseException(CmsBusinessStatus.JSON_PARSE_FAILURE).build(e);
+		}
+		return jdCallbackRequestView;
+	
+	}
+}

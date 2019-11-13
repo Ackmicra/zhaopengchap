@@ -1,0 +1,133 @@
+package com.uranus.platform.business.jd.service.impl;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.uranus.platform.business.jd.callback.JdCallbackHttpClient;
+import com.uranus.platform.business.jd.dao.JdPaymentOrderDataMapper;
+import com.uranus.platform.business.jd.dao.JdTransferBatchDataMapper;
+import com.uranus.platform.business.jd.entity.po.JdPaymentOrderData;
+import com.uranus.platform.business.jd.entity.po.JdTransferBatchData;
+import com.uranus.platform.business.jd.entity.status.JdResponseStatus;
+import com.uranus.platform.business.jd.entity.vo.JdCallbackRequestView;
+import com.uranus.platform.business.jd.service.JdTransferPlanCallbackService;
+import com.uranus.platform.business.jd.service.trans.TransferPlanCalllback2313Service;
+import com.uranus.platform.business.pub.entity.po.ProjBaseData;
+import com.uranus.platform.business.pub.service.CreateKeyService;
+import com.uranus.platform.business.pub.service.ProjBaseService;
+import com.uranus.platform.utils.status.CmsBusinessStatus;
+/**
+ * 
+* @ClassName:：JdTransferPlanCallbackServiceImpl 
+* @Description： 扣款计划回调
+* @author ：chenwendong
+* @date ：2019年8月22日 下午3:53:42 
+*
+ */
+@Service
+@Transactional
+public class JdTransferPlanCallbackServiceImpl implements JdTransferPlanCallbackService {
+
+	@Autowired
+	JdTransferBatchDataMapper jdTransferBatchDataMapper;
+	@Autowired
+	TransferPlanCalllback2313Service transferPlanCalllback2313Service;
+	@Autowired
+	private CreateKeyService createKeyService;
+	@Autowired
+	private ProjBaseService projBaseService;
+	@Autowired
+	private JdCallbackHttpClient jdCallbackHttpClient;
+	@Autowired
+	JdPaymentOrderDataMapper jdPaymentOrderDataMapper;
+	
+	/**
+	 * 扣款计划回调
+	 */
+	@Override
+	public JdCallbackRequestView transferPlanCallback(String batchNo, int delayLevel, String taskType) {
+
+		String batchNumber = jdPaymentOrderDataMapper.getByBatchNo(batchNo).getBatchNumber();
+		
+		JdTransferBatchData jdTransferBatch = jdTransferBatchDataMapper.getByBatchNo(batchNumber);
+		
+		// 根据批此扣款类型【1001-线上扣款，1002-线下扣款】
+		String transferType = jdTransferBatch.getTransferType();
+		String projNo = jdTransferBatch.getProjNo();
+
+		ProjBaseData projBaseData = projBaseService.getByProjNo(projNo);
+		String brNo = projBaseData.getBrNo();
+		
+		/**
+		 * 1. 回调所有批次校验失败的数据
+		 * 2. 回调线上还款，且校验成功的数据
+		 */
+		callback(brNo, batchNo, transferType, jdTransferBatch.getCheckSts(), jdTransferBatch.getCheckDesc(), 
+				delayLevel, projNo, projBaseData.getJdBrNo(), taskType);
+		
+		return null;
+
+	}
+
+	/**
+	 * 1. 回调线下委托、回购、线上还款并且校验失败
+	 * 2. 回调批次校验成功，且业务类型transferType为线下委托或回购的数据
+	 * 3. 回调批次校验成功，且业务类型transferType为线上扣款的数据
+	 */
+	private void callback(String brNo, String batchNo, String transferType, String checkSts, String checkDesc, int delayLevel, String projNo,
+			String jdBrNo, String taskType) {
+		String tradeNo = createKeyService.getJdTradeNo();
+		// 如果校验初始化，则重新仍到MQ去等待执行
+		if(JdResponseStatus.CHECK_STS.businessCode().equals(checkSts)) {
+			/**
+			 * 未处理完成，将数据重新发送到MQ
+			 */
+			jdCallbackHttpClient.callbackFailAndSendMQ(batchNo, delayLevel, CmsBusinessStatus.WS_2311.businessCode(), CmsBusinessStatus.CALLBACK_TRANSFER_PLAN_RESULT.businessCode());
+			
+		} else {// 校验成功或校验失败
+			JdCallbackRequestView jdCallbackRequestView = null;
+			if ((JdResponseStatus.TRANSFER_TYPE_ONLINE.businessCode().equals(transferType) 
+					&& JdResponseStatus.CHECK_STS_SUCCESS.businessCode().equals(checkSts))) {
+				// 回调线上还款，且校验成功的数据
+				jdCallbackRequestView = transferPlanCalllback2313Service.request2313(brNo, batchNo, tradeNo, 
+						checkSts, checkDesc, delayLevel,transferType);
+			}else
+			// 回调线下委托、回购、线上还款并且校验失败
+			if (JdResponseStatus.TRANSFER_TYPE_OUTLINE.businessCode().equals(transferType)
+					|| JdResponseStatus.TRANSFER_TYPE_REPURCHASE.businessCode().equals(transferType)
+					|| (JdResponseStatus.TRANSFER_TYPE_ONLINE.businessCode().equals(transferType)
+							&& JdResponseStatus.CHECK_STS_FAIL.businessCode().equals(checkSts))) {
+
+				if (CmsBusinessStatus.CALLBACK_PAYMENT_ORDER_RESULT.businessCode().equals(taskType)) {
+					// 线下支付单回调
+					jdCallbackRequestView = transferPlanCalllback2313Service.request2313(brNo, batchNo, tradeNo,
+							checkSts, checkDesc, delayLevel, taskType);
+				} else {
+
+					jdCallbackRequestView = transferPlanCalllback2313Service.getTransferPlan(batchNo, checkSts,
+							checkDesc);
+
+				}
+
+			} 
+			/**
+			 * 回调京东，或者重新发送到MQ等待再次被消费
+			 */
+			if(jdCallbackRequestView != null) {
+				jdCallbackRequestView.setChannelId(jdBrNo);
+				jdCallbackRequestView.setChannelProdNo(projNo);
+				jdCallbackRequestView.setMessageType(JdResponseStatus.CALLBACK_TRANSFER_PLANS.businessCode());
+				jdCallbackRequestView.setOutTradeNo(tradeNo);
+				jdCallbackRequestView.setTimestamp(new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()));
+				jdCallbackHttpClient.callbackOrSendMQ(jdCallbackRequestView, batchNo, delayLevel, 
+						CmsBusinessStatus.WS_2311.businessCode(), CmsBusinessStatus.CALLBACK_TRANSFER_PLAN_RESULT.businessCode());
+			} 
+		}
+		
+	}
+
+}

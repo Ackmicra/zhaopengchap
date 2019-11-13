@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uranus.platform.business.admin.dao.SystemPermissionMapper">
+  <resultMap id="BaseResultMap" type="com.uranus.platform.business.admin.entity.model.SystemPermissionData">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="perm_name" jdbcType="VARCHAR" property="permName" />
+    <result column="perm_ch_name" jdbcType="VARCHAR" property="permChName" />
+    <result column="uri_expression" jdbcType="VARCHAR" property="uriExpression" />
+    <result column="request_method_type" jdbcType="VARCHAR" property="requestMethodType" />
+    <result column="role_id" jdbcType="BIGINT" property="roleId" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from system_permission
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.uranus.platform.business.admin.entity.model.SystemPermissionData">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into system_permission (perm_name, perm_ch_name, uri_expression, 
+      request_method_type, role_id)
+    values (#{permName,jdbcType=VARCHAR}, #{permChName,jdbcType=VARCHAR}, #{uriExpression,jdbcType=VARCHAR}, 
+      #{requestMethodType,jdbcType=VARCHAR}, #{roleId,jdbcType=BIGINT})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.uranus.platform.business.admin.entity.model.SystemPermissionData">
+    update system_permission
+    set perm_name = #{permName,jdbcType=VARCHAR},
+      perm_ch_name = #{permChName,jdbcType=VARCHAR},
+      uri_expression = #{uriExpression,jdbcType=VARCHAR},
+      request_method_type = #{requestMethodType,jdbcType=VARCHAR},
+      role_id = #{roleId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select id, perm_name, perm_ch_name, uri_expression, request_method_type, role_id
+    from system_permission
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, perm_name, perm_ch_name, uri_expression, request_method_type, role_id
+    from system_permission
+  </select>
+</mapper>

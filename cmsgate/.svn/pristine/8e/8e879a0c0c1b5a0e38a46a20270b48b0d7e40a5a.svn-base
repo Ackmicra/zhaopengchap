@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uranus.platform.business.jd.dao.JdRepayPlanDataMapper">
+  <resultMap id="BaseResultMap" type="com.uranus.platform.business.jd.entity.po.JdRepayPlanData">
+    <id column="JD_ID" jdbcType="VARCHAR" property="jdId" />
+    <result column="APPLICATION_NO" jdbcType="VARCHAR" property="applicationNo" />
+    <result column="ISSUE" jdbcType="DECIMAL" property="issue" />
+    <result column="START_DATE" jdbcType="VARCHAR" property="startDate" />
+    <result column="START_RATE_DATE" jdbcType="VARCHAR" property="startRateDate" />
+    <result column="REFUND_DATE" jdbcType="VARCHAR" property="refundDate" />
+    <result column="END_DATE" jdbcType="VARCHAR" property="endDate" />
+    <result column="REFUND_PRINCIPAL" jdbcType="DECIMAL" property="refundPrincipal" />
+    <result column="REFUND_INTEREST" jdbcType="DECIMAL" property="refundInterest" />
+    <result column="SURPLUS_PRINCIPAL" jdbcType="DECIMAL" property="surplusPrincipal" />
+    <result column="REFUND_SERVICE_CHARGE" jdbcType="DECIMAL" property="refundServiceCharge" />
+    <result column="INTEREST_PENALTY" jdbcType="DECIMAL" property="interestPenalty" />
+    <result column="OVERDUE_SERVICE" jdbcType="DECIMAL" property="overdueService" />
+    <result column="UP_TYPE" jdbcType="VARCHAR" property="upType" />
+    <result column="CHANGE_TYPE" jdbcType="VARCHAR" property="changeType" />
+    <result column="CHANGE_REASON" jdbcType="VARCHAR" property="changeReason" />
+    <result column="TYPE" jdbcType="VARCHAR" property="type" />
+    <result column="CREATE_DATE" jdbcType="VARCHAR" property="createDate" />
+    <result column="CREATE_TIME" jdbcType="VARCHAR" property="createTime" />
+    <result column="UP_DATE" jdbcType="VARCHAR" property="upDate" />
+    <result column="UP_TIME" jdbcType="VARCHAR" property="upTime" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from JD_REPAY_PLAN
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="java.util.List">
+    <selectKey keyProperty="jdId" order="BEFORE" resultType="java.lang.String">
+      SELECT JD_REPAY_PLAN_SEQ.NEXTVAL FROM DUAL
+    </selectKey>
+    insert into JD_REPAY_PLAN (JD_ID, APPLICATION_NO, ISSUE, START_DATE, 
+      START_RATE_DATE, REFUND_DATE, END_DATE, 
+      REFUND_PRINCIPAL, REFUND_INTEREST, SURPLUS_PRINCIPAL, 
+      REFUND_SERVICE_CHARGE, INTEREST_PENALTY, OVERDUE_SERVICE, 
+      UP_TYPE, CHANGE_TYPE, CHANGE_REASON, 
+      TYPE, CREATE_DATE, CREATE_TIME, 
+      UP_DATE, UP_TIME)
+      SELECT JD_REPAY_PLAN_SEQ.NEXTVAL jdId, T.* FROM(
+        <foreach collection="list" item="item" index="index" separator="UNION ALL">
+        SELECT 
+            #{item.applicationNo,jdbcType=VARCHAR}, #{item.issue,jdbcType=DECIMAL}, #{item.startDate,jdbcType=VARCHAR}, 
+   		   #{item.startRateDate,jdbcType=VARCHAR}, #{item.refundDate,jdbcType=VARCHAR}, #{item.endDate,jdbcType=VARCHAR}, 
+    	  #{item.refundPrincipal,jdbcType=DECIMAL}, #{item.refundInterest,jdbcType=DECIMAL}, #{item.surplusPrincipal,jdbcType=DECIMAL}, 
+     	 #{item.refundServiceCharge,jdbcType=DECIMAL}, #{item.interestPenalty,jdbcType=DECIMAL}, #{item.overdueService,jdbcType=DECIMAL}, 
+     	 #{item.upType,jdbcType=VARCHAR}, #{item.changeType,jdbcType=VARCHAR}, #{item.changeReason,jdbcType=VARCHAR}, 
+     	 #{item.type,jdbcType=VARCHAR}, #{item.createDate,jdbcType=VARCHAR}, #{item.createTime,jdbcType=VARCHAR}, 
+     	 #{item.upDate,jdbcType=VARCHAR}, #{item.upTime,jdbcType=VARCHAR}
+     	 FROM DUAL
+        </foreach>
+      ) T
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.uranus.platform.business.jd.entity.po.JdRepayPlanData">
+    update JD_REPAY_PLAN
+    set APPLICATION_NO = #{applicationNo,jdbcType=VARCHAR},
+      ISSUE = #{issue,jdbcType=DECIMAL},
+      START_DATE = #{startDate,jdbcType=VARCHAR},
+      START_RATE_DATE = #{startRateDate,jdbcType=VARCHAR},
+      REFUND_DATE = #{refundDate,jdbcType=VARCHAR},
+      END_DATE = #{endDate,jdbcType=VARCHAR},
+      REFUND_PRINCIPAL = #{refundPrincipal,jdbcType=DECIMAL},
+      REFUND_INTEREST = #{refundInterest,jdbcType=DECIMAL},
+      SURPLUS_PRINCIPAL = #{surplusPrincipal,jdbcType=DECIMAL},
+      REFUND_SERVICE_CHARGE = #{refundServiceCharge,jdbcType=DECIMAL},
+      INTEREST_PENALTY = #{interestPenalty,jdbcType=DECIMAL},
+      OVERDUE_SERVICE = #{overdueService,jdbcType=DECIMAL},
+      UP_TYPE = #{upType,jdbcType=VARCHAR},
+      CHANGE_TYPE = #{changeType,jdbcType=VARCHAR},
+      CHANGE_REASON = #{changeReason,jdbcType=VARCHAR},
+      TYPE = #{type,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=VARCHAR},
+      UP_DATE = #{upDate,jdbcType=VARCHAR},
+      UP_TIME = #{upTime,jdbcType=VARCHAR}
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, ISSUE, START_DATE, START_RATE_DATE, REFUND_DATE, END_DATE, 
+    REFUND_PRINCIPAL, REFUND_INTEREST, SURPLUS_PRINCIPAL, REFUND_SERVICE_CHARGE, INTEREST_PENALTY, 
+    OVERDUE_SERVICE, UP_TYPE, CHANGE_TYPE, CHANGE_REASON, TYPE, CREATE_DATE, CREATE_TIME, 
+    UP_DATE, UP_TIME
+    from JD_REPAY_PLAN
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, ISSUE, START_DATE, START_RATE_DATE, REFUND_DATE, END_DATE, 
+    REFUND_PRINCIPAL, REFUND_INTEREST, SURPLUS_PRINCIPAL, REFUND_SERVICE_CHARGE, INTEREST_PENALTY, 
+    OVERDUE_SERVICE, UP_TYPE, CHANGE_TYPE, CHANGE_REASON, TYPE, CREATE_DATE, CREATE_TIME, 
+    UP_DATE, UP_TIME
+    from JD_REPAY_PLAN
+  </select>
+  
+   <select id="getJdId" parameterType="java.lang.String" resultType="String">
+     SELECT JD_REPAY_PLAN_SEQ.NEXTVAL FROM DUAL
+  </select>
+</mapper>

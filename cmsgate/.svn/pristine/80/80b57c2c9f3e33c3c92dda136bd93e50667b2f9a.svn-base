@@ -1,0 +1,33 @@
+package com.uranus.platform.business.jd.entity.pojo;
+
+import java.util.List;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+import com.uranus.tools.beans.annotation.ConvertBean;
+
+import lombok.Data;
+
+/**
+ * 
+* @ClassName:：JdLoanPaymentOrder 
+* @Description： 支付订单
+* @author ：chenwendong
+* @date ：2019年8月5日 下午2:06:15 
+*
+ */
+@Data
+@ConvertBean
+public class JdLoanPaymentOrder {
+
+	@NotBlank
+	private String transferType;              //扣款类型  
+	@NotBlank
+	private String batchNumber;               //批次号      
+	@NotNull
+	private JdPaymentOrder paymentOrder;        //支付单信息  
+	
+	
+}

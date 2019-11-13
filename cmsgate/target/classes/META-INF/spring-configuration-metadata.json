@@ -1,0 +1,82 @@
+{
+  "groups": [
+    {
+      "name": "authorization",
+      "type": "com.uranus.platform.authorize.properties.AuthorizeProperties",
+      "sourceType": "com.uranus.platform.authorize.properties.AuthorizeProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "authorization.access-token-validity-second",
+      "type": "java.lang.Integer",
+      "sourceType": "com.uranus.platform.authorize.properties.AuthorizeProperties"
+    },
+    {
+      "name": "authorization.all-authority-role-name",
+      "type": "java.lang.String",
+      "sourceType": "com.uranus.platform.authorize.properties.AuthorizeProperties"
+    },
+    {
+      "name": "authorization.client-id",
+      "type": "java.lang.String",
+      "sourceType": "com.uranus.platform.authorize.properties.AuthorizeProperties"
+    },
+    {
+      "name": "authorization.client-secret",
+      "type": "java.lang.String",
+      "sourceType": "com.uranus.platform.authorize.properties.AuthorizeProperties"
+    },
+    {
+      "name": "authorization.enable-authorize",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.uranus.platform.authorize.properties.AuthorizeProperties"
+    },
+    {
+      "name": "authorization.enable-permission",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.uranus.platform.authorize.properties.AuthorizeProperties"
+    },
+    {
+      "name": "authorization.login-process-uri",
+      "type": "java.lang.String",
+      "sourceType": "com.uranus.platform.authorize.properties.AuthorizeProperties"
+    },
+    {
+      "name": "authorization.login-uri",
+      "type": "java.lang.String",
+      "sourceType": "com.uranus.platform.authorize.properties.AuthorizeProperties"
+    },
+    {
+      "name": "authorization.logout-success-uri",
+      "type": "java.lang.String",
+      "sourceType": "com.uranus.platform.authorize.properties.AuthorizeProperties"
+    },
+    {
+      "name": "authorization.logout-uri",
+      "type": "java.lang.String",
+      "sourceType": "com.uranus.platform.authorize.properties.AuthorizeProperties"
+    },
+    {
+      "name": "authorization.refresh-token-validity-seconds",
+      "type": "java.lang.Integer",
+      "sourceType": "com.uranus.platform.authorize.properties.AuthorizeProperties"
+    },
+    {
+      "name": "authorization.session-expired-url",
+      "type": "java.lang.String",
+      "sourceType": "com.uranus.platform.authorize.properties.AuthorizeProperties"
+    },
+    {
+      "name": "authorization.session-invalid",
+      "type": "java.lang.String",
+      "sourceType": "com.uranus.platform.authorize.properties.AuthorizeProperties"
+    },
+    {
+      "name": "authorization.sign-key",
+      "type": "java.lang.String",
+      "sourceType": "com.uranus.platform.authorize.properties.AuthorizeProperties"
+    }
+  ],
+  "hints": []
+}

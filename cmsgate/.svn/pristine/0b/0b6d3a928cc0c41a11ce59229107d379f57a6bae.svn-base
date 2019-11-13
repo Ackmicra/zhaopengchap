@@ -1,0 +1,23 @@
+package com.uranus.platform.business.jd.service.impl;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.uranus.platform.business.jd.entity.vo.JdResponseView;
+import com.uranus.platform.business.jd.service.JdTransferPlanCallbackService;
+
+@SpringBootTest
+class JdTransferPlanCallbackServiceImplTest {
+
+	@Autowired
+	JdTransferPlanCallbackService jdTransferPlanCallbackService;
+	
+	@Test
+	void test() {
+		
+		JdResponseView jdResponseView = jdTransferPlanCallbackService.transferPlanCallback("00002");
+		System.out.println(jdResponseView.toString());
+	}
+
+}

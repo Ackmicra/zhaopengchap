@@ -1,0 +1,40 @@
+package com.uranus.platform.business.jd.entity.po;
+
+import com.uranus.tools.beans.annotation.ConvertBean;
+
+import lombok.Data;
+
+@Data
+public class JdLoanPaymentStepData {
+    private String jdId;
+
+    private String applicationNo;
+
+    private String paymentNo;
+
+    private Double paymentAmount;
+
+    private String accountName;
+
+    private String accountNo;
+
+    private String bankCode;
+
+    private String holderMobileNo;
+
+    private String holderIdType;
+
+    private String holderIdNo;
+
+    private String createDate;
+
+    private String createTime;
+
+    private String loanSts;
+    
+    private String upDate;
+    
+    private String upTime;
+
+  
+}

@@ -1,0 +1,110 @@
+package com.uranus.platform.utils.exception.handler;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import com.uranus.platform.business.jd.entity.vo.JdResponseView;
+import com.uranus.platform.business.jd.util.JdBaseUtil;
+import com.uranus.platform.business.pub.service.CreateKeyService;
+import com.uranus.platform.utils.exception.BusinessServiceException;
+import com.uranus.platform.utils.exception.JsonParseException;
+import com.uranus.platform.utils.exception.ParamInValidateException;
+import com.uranus.platform.utils.exception.handler.impl.PrintExceptionHandlerImpl;
+import com.uranus.tools.psm.ResponseEntity;
+
+@ControllerAdvice
+@Configuration
+public class PlatformExceptionAdapter {
+
+    @Autowired
+    private PlatformExceptionLogHandler platformExceptionLogHandler;
+    @Autowired
+	private JdBaseUtil jdBaseUtil;
+    @Autowired
+	private CreateKeyService createKeyService;
+    
+    @Bean
+    @ConditionalOnMissingBean(PlatformExceptionLogHandler.class)
+    public PlatformExceptionLogHandler platformExceptionLogHandler(){
+        return new PrintExceptionHandlerImpl();
+    }
+
+    /**
+     * 普通业务级异常
+     * @param exception
+     * @return
+     */
+    @ExceptionHandler(value = BusinessServiceException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public Object handleCustomServiceException(BusinessServiceException exception, HttpServletResponse response) {
+        platformExceptionLogHandler.handleExceptionLog(exception);
+//        return ResponseEntity.Failure.badRequest(exception.getBusinessCode()).failureMessage(exception.getMessage()).response();
+        JdResponseView jdResponseView = new JdResponseView(exception.getBusinessCode().businessCode(), exception.getMessage(), createKeyService.getJdTradeNo(), "");
+        /**
+		 * 设置公共响应报文头
+		 */
+		jdBaseUtil.setResponseHeader(response);
+        return jdResponseView;
+    }
+
+    /**
+     * Json转换失败异常
+     * @param exception
+     * @return
+     */
+    @ExceptionHandler(value = JsonParseException.class)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public Object handleJsonParseFailureException(JsonParseException exception, HttpServletResponse response) {
+        platformExceptionLogHandler.handleExceptionLog(exception);
+//        return ResponseEntity.Failure.badRequest(BaseStatus.ILLEGAL_DATA).failureMessage("报文数据Json转换失败：" + exception.getMessage()).response();
+        JdResponseView jdResponseView = new JdResponseView(exception.getBusinessCode().businessCode(), "报文数据Json转换失败：" + exception.getMessage(), createKeyService.getJdTradeNo(), "");
+        /**
+		 * 设置公共响应报文头
+		 */
+		jdBaseUtil.setResponseHeader(response);
+        return jdResponseView;
+    }
+
+    /**
+     * 参数校验异常
+     * @param exception
+     * @return
+     */
+    @ExceptionHandler(value = ParamInValidateException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public Object handleParamInValidateException(ParamInValidateException exception, HttpServletResponse response) {
+        platformExceptionLogHandler.handleExceptionLog(exception);
+//        return ResponseEntity.Failure.badRequest(BaseStatus.ILLEGAL_DATA).failureMessage("参数格式校验失败：：" + exception.getMessage()).response();
+        JdResponseView jdResponseView = new JdResponseView(exception.getBusinessCode().businessCode(), "参数格式校验失败：：" + exception.getMessage(), createKeyService.getJdTradeNo(), "");
+        /**
+		 * 设置公共响应报文头
+		 */
+		jdBaseUtil.setResponseHeader(response);
+        return jdResponseView;
+    }
+
+    /**
+     * 其他未捕捉异常
+     * @param exception
+     * @return
+     */
+    @ExceptionHandler(value = Exception.class)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ResponseEntity<?> handleException(Exception exception) {
+        platformExceptionLogHandler.handleExceptionLog(exception);
+        return ResponseEntity.Failure.other(com.uranus.tools.psm.status.HttpStatus.INTERNAL_SERVER_ERROR).failureMessage(exception.getMessage()).response();
+    }
+}

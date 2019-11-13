@@ -1,0 +1,34 @@
+package com.uranus.platform.utils.jd.security;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+/**
+ * @author 李亚斌
+ * @date 2019/07/30 19:23
+ * @since v1.1
+ */
+@SpringBootTest
+class SignEnvelopServiceKeyTest {
+    @Autowired
+    private SignEnvelopServiceKey signEnvelopServiceKey;
+
+    @Test
+    void signEnvelop(){
+        // 源数据串
+    	
+    	//对测试的JD方数据进行加密
+//    	String data = "{\"channelProdNo\":\"123456\",\"payeeAccountName\":\"王五\",\"payeeCeritificateType\":\"01\",\"payeeCeritificateNo\":\"95648246481595854\",\"payeeMobileNo\":\"132568495231\",\"payeeAccountNo\":\"651574851191215216\",\"payeeBankCode\":\"582146\",\"paymentChannel\":\"1\"}";
+//        String encodeData = signEnvelopServiceKey.signEnvelop(data);
+//        System.out.println("加密后的数据为:" + encodeData);
+//        Assertions.assertNotNull(encodeData);
+          //对加密后导入的数据进行解密
+        String resultData = "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";
+        String decodeData = signEnvelopServiceKey.verifyEnvelop(resultData);
+        System.out.println(decodeData);
+        Assertions.assertNotNull(decodeData);
+    }
+
+}

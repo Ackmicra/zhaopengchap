@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    #url: jdbc:mysql://140.143.124.166:3306/dhcc_dev_db?characterEncoding=utf8&useSSL=false&serverTimezone=UTC
+    url: jdbc:oracle:thin:@192.168.1.172:1521:orcl
+    username: mids
+    password: mids
+    driver-class-name: oracle.jdbc.OracleDriver
+  redis:
+    host: 140.143.124.166
+    port: 6380
+    password: dhcc_redis#0713
+server:
+  port: 8080
+
+platform:
+  security:
+    priCert: C:/mywork/workspace/eclipse-rsm/Test/src/测试环境-资产方私钥.pfx
+    pubCert: C:/mywork/workspace/eclipse-rsm/Test/src/测试环境-JDJR云工厂公钥_base64.cer
+    password: 123456

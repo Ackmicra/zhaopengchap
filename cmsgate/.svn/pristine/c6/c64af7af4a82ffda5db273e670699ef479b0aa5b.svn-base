@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uranus.platform.business.jd.dao.JdLoanApplyInfoDataMapper">
+  <resultMap id="BaseResultMap" type="com.uranus.platform.business.jd.entity.po.JdLoanApplyInfoData">
+    <id column="JD_ID" jdbcType="VARCHAR" property="jdId" />
+    <result column="APPLICATION_NO" jdbcType="VARCHAR" property="applicationNo" />
+    <result column="BR_NO" jdbcType="VARCHAR" property="brNo" />
+    <result column="PROJ_NO" jdbcType="VARCHAR" property="projNo" />
+    <result column="PRDT_NO" jdbcType="VARCHAR" property="prdtNo" />
+    <result column="CONTRACT_NO" jdbcType="VARCHAR" property="contractNo" />
+    <result column="CHANNEL_PROD_NO" jdbcType="VARCHAR" property="channelProdNo" />
+    <result column="APPLICATION_PLACE" jdbcType="VARCHAR" property="applicationPlace" />
+    <result column="APPLICATION" jdbcType="VARCHAR" property="application" />
+    <result column="CONTRACT_AMOUNT" jdbcType="DECIMAL" property="contractAmount" />
+    <result column="AMOUNT_PAYED" jdbcType="DECIMAL" property="amountPayed" />
+    <result column="CURRENCY_TYPE" jdbcType="VARCHAR" property="currencyType" />
+    <result column="PERIOD_TYPE" jdbcType="VARCHAR" property="periodType" />
+    <result column="EXPIRES_MONTH" jdbcType="DECIMAL" property="expiresMonth" />
+    <result column="REFUND_METHOD" jdbcType="VARCHAR" property="refundMethod" />
+    <result column="CHARGE_DATE_TYPE" jdbcType="VARCHAR" property="chargeDateType" />
+    <result column="CHARGE_DATE_TYPE2" jdbcType="VARCHAR" property="chargeDateType2" />
+    <result column="CHARGE_DATE" jdbcType="VARCHAR" property="chargeDate" />
+    <result column="BRANCH_OFFICE" jdbcType="VARCHAR" property="branchOffice" />
+    <result column="PAYMENT_WAY" jdbcType="VARCHAR" property="paymentWay" />
+    <result column="LOAN_TYPE" jdbcType="VARCHAR" property="loanType" />
+    <result column="BORROWER_TYPE" jdbcType="VARCHAR" property="borrowerType" />
+    <result column="HANDLING_CHARGE" jdbcType="DECIMAL" property="handlingCharge" />
+    <result column="HANDLING_CHARGE_RATE" jdbcType="DECIMAL" property="handlingChargeRate" />
+    <result column="PRIMARY_RATE_TYPE" jdbcType="VARCHAR" property="primaryRateType" />
+    <result column="PRIMARY_RATE" jdbcType="DECIMAL" property="primaryRate" />
+    <result column="IS_FORWARD" jdbcType="VARCHAR" property="isForward" />
+    <result column="PENALTY_RATE" jdbcType="DECIMAL" property="penaltyRate" />
+    <result column="MONTHLY_PENALTY" jdbcType="DECIMAL" property="monthlyPenalty" />
+    <result column="SERVICE_CHARGE" jdbcType="DECIMAL" property="serviceCharge" />
+    <result column="SERVICE_CHARGE_RATE" jdbcType="DECIMAL" property="serviceChargeRate" />
+    <result column="EARNEST_MONEY" jdbcType="DECIMAL" property="earnestMoney" />
+    <result column="DEPOSIT" jdbcType="DECIMAL" property="deposit" />
+    <result column="EXPIRE_DATE" jdbcType="VARCHAR" property="expireDate" />
+    <result column="DOWN_PAYMENT" jdbcType="DECIMAL" property="downPayment" />
+    <result column="MONTHLY_PAYMENT" jdbcType="DECIMAL" property="monthlyPayment" />
+    <result column="SIGNED_CITY" jdbcType="VARCHAR" property="signedCity" />
+    <result column="SECURED_ACCOUNT" jdbcType="VARCHAR" property="securedAccount" />
+    <result column="AUDIT_RESULT" jdbcType="VARCHAR" property="auditResult" />
+    <result column="AUDIT_REJECT_REASON" jdbcType="VARCHAR" property="auditRejectReason" />
+    <result column="AUDIT_DATE" jdbcType="VARCHAR" property="auditDate" />
+    <result column="CREATE_DATE" jdbcType="VARCHAR" property="createDate" />
+    <result column="CREATE_TIME" jdbcType="VARCHAR" property="createTime" />
+    <result column="BATCH_NO" jdbcType="VARCHAR" property="batchNo" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from JD_LOAN_APPLY_INFO
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.uranus.platform.business.jd.entity.po.JdLoanApplyInfoData">
+    insert into JD_LOAN_APPLY_INFO (JD_ID, APPLICATION_NO, BR_NO, PROJ_NO, 
+      PRDT_NO, CONTRACT_NO, CHANNEL_PROD_NO, 
+      APPLICATION_PLACE, APPLICATION, CONTRACT_AMOUNT, 
+      AMOUNT_PAYED, CURRENCY_TYPE, PERIOD_TYPE, 
+      EXPIRES_MONTH, REFUND_METHOD, CHARGE_DATE_TYPE, 
+      CHARGE_DATE_TYPE2, CHARGE_DATE, BRANCH_OFFICE, 
+      PAYMENT_WAY, LOAN_TYPE, BORROWER_TYPE, 
+      HANDLING_CHARGE, HANDLING_CHARGE_RATE, PRIMARY_RATE_TYPE, 
+      PRIMARY_RATE, IS_FORWARD, PENALTY_RATE, 
+      MONTHLY_PENALTY, SERVICE_CHARGE, SERVICE_CHARGE_RATE, 
+      EARNEST_MONEY, DEPOSIT, EXPIRE_DATE, 
+      DOWN_PAYMENT, MONTHLY_PAYMENT, SIGNED_CITY, 
+      SECURED_ACCOUNT, AUDIT_RESULT, AUDIT_REJECT_REASON, 
+      AUDIT_DATE, CREATE_DATE, CREATE_TIME)
+    values (#{jdId,jdbcType=VARCHAR}, #{applicationNo,jdbcType=VARCHAR}, #{brNo,jdbcType=VARCHAR}, #{projNo,jdbcType=VARCHAR}, 
+      #{prdtNo,jdbcType=VARCHAR}, #{contractNo,jdbcType=VARCHAR}, #{channelProdNo,jdbcType=VARCHAR}, 
+      #{applicationPlace,jdbcType=VARCHAR}, #{application,jdbcType=VARCHAR}, #{contractAmount,jdbcType=DECIMAL}, 
+      #{amountPayed,jdbcType=DECIMAL}, #{currencyType,jdbcType=VARCHAR}, #{periodType,jdbcType=VARCHAR}, 
+      #{expiresMonth,jdbcType=DECIMAL}, #{refundMethod,jdbcType=VARCHAR}, #{chargeDateType,jdbcType=VARCHAR}, 
+      #{chargeDateType2,jdbcType=VARCHAR}, #{chargeDate,jdbcType=VARCHAR}, #{branchOffice,jdbcType=VARCHAR}, 
+      #{paymentWay,jdbcType=VARCHAR}, #{loanType,jdbcType=VARCHAR}, #{borrowerType,jdbcType=VARCHAR}, 
+      #{handlingCharge,jdbcType=DECIMAL}, #{handlingChargeRate,jdbcType=DECIMAL}, #{primaryRateType,jdbcType=VARCHAR}, 
+      #{primaryRate,jdbcType=DECIMAL}, #{isForward,jdbcType=VARCHAR}, #{penaltyRate,jdbcType=DECIMAL}, 
+      #{monthlyPenalty,jdbcType=DECIMAL}, #{serviceCharge,jdbcType=DECIMAL}, #{serviceChargeRate,jdbcType=DECIMAL}, 
+      #{earnestMoney,jdbcType=DECIMAL}, #{deposit,jdbcType=DECIMAL}, #{expireDate,jdbcType=VARCHAR}, 
+      #{downPayment,jdbcType=DECIMAL}, #{monthlyPayment,jdbcType=DECIMAL}, #{signedCity,jdbcType=VARCHAR}, 
+      #{securedAccount,jdbcType=VARCHAR}, #{auditResult,jdbcType=VARCHAR}, #{auditRejectReason,jdbcType=VARCHAR}, 
+      #{auditDate,jdbcType=VARCHAR}, #{createDate,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.uranus.platform.business.jd.entity.po.JdLoanApplyInfoData">
+    update JD_LOAN_APPLY_INFO
+    set APPLICATION_NO = #{applicationNo,jdbcType=VARCHAR},
+      BR_NO = #{brNo,jdbcType=VARCHAR},
+      PROJ_NO = #{projNo,jdbcType=VARCHAR},
+      PRDT_NO = #{prdtNo,jdbcType=VARCHAR},
+      CONTRACT_NO = #{contractNo,jdbcType=VARCHAR},
+      CHANNEL_PROD_NO = #{channelProdNo,jdbcType=VARCHAR},
+      APPLICATION_PLACE = #{applicationPlace,jdbcType=VARCHAR},
+      APPLICATION = #{application,jdbcType=VARCHAR},
+      CONTRACT_AMOUNT = #{contractAmount,jdbcType=DECIMAL},
+      AMOUNT_PAYED = #{amountPayed,jdbcType=DECIMAL},
+      CURRENCY_TYPE = #{currencyType,jdbcType=VARCHAR},
+      PERIOD_TYPE = #{periodType,jdbcType=VARCHAR},
+      EXPIRES_MONTH = #{expiresMonth,jdbcType=DECIMAL},
+      REFUND_METHOD = #{refundMethod,jdbcType=VARCHAR},
+      CHARGE_DATE_TYPE = #{chargeDateType,jdbcType=VARCHAR},
+      CHARGE_DATE_TYPE2 = #{chargeDateType2,jdbcType=VARCHAR},
+      CHARGE_DATE = #{chargeDate,jdbcType=VARCHAR},
+      BRANCH_OFFICE = #{branchOffice,jdbcType=VARCHAR},
+      PAYMENT_WAY = #{paymentWay,jdbcType=VARCHAR},
+      LOAN_TYPE = #{loanType,jdbcType=VARCHAR},
+      BORROWER_TYPE = #{borrowerType,jdbcType=VARCHAR},
+      HANDLING_CHARGE = #{handlingCharge,jdbcType=DECIMAL},
+      HANDLING_CHARGE_RATE = #{handlingChargeRate,jdbcType=DECIMAL},
+      PRIMARY_RATE_TYPE = #{primaryRateType,jdbcType=VARCHAR},
+      PRIMARY_RATE = #{primaryRate,jdbcType=DECIMAL},
+      IS_FORWARD = #{isForward,jdbcType=VARCHAR},
+      PENALTY_RATE = #{penaltyRate,jdbcType=DECIMAL},
+      MONTHLY_PENALTY = #{monthlyPenalty,jdbcType=DECIMAL},
+      SERVICE_CHARGE = #{serviceCharge,jdbcType=DECIMAL},
+      SERVICE_CHARGE_RATE = #{serviceChargeRate,jdbcType=DECIMAL},
+      EARNEST_MONEY = #{earnestMoney,jdbcType=DECIMAL},
+      DEPOSIT = #{deposit,jdbcType=DECIMAL},
+      EXPIRE_DATE = #{expireDate,jdbcType=VARCHAR},
+      DOWN_PAYMENT = #{downPayment,jdbcType=DECIMAL},
+      MONTHLY_PAYMENT = #{monthlyPayment,jdbcType=DECIMAL},
+      SIGNED_CITY = #{signedCity,jdbcType=VARCHAR},
+      SECURED_ACCOUNT = #{securedAccount,jdbcType=VARCHAR},
+      AUDIT_RESULT = #{auditResult,jdbcType=VARCHAR},
+      AUDIT_REJECT_REASON = #{auditRejectReason,jdbcType=VARCHAR},
+      AUDIT_DATE = #{auditDate,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=VARCHAR}
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, BR_NO, PROJ_NO, PRDT_NO, CONTRACT_NO, CHANNEL_PROD_NO, 
+    APPLICATION_PLACE, APPLICATION, CONTRACT_AMOUNT, AMOUNT_PAYED, CURRENCY_TYPE, PERIOD_TYPE, 
+    EXPIRES_MONTH, REFUND_METHOD, CHARGE_DATE_TYPE, CHARGE_DATE_TYPE2, CHARGE_DATE, BRANCH_OFFICE, 
+    PAYMENT_WAY, LOAN_TYPE, BORROWER_TYPE, HANDLING_CHARGE, HANDLING_CHARGE_RATE, PRIMARY_RATE_TYPE, 
+    PRIMARY_RATE, IS_FORWARD, PENALTY_RATE, MONTHLY_PENALTY, SERVICE_CHARGE, SERVICE_CHARGE_RATE, 
+    EARNEST_MONEY, DEPOSIT, EXPIRE_DATE, DOWN_PAYMENT, MONTHLY_PAYMENT, SIGNED_CITY, 
+    SECURED_ACCOUNT, AUDIT_RESULT, AUDIT_REJECT_REASON, AUDIT_DATE, CREATE_DATE, CREATE_TIME, BATCH_NO
+    from JD_LOAN_APPLY_INFO
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, BR_NO, PROJ_NO, PRDT_NO, CONTRACT_NO, CHANNEL_PROD_NO, 
+    APPLICATION_PLACE, APPLICATION, CONTRACT_AMOUNT, AMOUNT_PAYED, CURRENCY_TYPE, PERIOD_TYPE, 
+    EXPIRES_MONTH, REFUND_METHOD, CHARGE_DATE_TYPE, CHARGE_DATE_TYPE2, CHARGE_DATE, BRANCH_OFFICE, 
+    PAYMENT_WAY, LOAN_TYPE, BORROWER_TYPE, HANDLING_CHARGE, HANDLING_CHARGE_RATE, PRIMARY_RATE_TYPE, 
+    PRIMARY_RATE, IS_FORWARD, PENALTY_RATE, MONTHLY_PENALTY, SERVICE_CHARGE, SERVICE_CHARGE_RATE, 
+    EARNEST_MONEY, DEPOSIT, EXPIRE_DATE, DOWN_PAYMENT, MONTHLY_PAYMENT, SIGNED_CITY, 
+    SECURED_ACCOUNT, AUDIT_RESULT, AUDIT_REJECT_REASON, AUDIT_DATE, CREATE_DATE, CREATE_TIME, BATCH_NO
+    from JD_LOAN_APPLY_INFO
+  </select>
+   <select id="getJdId" parameterType="java.lang.String" resultType="String">
+     SELECT JD_LOAN_APPLY_INFO_SEQ.NEXTVAL FROM DUAL
+  </select>
+  <update id="updateBatchNo" parameterType="com.uranus.platform.business.jd.entity.po.JdLoanApplyInfoData">
+    update JD_LOAN_APPLY_INFO
+    set 
+      BATCH_NO = #{batchNo,jdbcType=VARCHAR}
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateSuccessAudit" parameterType="com.uranus.platform.business.jd.entity.po.JdLoanApplyInfoData">
+    update JD_LOAN_APPLY_INFO
+    set 
+       AUDIT_RESULT = #{auditResult,jdbcType=VARCHAR},
+       AUDIT_DATE = #{auditDate,jdbcType=VARCHAR}
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateFailAudit" parameterType="com.uranus.platform.business.jd.entity.po.JdLoanApplyInfoData">
+    update JD_LOAN_APPLY_INFO
+    set 
+       AUDIT_RESULT = #{auditResult,jdbcType=VARCHAR},
+       AUDIT_DATE = #{auditDate,jdbcType=VARCHAR},
+       AUDIT_REJECT_REASON = #{auditRejectReason,jdbcType=VARCHAR}
+    where JD_ID = #{jdId,jdbcType=VARCHAR}
+  </update>
+   <select id="getByApplicationNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, BR_NO, PROJ_NO, PRDT_NO, CONTRACT_NO, CHANNEL_PROD_NO, 
+    APPLICATION_PLACE, APPLICATION, CONTRACT_AMOUNT, AMOUNT_PAYED, CURRENCY_TYPE, PERIOD_TYPE, 
+    EXPIRES_MONTH, REFUND_METHOD, CHARGE_DATE_TYPE, CHARGE_DATE_TYPE2, CHARGE_DATE, BRANCH_OFFICE, 
+    PAYMENT_WAY, LOAN_TYPE, BORROWER_TYPE, HANDLING_CHARGE, HANDLING_CHARGE_RATE, PRIMARY_RATE_TYPE, 
+    PRIMARY_RATE, IS_FORWARD, PENALTY_RATE, MONTHLY_PENALTY, SERVICE_CHARGE, SERVICE_CHARGE_RATE, 
+    EARNEST_MONEY, DEPOSIT, EXPIRE_DATE, DOWN_PAYMENT, MONTHLY_PAYMENT, SIGNED_CITY, 
+    SECURED_ACCOUNT, AUDIT_RESULT, AUDIT_REJECT_REASON, AUDIT_DATE, CREATE_DATE, CREATE_TIME, BATCH_NO
+    from JD_LOAN_APPLY_INFO
+    where APPLICATION_NO = #{applicationNo,jdbcType=VARCHAR}
+  </select>
+   <select id="getByContractNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select JD_ID, APPLICATION_NO, BR_NO, PROJ_NO, PRDT_NO, CONTRACT_NO, CHANNEL_PROD_NO, 
+    APPLICATION_PLACE, APPLICATION, CONTRACT_AMOUNT, AMOUNT_PAYED, CURRENCY_TYPE, PERIOD_TYPE, 
+    EXPIRES_MONTH, REFUND_METHOD, CHARGE_DATE_TYPE, CHARGE_DATE_TYPE2, CHARGE_DATE, BRANCH_OFFICE, 
+    PAYMENT_WAY, LOAN_TYPE, BORROWER_TYPE, HANDLING_CHARGE, HANDLING_CHARGE_RATE, PRIMARY_RATE_TYPE, 
+    PRIMARY_RATE, IS_FORWARD, PENALTY_RATE, MONTHLY_PENALTY, SERVICE_CHARGE, SERVICE_CHARGE_RATE, 
+    EARNEST_MONEY, DEPOSIT, EXPIRE_DATE, DOWN_PAYMENT, MONTHLY_PAYMENT, SIGNED_CITY, 
+    SECURED_ACCOUNT, AUDIT_RESULT, AUDIT_REJECT_REASON, AUDIT_DATE, CREATE_DATE, CREATE_TIME, BATCH_NO
+    from JD_LOAN_APPLY_INFO
+    where CONTRACT_NO = #{contractNo,jdbcType=VARCHAR}
+  </select>
+  <update id="updateAuditResult" parameterType="com.uranus.platform.business.jd.entity.po.JdLoanApplyInfoData">
+    update JD_LOAN_APPLY_INFO
+    set 
+       AUDIT_RESULT = #{auditResult,jdbcType=VARCHAR},
+       AUDIT_DATE = #{auditDate,jdbcType=VARCHAR},
+       AUDIT_REJECT_REASON = #{auditRejectReason,jdbcType=VARCHAR}
+    where APPLICATION_NO = #{applicationNo,jdbcType=VARCHAR}
+  </update>
+</mapper>

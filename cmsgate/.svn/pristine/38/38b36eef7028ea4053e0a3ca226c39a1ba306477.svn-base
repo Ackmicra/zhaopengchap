@@ -1,0 +1,267 @@
+package com.uranus.platform.business.jd.service.trans;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.uranus.platform.business.jd.entity.po.JdRepayPlanData;
+import com.uranus.platform.business.jd.entity.pojo.JdErrorMessage;
+import com.uranus.platform.business.jd.entity.pojo.JdRepayPlan;
+import com.uranus.platform.business.jd.entity.status.JdResponseStatus;
+import com.uranus.platform.business.jd.entity.vo.JdResponseView;
+import com.uranus.platform.business.pub.entity.dto.AcLnRepayPlanDto;
+import com.uranus.platform.business.pub.entity.dto.Request2201Dto;
+import com.uranus.platform.business.pub.entity.dto.Request2202Dto;
+import com.uranus.platform.business.pub.entity.dto.Response2201Dto;
+import com.uranus.platform.business.ws.process.Request;
+import com.uranus.platform.business.ws.process.Response;
+import com.uranus.platform.business.ws.service.ProcessService;
+import com.uranus.platform.business.ws.service.SearchService;
+import com.uranus.platform.utils.exception.PlatformExceptionFactory;
+import com.uranus.platform.utils.status.CmsBusinessStatus;
+import com.uranus.tools.utils.DateUtils;
+@Service
+public class PlanTrans2201Service {
+
+	@Autowired
+	private ObjectMapper objectMapper;
+	@Autowired
+	private ProcessService processService;
+	@Autowired
+	private SearchService searchService;
+	/**  
+	* @Description 拼装报文、请求小微、转换响应
+	* @param tradeNo 交易流水号
+	* @param brNo 合作机构编号
+	* @param JdRepayPlanDataList 京东数据
+	* @return 京东响应数据、京东业务数据
+	*/  
+	public JdResponseView request2011(String brNo, String tradeNo, List<JdRepayPlanData> JdRepayPlanDataList) {
+		//拼发送小微业务数据
+		Request request = getRequest2201(brNo, tradeNo, JdRepayPlanDataList);
+		
+		//发送小微系统
+		Response response = processService.wsProcess(CmsBusinessStatus.MFS.businessCode(), request);
+		
+		//转换小微的响应为京东所需响应数据
+		JdResponseView jdResponseDto = transPlanResponse(tradeNo, response);
+		
+		return jdResponseDto;
+	}
+	
+	/**  
+	* @Description 拼装还款计划上传接口请求报文
+	* @param tradeNo 交易流水号
+	* @param brNo 合作机构编号
+	* @param JdRepayPlanDataList 京东数据
+	* @return 还款计划上传请求报文
+	* @throws  
+	*/  
+	private Request getRequest2201(String brNo, String tradeNo, List<JdRepayPlanData> jdRepayPlanlist) {
+		List<AcLnRepayPlanDto> acLnRepayPlanList = jdRepayPlanlist.stream().map(pojo -> {
+			AcLnRepayPlanDto acLnRepayPlanDto = new AcLnRepayPlanDto();
+			acLnRepayPlanDto.setPactNo(pojo.getApplicationNo());
+			acLnRepayPlanDto.setCnt(pojo.getIssue());
+			acLnRepayPlanDto.setEndDate(pojo.getRefundDate().replace("-", ""));
+			acLnRepayPlanDto.setPrcpAmt(pojo.getRefundPrincipal());
+			acLnRepayPlanDto.setNormInt(pojo.getRefundInterest());
+			acLnRepayPlanDto.setTotalAmt(pojo.getRefundPrincipal() + pojo.getRefundInterest());
+			return acLnRepayPlanDto;
+		}).collect(Collectors.toList());
+		
+		Request2201Dto request2201Dto = new Request2201Dto();
+		request2201Dto.setBrNo(brNo);
+		request2201Dto.setDataCnt(jdRepayPlanlist.size());
+		request2201Dto.setList(acLnRepayPlanList);
+		
+		//拼发送小微报文
+		Request request = new Request();
+		request.setTxCode(CmsBusinessStatus.WS_2201.businessCode());								//接口编号
+		request.setBrNo(brNo);							//机构号
+		request.setReqDate(DateUtils.nowDateFormat());			//设置请求日期
+		request.setToken("test");	//设置token
+		request.setReqTime(DateUtils.nowTimeFormat());			//设置请求时间
+		request.setReqSerial(tradeNo);						//设置请求流水号
+		try {
+			request.setContent(objectMapper.writeValueAsString(request2201Dto));
+		} catch (JsonProcessingException e) {
+			throw PlatformExceptionFactory.jsonParseException(CmsBusinessStatus.JSON_PARSE_FAILURE).build(e);
+		}
+		return request;
+	}
+	
+	/**  
+	* @Description 将小微响应报文转换成京东所需响应
+	* @param tradeNo 业务流水号
+	* @param response 小微响应
+	* @return 京东响应
+	* @throws  
+	*/  
+	private JdResponseView transPlanResponse(String tradeNo, Response response) {
+		JdResponseView jdResponseDto = null;
+		if(response != null) {
+			//判断业务是否成功
+			if("0000".equals(response.getRespCode()) || "0001".equals(response.getRespCode()) ) {
+				String responseSTr = response.getContent();
+				try {
+					Response2201Dto response2201Dto = objectMapper.readValue(responseSTr,Response2201Dto.class);
+					if(response2201Dto.getDataCnt() > 0) {
+						//成功
+						jdResponseDto = new JdResponseView(JdResponseStatus.SUCCESS.businessCode(), 
+								JdResponseStatus.SUCCESS.businessMessage(), 
+								tradeNo, null);
+					}else {
+						//失败
+						String errorStr = objectMapper.writeValueAsString(response2201Dto.getResponse2201List());
+						List<String> errorMessages=new ArrayList<String>();
+						errorMessages.add(errorStr);
+						
+						JdErrorMessage jdErrorMessage = new JdErrorMessage();
+						jdErrorMessage.setErrorMessages(errorMessages);
+						String reponse = objectMapper.writeValueAsString(jdErrorMessage);
+
+						jdResponseDto = new JdResponseView(JdResponseStatus.REPATPLAN_DATA_ERROR.businessCode(), 
+								JdResponseStatus.REPATPLAN_DATA_ERROR.businessMessage(), 
+								tradeNo, reponse);
+					}
+				}catch (IOException e) {
+					throw PlatformExceptionFactory.jsonParseException(CmsBusinessStatus.JSON_PARSE_FAILURE).build(e);
+				}
+				
+				}else {
+					jdResponseDto = new JdResponseView(JdResponseStatus.UNKNOWN_ERROR.businessCode(), 
+							response.getRespDesc(), 
+							tradeNo, null);
+				}
+		} else {
+			jdResponseDto = new JdResponseView(JdResponseStatus.UNKNOWN_ERROR.businessCode(), 
+					CmsBusinessStatus.NO_RESPONSE.businessMessage(), 
+					tradeNo, null);
+		}
+		return jdResponseDto;
+	}
+	/**
+	 * 
+	* @Title：request2011 
+	* @Description：[还款计划变更]
+	* @param ：@param brNo
+	* @param ：@param tradeNo
+	* @param ：@param JdRepayPlanDataList
+	* @param ：@return 
+	* @return ：JdResponseView 
+	* @throws
+	 */
+	public JdResponseView request2011ForChange(String brNo, String tradeNo, List<JdRepayPlanData> jdRepayPlanDataList,
+			String applicationNo, Map<String, JdRepayPlan> planMap) {
+		JdResponseView jdResponseView =null;
+		// 查询还款计划查询，拼接小薇报文
+		com.uranus.platform.business.ws.search.Request requestSearch = getRequest2202(brNo, tradeNo, applicationNo);
+		// 发送小微系统
+		com.uranus.platform.business.ws.search.Response responseSearch = searchService.search(CmsBusinessStatus.MFS.businessCode(), requestSearch);
+		
+		String returnRepayPlan = responseSearch.getContent();
+		List<AcLnRepayPlanDto> acLnRepayPlanDtoList;
+		try {
+			acLnRepayPlanDtoList = objectMapper.readValue(returnRepayPlan, new TypeReference<List<AcLnRepayPlanDto>>() {
+			});
+			// 拼发送小微业务数据
+			Request requestProcess = getRequest2201ForChange(brNo, tradeNo, jdRepayPlanDataList, acLnRepayPlanDtoList,
+					planMap);
+
+			// 发送小微系统
+			Response responseProcess = processService.wsProcess(CmsBusinessStatus.MFS.businessCode(), requestProcess);
+
+			// 转换小微的响应为京东所需响应数据
+			 jdResponseView = transPlanResponse(tradeNo, responseProcess);
+
+		} catch (IOException e) {
+			throw PlatformExceptionFactory.jsonParseException(CmsBusinessStatus.JSON_PARSE_FAILURE).build(e);
+		}
+		return jdResponseView;
+	}
+	/**  
+	* @Description 拼装还款计划上传接口请求报文[还款计划变更]
+	* @param tradeNo 交易流水号
+	* @param brNo 合作机构编号
+	* @param JdRepayPlanDataList 京东数据
+	* @return 还款计划上传请求报文
+	* @throws  
+	*/  
+	private Request getRequest2201ForChange(String brNo, String tradeNo, List<JdRepayPlanData> jdRepayPlanlist,
+			List<AcLnRepayPlanDto> acLnRepayPlanDtoList, Map<String, JdRepayPlan> planMap) {
+		List<AcLnRepayPlanDto> acLnRepayPlanList = jdRepayPlanlist.stream().map(pojo -> {
+			AcLnRepayPlanDto acLnRepayPlanDto = new AcLnRepayPlanDto();
+			acLnRepayPlanDto.setPactNo(pojo.getApplicationNo());
+			acLnRepayPlanDto.setCnt(pojo.getIssue());
+			acLnRepayPlanDto.setEndDate(pojo.getRefundDate().replace("-", ""));
+			acLnRepayPlanDto.setPrcpAmt(pojo.getRefundPrincipal());
+			acLnRepayPlanDto.setNormInt(pojo.getRefundInterest());
+			acLnRepayPlanDto.setTotalAmt(pojo.getRefundPrincipal() + pojo.getRefundInterest());
+			return acLnRepayPlanDto;
+		}).collect(Collectors.toList());
+		// 判断期数次
+		acLnRepayPlanDtoList.stream().forEach((V) -> {
+			if (!planMap.containsKey(String.valueOf(V.getCnt()))) {
+				acLnRepayPlanList.add(V);
+			}
+
+		});
+		Request2201Dto request2201Dto = new Request2201Dto();
+		request2201Dto.setBrNo(brNo);
+		request2201Dto.setDataCnt(jdRepayPlanlist.size());
+		request2201Dto.setList(acLnRepayPlanList);
+
+		// 拼发送小微报文
+		Request request = new Request();
+		request.setTxCode(CmsBusinessStatus.WS_2201.businessCode()); // 接口编号
+		request.setBrNo(brNo); // 机构号
+		request.setReqDate(DateUtils.nowDateFormat()); // 设置请求日期
+		request.setToken("test"); // 设置token
+		request.setReqTime(DateUtils.nowTimeFormat()); // 设置请求时间
+		request.setReqSerial(tradeNo); // 设置请求流水号
+		try {
+			request.setContent(objectMapper.writeValueAsString(request2201Dto));
+		} catch (JsonProcessingException e) {
+			throw PlatformExceptionFactory.jsonParseException(CmsBusinessStatus.JSON_PARSE_FAILURE).build(e);
+		}
+		return request;
+	}
+	/**
+	 * 
+	* @Title：getRequest2202 
+	* @Description：拼接小薇2202请求报文
+	* @param ：@param brNo
+	* @param ：@param tradeNo
+	* @param ：@param aplicationNo
+	* @param ：@return 
+	* @return ：Request 
+	* @throws
+	 */
+	public com.uranus.platform.business.ws.search.Request getRequest2202( String brNo, String tradeNo,String aplicationNo) {
+		Request2202Dto request2202Dto = new  Request2202Dto();
+		request2202Dto.setBrNo(brNo);
+		request2202Dto.setPactNo(aplicationNo);
+		//拼发送小微报文
+		com.uranus.platform.business.ws.search.Request request = new com.uranus.platform.business.ws.search.Request();
+		request.setTxCode(CmsBusinessStatus.WS_2202.businessCode());								//接口编号
+		request.setBrNo(brNo);							//机构号
+		request.setReqDate(DateUtils.nowDateFormat());			//设置请求日期
+		request.setToken("test");	//设置token
+		request.setReqTime(DateUtils.nowTimeFormat());			//设置请求时间
+		request.setReqSerial(tradeNo);						//设置请求流水号
+		try {
+			request.setContent(objectMapper.writeValueAsString(request2202Dto));
+		} catch (JsonProcessingException e) {
+			throw PlatformExceptionFactory.jsonParseException(CmsBusinessStatus.JSON_PARSE_FAILURE).build(e);
+		}
+		return request;
+	}
+}

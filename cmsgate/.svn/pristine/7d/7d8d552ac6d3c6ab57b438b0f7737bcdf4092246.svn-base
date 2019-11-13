@@ -1,0 +1,41 @@
+package com.uranus.platform.business.pub.service;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.uranus.platform.business.ModelTest;
+import com.uranus.platform.business.pub.dao.ProjBaseDataMapper;
+import com.uranus.platform.business.pub.entity.po.ProjBaseData;
+import com.uranus.tools.utils.DateUtils;
+
+class ProjBaseServiceTest extends ModelTest{
+
+	@Autowired
+	private ProjBaseDataMapper projBaseDataMapper;
+	@Autowired
+	private ProjBaseService projBaseService;
+	
+	@Test
+	void insertTest() {
+		ProjBaseData projBase = new ProjBaseData();
+		projBase.setProjNo("125621");
+		projBase.setProjName("京东测试项目");
+		projBase.setBrNo("3003");
+		projBase.setBrName("京东测试机构");
+		projBase.setPrdtNo("300301");
+		projBase.setProjSts("01");
+		projBase.setBegDate(DateUtils.nowDateFormat());
+		projBase.setEndDate("20991231");
+		projBase.setOpNo("SYSTEM");
+		projBase.setTxDate(DateUtils.nowDateFormat());
+		projBaseDataMapper.insert(projBase);
+		
+	}
+
+	@Test
+	void getByProjNo() {
+		ProjBaseData projBase = new ProjBaseData();
+		projBase = projBaseService.getByProjNo("7583622");
+		System.out.println(projBase.toString());
+	}
+}

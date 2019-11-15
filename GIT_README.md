@@ -111,7 +111,7 @@
 
    ```
    git commit -sm'描述信息'
-   git commit --amend  //也叫追加提交，它可以在不增加一个新的commit-id的情况下将新修改的代码追加到前					  一次的commit-id中
+   git commit --amend  // 也叫追加提交，它可以在不增加一个新的commit-id的情况下将新修改的代码追加到						前一次的commit-id中
    ```
 
 4. 推送到远程仓库
